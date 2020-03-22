@@ -37,12 +37,13 @@ disqus:
 # facebook: myfacebook
 # twitter: mytwitter
 # google: mygoogle
+github: anujgtm1
+linkedin: anujgtm
+email: anujgtm123@gmail.com
 instagram: anujgtm1
 # pinterest: mypinterest
-linkedin: anujgtm
 # youtube: myyoutube
 # spotify: myspotify
-github: anujgtm1
 # gitlab: mygitlab
 # lastfm: mylastfm
 # stackoverflow: 7044681/mystackoverflow
@@ -51,7 +52,6 @@ github: anujgtm1
 # medium: medium
 # vimeo: myvimeo
 # lanyrd: mylanyrd
-email: anujgtm123@gmail.com
 
 authors:
     johndoe:
