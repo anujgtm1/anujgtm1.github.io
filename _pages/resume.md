@@ -1,6 +1,7 @@
 ---
 layout: resume
 title: Anuj Gautam's CV
+permalink: /resume
 ---
 # Anuj Gautam
 Python Developer
