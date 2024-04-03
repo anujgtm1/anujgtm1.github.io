@@ -16,7 +16,7 @@ resume: false
 resume-external: true
 resume-url: https://google.com/?q=my+resume
 
-url: https://anujgtm1.github.io
+url: https://anujgtm.com.np
 # your url: http://USERNAME.github.io
 
 permalink: /:title/
@@ -39,7 +39,7 @@ disqus:
 # google: mygoogle
 github: anujgtm1
 linkedin: anujgtm
-email: anujgtm123@gmail.com
+email: mail@anujgtm.com.np
 instagram: anujgtm1
 # pinterest: mypinterest
 # youtube: myyoutube
@@ -103,7 +103,7 @@ plugins:
   - jekyll-admin
 
 jekyll-mentions:
-    base_url: https://github.com
+    base_url: https://anujgtm.com.np
 
 compress_html:
     ignore:
