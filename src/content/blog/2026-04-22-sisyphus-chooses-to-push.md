@@ -2,7 +2,7 @@
 title: "Sisyphus chooses to push the boulder"
 summary: "The myth of sisyphus and the joy of life"
 date: "Mar 17 2024"
-draft: false
+draft: true
 tags:
 - Camus
 - Philosophy

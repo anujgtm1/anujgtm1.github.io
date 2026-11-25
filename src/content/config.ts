@@ -98,9 +98,9 @@ const now = defineCollection({
   schema: z.object({
     updatedAt: z.coerce.date(),
     location: z.string(),
-    currentlyReading: z.string(),
+    currentlyReading: z.string().optional(),
     currentlyBuilding: z.string(),
-    nextTrip: z.string(),
+    nextTrip: z.string().optional(),
     listeningOrThinking: z.string(),
   }),
 })

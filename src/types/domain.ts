@@ -111,9 +111,9 @@ export type BlogItem = {
 export type NowSnapshot = {
   readonly updatedAt: string
   readonly location: string
-  readonly currentlyReading: string
+  readonly currentlyReading?: string
   readonly currentlyBuilding: string
-  readonly nextTrip: string
+  readonly nextTrip?: string
   readonly listeningOrThinking: string
 }
 

@@ -7,7 +7,7 @@ import ArticleTopLayout from "@layouts/ArticleTopLayout.astro"
 import ArticleBottomLayout from "@layouts/ArticleBottomLayout.astro"
 
 export async function getStaticPaths() {
-  const trips = await getCollection("travel")
+  const trips = (await getCollection("travel")).filter((trip) => !trip.data.draft)
   return trips.map((trip) => ({
     params: { slug: trip.slug },
     props: trip,

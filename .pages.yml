@@ -294,7 +294,7 @@ content:
       - name: currentlyReading
         label: Currently Reading
         type: string
-        required: true
+        required: false
       - name: currentlyBuilding
         label: Currently Building
         type: string
@@ -302,7 +302,7 @@ content:
       - name: nextTrip
         label: Next Trip
         type: string
-        required: true
+        required: false
       - name: listeningOrThinking
         label: On My Mind
         type: string
