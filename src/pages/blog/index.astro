@@ -18,7 +18,9 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =
 <PageLayout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
   <TopLayout>
     <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">Dispatches · {posts.length} Entries</p>
+      <p class="editorial-kicker">
+        {posts.length > 0 ? `Dispatches · ${posts.length} Entries` : "Dispatches · Notes Desk"}
+      </p>
       <h1 class="editorial-title text-ink">{BLOG.TITLE}</h1>
       <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
         {BLOG.DESCRIPTION}
@@ -26,6 +28,34 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =
     </div>
   </TopLayout>
   <BottomLayout>
-    <SearchCollection client:load entry_name="posts" tags={tags} data={posts} />
+    {
+      posts.length > 0 ? (
+        <SearchCollection client:load entry_name="posts" tags={tags} data={posts} />
+      ) : (
+        <div class="rounded-xl border border-dashed border-border bg-surface/55 px-6 py-12 sm:px-10 sm:py-14 text-center space-y-3">
+          <p class="editorial-kicker text-accent">Notes Desk</p>
+          <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+            First dispatches on the desk
+          </h2>
+          <p class="mx-auto max-w-xl text-sm sm:text-base text-ink-muted leading-relaxed">
+            Short notes on books, software, and places worth remembering are on the way. Meanwhile, browse{" "}
+            <a
+              href="/projects"
+              class="text-accent underline decoration-border underline-offset-4 hover:decoration-accent transition-colors"
+            >
+              engineering projects
+            </a>{" "}
+            or see what is on my desk on{" "}
+            <a
+              href="/now"
+              class="text-accent underline decoration-border underline-offset-4 hover:decoration-accent transition-colors"
+            >
+              /now
+            </a>
+            .
+          </p>
+        </div>
+      )
+    }
   </BottomLayout>
 </PageLayout>

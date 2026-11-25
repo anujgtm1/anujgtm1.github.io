@@ -237,8 +237,22 @@ export default function Bookshelf(props: Props) {
 
   return (
     <div class="space-y-8">
-      {/* Controls bar */}
-      <div class="flex flex-col gap-4 rounded-xl border border-border bg-surface/75 p-4 sm:p-5">
+      <Show
+        when={props.books.length > 0}
+        fallback={
+          <div class="rounded-xl border border-dashed border-border bg-surface/55 px-6 py-12 sm:px-10 sm:py-14 text-center space-y-3">
+            <p class="editorial-kicker text-accent">Stocking the Shelf</p>
+            <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+              Reading covers and quick notes from the margins are on the way.
+            </h2>
+            <p class="mx-auto max-w-xl text-sm sm:text-base text-ink-muted leading-relaxed">
+              Recent reads from 2024–2026 are being gathered with covers, favorites, and short marginalia. Check back soon as the shelf fills in.
+            </p>
+          </div>
+        }
+      >
+        {/* Controls bar */}
+        <div class="flex flex-col gap-4 rounded-xl border border-border bg-surface/75 p-4 sm:p-5">
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           {/* Status Filter Pills */}
           <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter books by status">
@@ -583,6 +597,7 @@ export default function Bookshelf(props: Props) {
             </For>
           </div>
         </Show>
+      </Show>
       </Show>
 
       {/* Native <dialog> modal with closedby="any" — NO role="dialog", NO aria-modal, NO focus trap */}

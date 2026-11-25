@@ -35,10 +35,12 @@ const books: readonly BookItem[] = sortBooks(
 <PageLayout title={BOOKS.TITLE} description={BOOKS.DESCRIPTION}>
   <TopLayout>
     <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">Reading Room · {books.length} Volumes</p>
+      <p class="editorial-kicker">
+        {books.length > 0 ? `Reading Room · ${books.length} Volumes` : "Reading Room · Stocking the Shelf"}
+      </p>
       <h1 class="editorial-title text-ink">{BOOKS.TITLE}</h1>
       <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {BOOKS.DESCRIPTION} Pull any spine off the shelf to read pull-quotes and notes from the margins.
+        {BOOKS.DESCRIPTION}{books.length > 0 ? " Pull any spine off the shelf to read pull-quotes and notes from the margins." : ""}
       </p>
     </div>
   </TopLayout>
