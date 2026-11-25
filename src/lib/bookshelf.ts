@@ -171,3 +171,52 @@ export function filterBooks(
     return haystack.includes(normalizedQuery)
   })
 }
+
+function escapeHtml(text: string): string {
+  return text
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;")
+}
+
+function formatInlineMarkdown(text: string): string {
+  const escaped = escapeHtml(text)
+  return escaped
+    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+    .replace(/\*(.+?)\*/g, "<em>$1</em>")
+    .replace(/`([^`]+)`/g, "<code>$1</code>")
+}
+
+export function renderBookNotesHtml(markdown: string): string {
+  const trimmed = markdown.trim()
+  if (trimmed.length === 0) {
+    return ""
+  }
+
+  const blocks = trimmed.split(/\n{2,}/)
+  return blocks
+    .map((block) => {
+      const lines = block
+        .split("\n")
+        .map((line) => line.trim())
+        .filter((line) => line.length > 0)
+
+      if (lines.length === 0) {
+        return ""
+      }
+
+      if (lines.every((line) => line.startsWith("- "))) {
+        const items = lines
+          .map((line) => `<li>${formatInlineMarkdown(line.slice(2))}</li>`)
+          .join("")
+        return `<ul>${items}</ul>`
+      }
+
+      return `<p>${formatInlineMarkdown(lines.join(" "))}</p>`
+    })
+    .filter((html) => html.length > 0)
+    .join("")
+}
+

@@ -1,0 +1,80 @@
+---
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import Bookshelf from "@components/Bookshelf"
+import { BOOKS } from "@consts"
+import { renderBookNotesHtml, sortBooks } from "@lib/bookshelf"
+import { formatShortDate } from "@lib/utils"
+import type { BookItem } from "@types"
+
+const rawBooks = (await getCollection("books")).filter((entry) => !entry.data.draft)
+
+const books: readonly BookItem[] = sortBooks(
+  rawBooks.map((entry) => ({
+    slug: entry.slug,
+    title: entry.data.title,
+    author: entry.data.author,
+    status: entry.data.status,
+    rating: entry.data.rating,
+    dateRead: entry.data.dateRead ? formatShortDate(entry.data.dateRead) : undefined,
+    pages: entry.data.pages,
+    tags: entry.data.tags,
+    spineTheme: entry.data.spineTheme,
+    quote: entry.data.quote,
+    summary: entry.data.summary,
+    notesHtml: renderBookNotesHtml(entry.body),
+  })),
+)
+---
+
+<PageLayout title={BOOKS.TITLE} description={BOOKS.DESCRIPTION}>
+  <TopLayout>
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">Reading Room · {books.length} Volumes</p>
+      <h1 class="editorial-title text-ink">{BOOKS.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {BOOKS.DESCRIPTION} Pull any spine off the shelf to read pull-quotes and notes from the margins.
+      </p>
+    </div>
+  </TopLayout>
+
+  <BottomLayout>
+    <div class="space-y-12">
+      <Bookshelf client:load books={books} />
+
+      <aside
+        aria-label="Companion project"
+        class="rounded-xl border border-border bg-surface/75 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+      >
+        <div class="space-y-1">
+          <p class="editorial-kicker">Companion Workshop Tool</p>
+          <p class="font-serif text-lg text-ink">
+            Want to bind a physical cover for a book on this shelf?
+          </p>
+          <p class="text-sm text-ink-muted">
+            I built a 1:1 millimeter-accurate browser studio for printable hardcovers, dust jackets, slipcases, and cutting jigs.
+          </p>
+        </div>
+        <div class="flex flex-wrap items-center gap-2 shrink-0">
+          <a
+            href="https://anujgtm.com/Bookbinder/"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
+          >
+            <span>Try Bookbinder Studio</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <a
+            href="/projects/bookbinder-studio/"
+            class="inline-flex items-center rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink-muted hover:border-accent hover:text-ink transition-colors"
+          >
+            Project dossier
+          </a>
+        </div>
+      </aside>
+    </div>
+  </BottomLayout>
+</PageLayout>

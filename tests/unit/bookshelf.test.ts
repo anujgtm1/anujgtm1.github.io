@@ -5,6 +5,7 @@ import {
   SPINE_PALETTES,
   computeSpineMetrics,
   filterBooks,
+  renderBookNotesHtml,
   sortBooks,
 } from "../../src/lib/bookshelf.ts"
 import type { BookItem } from "../../src/types/domain.ts"
@@ -83,4 +84,15 @@ test("status metadata and spine palettes cover all expected keys", () => {
   assert.equal(BOOK_STATUS_META.favorite.shortLabel, "Favorites")
   assert.ok(SPINE_PALETTES.terracotta.bg.startsWith("#"))
   assert.ok(SPINE_PALETTES.burgundy.text.startsWith("#"))
+})
+
+test("renderBookNotesHtml escapes raw HTML and formats markdown safely", () => {
+  const html = renderBookNotesHtml(
+    "A **bold** note with *italics* and <script>alert(1)</script>.\n\n- First `code` item\n- Second item",
+  )
+  assert.ok(html.includes("<strong>bold</strong>"))
+  assert.ok(html.includes("<em>italics</em>"))
+  assert.ok(html.includes("<code>code</code>"))
+  assert.ok(html.includes("&lt;script&gt;alert(1)&lt;/script&gt;"))
+  assert.ok(!html.includes("<script>"))
 })
