@@ -3,7 +3,7 @@ import { getCollection, getEntry } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
 import { SITE, SOCIALS } from "@consts"
-import { SPINE_PALETTES, sortBooks } from "@lib/bookshelf"
+import { SPINE_PALETTES, deriveYearRead, sortBooks } from "@lib/bookshelf"
 import { formatCoordinates } from "@lib/atlas"
 import { formatDate, formatShortDate, readingTime } from "@lib/utils"
 
@@ -35,7 +35,10 @@ const books = sortBooks(
       status: book.data.status,
       rating: book.data.rating,
       dateRead: book.data.dateRead ? formatShortDate(book.data.dateRead) : undefined,
+      yearRead: deriveYearRead(book.data.dateRead, book.data.yearRead),
       pages: book.data.pages,
+      isbn: book.data.isbn,
+      coverUrl: book.data.coverUrl,
       tags: book.data.tags,
       spineTheme: book.data.spineTheme,
       quote: book.data.quote,

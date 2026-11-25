@@ -3,8 +3,9 @@ title: "Project Hail Mary"
 author: "Andy Weir"
 status: "finished"
 rating: 5
-dateRead: "Oct 19 2024"
+dateRead: "May 22 2025"
 pages: 496
+isbn: "9780593135204"
 tags:
   - Fiction
   - Sci-Fi

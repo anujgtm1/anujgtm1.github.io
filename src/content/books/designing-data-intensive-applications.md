@@ -5,6 +5,7 @@ status: "favorite"
 rating: 5
 dateRead: "Sep 14 2025"
 pages: 616
+isbn: "9781449373320"
 tags:
   - Systems
   - Engineering

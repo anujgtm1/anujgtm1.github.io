@@ -3,8 +3,9 @@ title: "Crafting Interpreters"
 author: "Robert Nystrom"
 status: "finished"
 rating: 5
-dateRead: "Jun 21 2025"
+dateRead: "Mar 18 2026"
 pages: 639
+isbn: "9780990582939"
 tags:
   - Compilers
   - Engineering

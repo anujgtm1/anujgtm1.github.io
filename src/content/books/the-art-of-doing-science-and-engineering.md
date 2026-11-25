@@ -3,8 +3,9 @@ title: "The Art of Doing Science and Engineering"
 author: "Richard W. Hamming"
 status: "finished"
 rating: 5
-dateRead: "Feb 11 2025"
+dateRead: "Feb 04 2026"
 pages: 432
+isbn: "9781732265172"
 tags:
   - Research
   - Engineering

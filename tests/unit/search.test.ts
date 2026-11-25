@@ -30,6 +30,7 @@ test("normalizers produce typed SearchItem entries with canonical hrefs", () => 
     title: "Invisible Cities",
     author: "Italo Calvino",
     status: "reading",
+    yearRead: null,
     tags: ["Fiction"],
     spineTheme: "forest",
     summary: "Imaginary cities",

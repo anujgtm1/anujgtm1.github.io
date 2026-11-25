@@ -5,7 +5,7 @@ import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
 import Bookshelf from "@components/Bookshelf"
 import { BOOKS } from "@consts"
-import { renderBookNotesHtml, sortBooks } from "@lib/bookshelf"
+import { deriveYearRead, renderBookNotesHtml, sortBooks } from "@lib/bookshelf"
 import { formatShortDate } from "@lib/utils"
 import type { BookItem } from "@types"
 
@@ -19,7 +19,10 @@ const books: readonly BookItem[] = sortBooks(
     status: entry.data.status,
     rating: entry.data.rating,
     dateRead: entry.data.dateRead ? formatShortDate(entry.data.dateRead) : undefined,
+    yearRead: deriveYearRead(entry.data.dateRead, entry.data.yearRead),
     pages: entry.data.pages,
+    isbn: entry.data.isbn,
+    coverUrl: entry.data.coverUrl,
     tags: entry.data.tags,
     spineTheme: entry.data.spineTheme,
     quote: entry.data.quote,

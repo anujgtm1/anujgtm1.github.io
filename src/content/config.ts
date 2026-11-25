@@ -30,7 +30,10 @@ const books = defineCollection({
     status: z.enum(["reading", "favorite", "finished", "queued"]),
     rating: z.number().int().min(1).max(5).optional(),
     dateRead: z.coerce.date().optional(),
+    yearRead: z.number().int().min(1900).max(2100).optional(),
     pages: z.number().int().positive().optional(),
+    isbn: z.string().optional(),
+    coverUrl: z.string().optional(),
     tags: z.array(z.string()).default([]),
     spineTheme: z
       .enum([

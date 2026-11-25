@@ -3,6 +3,7 @@ title: "Invisible Cities"
 author: "Italo Calvino"
 status: "reading"
 pages: 165
+isbn: "9780156453806"
 tags:
   - Fiction
   - Travel

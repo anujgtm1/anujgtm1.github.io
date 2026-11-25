@@ -142,15 +142,144 @@ export function sortBooks(books: readonly BookItem[]): readonly BookItem[] {
   })
 }
 
+export function cleanIsbn(raw: string | undefined): string | null {
+  if (!raw) {
+    return null
+  }
+  const stripped = raw
+    .trim()
+    .replace(/^=+/, "")
+    .replace(/^["']+|["']+$/g, "")
+    .replace(/[-\s]/g, "")
+    .toUpperCase()
+
+  if (/^\d{13}$/.test(stripped) || /^\d{9}[\dX]$/.test(stripped)) {
+    return stripped
+  }
+  return null
+}
+
+export function resolveBookCoverUrl(
+  book: Pick<BookItem, "coverUrl" | "isbn">,
+): string | null {
+  const custom = book.coverUrl?.trim()
+  if (custom && custom.length > 0) {
+    return custom
+  }
+  const cleaned = cleanIsbn(book.isbn)
+  if (!cleaned) {
+    return null
+  }
+  return `https://covers.openlibrary.org/b/isbn/${cleaned}-L.jpg?default=false`
+}
+
+export function deriveYearRead(
+  dateRead: Date | string | undefined,
+  explicitYearRead?: number,
+): number | null {
+  if (
+    typeof explicitYearRead === "number" &&
+    Number.isInteger(explicitYearRead) &&
+    explicitYearRead >= 1900 &&
+    explicitYearRead <= 2100
+  ) {
+    return explicitYearRead
+  }
+  if (!dateRead) {
+    return null
+  }
+  const parsed = dateRead instanceof Date ? dateRead : new Date(dateRead)
+  const year = parsed.getFullYear()
+  return Number.isFinite(year) ? year : null
+}
+
+export type BookYearGroup = {
+  readonly key: string
+  readonly label: string
+  readonly year: number | null
+  readonly books: readonly BookItem[]
+}
+
+export function getAvailableYears(books: readonly BookItem[]): readonly number[] {
+  const years = new Set<number>()
+  for (const book of books) {
+    if (book.yearRead !== null) {
+      years.add(book.yearRead)
+    }
+  }
+  return [...years].sort((a, b) => b - a)
+}
+
+export function groupBooksByYear(books: readonly BookItem[]): readonly BookYearGroup[] {
+  const reading = books.filter((book) => book.status === "reading")
+  const rest = books.filter((book) => book.status !== "reading")
+
+  const byYear = new Map<number, BookItem[]>()
+  const undated: BookItem[] = []
+
+  for (const book of rest) {
+    if (book.yearRead !== null) {
+      const bucket = byYear.get(book.yearRead)
+      if (bucket) {
+        bucket.push(book)
+      } else {
+        byYear.set(book.yearRead, [book])
+      }
+    } else {
+      undated.push(book)
+    }
+  }
+
+  const groups: BookYearGroup[] = []
+
+  if (reading.length > 0) {
+    groups.push({
+      key: "reading",
+      label: "Currently Reading",
+      year: null,
+      books: reading,
+    })
+  }
+
+  const sortedYears = [...byYear.keys()].sort((a, b) => b - a)
+  for (const year of sortedYears) {
+    const yearBooks = byYear.get(year)
+    if (yearBooks && yearBooks.length > 0) {
+      groups.push({
+        key: String(year),
+        label: String(year),
+        year,
+        books: yearBooks,
+      })
+    }
+  }
+
+  if (undated.length > 0) {
+    groups.push({
+      key: "undated",
+      label: "Undated",
+      year: null,
+      books: undated,
+    })
+  }
+
+  return groups
+}
+
 export function filterBooks(
   books: readonly BookItem[],
   status: BookStatus | "all",
   query: string,
+  yearFilter: number | "all" = "all",
 ): readonly BookItem[] {
   const normalizedQuery = query.trim().toLowerCase()
 
   return books.filter((book) => {
     if (status !== "all" && book.status !== status) {
+      return false
+    }
+
+    if (yearFilter !== "all" && book.yearRead !== yearFilter) {
       return false
     }
 
@@ -163,6 +292,8 @@ export function filterBooks(
       book.author,
       book.summary,
       book.quote ?? "",
+      book.isbn ?? "",
+      book.yearRead !== null ? String(book.yearRead) : "",
       ...book.tags,
     ]
       .join(" ")

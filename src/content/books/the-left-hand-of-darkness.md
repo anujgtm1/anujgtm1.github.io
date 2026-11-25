@@ -5,6 +5,7 @@ status: "favorite"
 rating: 5
 dateRead: "Dec 02 2024"
 pages: 304
+isbn: "9780441478125"
 tags:
   - Fiction
   - Sci-Fi

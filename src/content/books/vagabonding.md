@@ -4,6 +4,7 @@ author: "Rolf Potts"
 status: "finished"
 dateRead: "Aug 09 2024"
 pages: 224
+isbn: "9780812992182"
 tags:
   - Travel
   - Essays

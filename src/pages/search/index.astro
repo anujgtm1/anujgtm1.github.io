@@ -11,6 +11,7 @@ import {
   normalizeProjectToSearchItem,
   normalizeTravelToSearchItem,
 } from "@lib/search"
+import { deriveYearRead } from "@lib/bookshelf"
 import { formatShortDate } from "@lib/utils"
 import type { SearchItem } from "@types"
 
@@ -61,7 +62,10 @@ const items: readonly SearchItem[] = [
         status: book.data.status,
         rating: book.data.rating,
         dateRead: book.data.dateRead ? formatShortDate(book.data.dateRead) : undefined,
+        yearRead: deriveYearRead(book.data.dateRead, book.data.yearRead),
         pages: book.data.pages,
+        isbn: book.data.isbn,
+        coverUrl: book.data.coverUrl,
         tags: book.data.tags,
         spineTheme: book.data.spineTheme,
         quote: book.data.quote,

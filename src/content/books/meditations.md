@@ -2,8 +2,9 @@
 title: "Meditations"
 author: "Marcus Aurelius"
 status: "finished"
-dateRead: "Jan 05 2025"
+dateRead: "Jan 12 2026"
 pages: 254
+isbn: "9780812968255"
 tags:
   - Philosophy
   - Classics

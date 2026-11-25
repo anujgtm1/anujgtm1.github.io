@@ -5,6 +5,7 @@ status: "favorite"
 rating: 5
 dateRead: "Mar 17 2024"
 pages: 212
+isbn: "9780525564454"
 tags:
   - Philosophy
   - Essays

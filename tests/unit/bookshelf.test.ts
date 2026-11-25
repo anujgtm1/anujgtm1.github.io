@@ -4,8 +4,12 @@ import {
   BOOK_STATUS_META,
   SPINE_PALETTES,
   computeSpineMetrics,
+  deriveYearRead,
   filterBooks,
+  getAvailableYears,
+  groupBooksByYear,
   renderBookNotesHtml,
+  resolveBookCoverUrl,
   sortBooks,
 } from "../../src/lib/bookshelf.ts"
 import type { BookItem } from "../../src/types/domain.ts"
@@ -18,7 +22,9 @@ const sampleBooks: readonly BookItem[] = [
     status: "finished",
     rating: 5,
     dateRead: "2025-09-14",
+    yearRead: 2025,
     pages: 616,
+    isbn: "9781449373320",
     tags: ["Systems", "Engineering"],
     spineTheme: "navy",
     summary: "The canonical field manual for distributed data systems.",
@@ -31,7 +37,9 @@ const sampleBooks: readonly BookItem[] = [
     status: "favorite",
     rating: 5,
     dateRead: "2024-03-17",
+    yearRead: 2024,
     pages: 212,
+    isbn: "9780525564454",
     tags: ["Philosophy"],
     spineTheme: "terracotta",
     quote: "One must imagine Sisyphus happy.",
@@ -43,7 +51,9 @@ const sampleBooks: readonly BookItem[] = [
     title: "Invisible Cities",
     author: "Italo Calvino",
     status: "reading",
+    yearRead: null,
     pages: 165,
+    isbn: "978-0-15-645380-6",
     tags: ["Fiction", "Travel"],
     spineTheme: "forest",
     summary: "Marco Polo imagines fifty-five impossible cities for Kublai Khan.",
@@ -95,4 +105,30 @@ test("renderBookNotesHtml escapes raw HTML and formats markdown safely", () => {
   assert.ok(html.includes("<code>code</code>"))
   assert.ok(html.includes("&lt;script&gt;alert(1)&lt;/script&gt;"))
   assert.ok(!html.includes("<script>"))
+})
+
+test("resolveBookCoverUrl prefers coverUrl, resolves valid ISBNs, and returns null otherwise", () => {
+  assert.equal(
+    resolveBookCoverUrl({ coverUrl: "/images/custom.jpg", isbn: "9781449373320" }),
+    "/images/custom.jpg",
+  )
+  assert.equal(
+    resolveBookCoverUrl({ isbn: "978-0-15-645380-6" }),
+    "https://covers.openlibrary.org/b/isbn/9780156453806-L.jpg?default=false",
+  )
+  assert.equal(resolveBookCoverUrl({ isbn: "bad-isbn" }), null)
+  assert.equal(resolveBookCoverUrl({}), null)
+})
+
+test("groupBooksByYear and getAvailableYears group reading first and years descending", () => {
+  assert.deepEqual(getAvailableYears(sampleBooks), [2025, 2024])
+  const groups = groupBooksByYear(sampleBooks)
+  assert.deepEqual(
+    groups.map((g) => g.label),
+    ["Currently Reading", "2025", "2024"],
+  )
+  assert.equal(filterBooks(sampleBooks, "all", "", 2024).length, 1)
+  assert.equal(deriveYearRead(new Date("2026-03-18")), 2026)
+  assert.equal(deriveYearRead(undefined, 2025), 2025)
+  assert.equal(deriveYearRead(undefined), null)
 })

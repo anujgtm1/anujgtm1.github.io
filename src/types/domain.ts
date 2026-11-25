@@ -62,7 +62,10 @@ export type BookItem = {
   readonly status: BookStatus
   readonly rating?: number
   readonly dateRead?: string
+  readonly yearRead: number | null
   readonly pages?: number
+  readonly isbn?: string
+  readonly coverUrl?: string
   readonly tags: readonly string[]
   readonly spineTheme: BookSpineTheme
   readonly quote?: string
