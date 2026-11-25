@@ -34,9 +34,13 @@ function formatRating(rating: number | undefined): string {
   return "★".repeat(clamped) + "☆".repeat(5 - clamped)
 }
 
-function getLastName(author: string): string {
-  const parts = author.trim().split(/\s+/)
-  return parts[parts.length - 1] ?? author
+function getAuthorInitials(author: string): string {
+  const parts = author.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return ""
+  if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase()
+  const first = parts[0][0] ?? ""
+  const last = parts[parts.length - 1][0] ?? ""
+  return `${first}.${last}.`.toUpperCase()
 }
 
 function BookCoverPlate(props: { readonly book: BookItem; readonly compact?: boolean }) {
@@ -261,8 +265,8 @@ export default function Bookshelf(props: Props) {
           </div>
 
           {/* Search + 3-way View Mode Toggle */}
-          <div class="flex flex-wrap items-center gap-3">
-            <label class="relative flex-1 sm:w-56 sm:flex-none">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3">
+            <label class="relative w-full sm:w-56">
               <span class="sr-only">Search books by title, author, or tag</span>
               <input
                 type="search"
@@ -274,7 +278,7 @@ export default function Bookshelf(props: Props) {
             </label>
 
             <div
-              class="inline-flex rounded-md border border-border bg-surface-elevated p-0.5"
+              class="inline-flex w-fit rounded-md border border-border bg-surface-elevated p-0.5"
               role="group"
               aria-label="Bookshelf view mode"
             >
@@ -489,10 +493,10 @@ export default function Bookshelf(props: Props) {
 
                             <div class="flex flex-col items-center gap-1.5 w-full">
                               <span
-                                class="font-mono text-[10px] uppercase tracking-wider opacity-85 max-w-full truncate"
+                                class="font-mono text-[10px] uppercase tracking-wider opacity-85"
                                 style={{ "writing-mode": "horizontal-tb" }}
                               >
-                                {getLastName(book.author).slice(0, 6)}
+                                {getAuthorInitials(book.author)}
                               </span>
                               <span
                                 aria-hidden="true"

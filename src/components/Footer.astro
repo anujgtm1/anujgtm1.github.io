@@ -54,7 +54,7 @@ import Container from "@components/Container.astro"
                 href={social.HREF}
                 target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
                 rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                aria-label={`${SITE.AUTHOR} — ${social.NAME}`}
+                aria-label={`${social.NAME} (${SITE.AUTHOR})`}
                 class="inline-flex min-h-9 items-center gap-2 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-medium text-ink-muted hover:border-accent hover:text-ink transition-colors"
               >
                 <svg class="size-3.5 fill-current" aria-hidden="true">
