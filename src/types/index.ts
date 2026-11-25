@@ -20,3 +20,12 @@ export type {
   TravelItem,
   TravelRegion,
 } from "./domain.ts"
+export type {
+  NationalPark,
+  ParkBiome,
+  ParkInset,
+  ParkRegion,
+  ParkSurveySummary,
+  ProjectedPark,
+  UsStateGeometry,
+} from "./parks.ts"
