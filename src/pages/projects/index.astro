@@ -1,47 +1,109 @@
 ---
-import { getCollection } from "astro:content";
-import PageLayout from "@layouts/PageLayout.astro";
-import TopLayout from "@layouts/TopLayout.astro";
-import BottomLayout from "@layouts/BottomLayout.astro";
-import SearchCollection from "@components/SearchCollection";
-import { PROJECTS } from "@consts";
-import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import { PROJECTS } from "@consts"
+import { formatShortDate } from "@lib/utils"
 
 const projects = (await getCollection("projects"))
   .filter((project) => !project.data.draft)
-  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
-
-const tags = [
-  ...new Set(projects.flatMap((project) => project.data.tags)),
-].sort((a, b) => a.localeCompare(b));
-
-const estimated_initial_size =
-  28 + projects.length * 158 + (projects.length - 1) * 12;
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 ---
 
 <PageLayout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
   <TopLayout>
-    <div class="animate">
-      <h1 class="text-3xl font-semibold text-black dark:text-white mt-2">
-        {PROJECTS.TITLE}
-      </h1>
-      <div class="mt-1">
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">Engineering Dossiers · {projects.length} Builds</p>
+      <h1 class="editorial-title text-ink">{PROJECTS.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
         {PROJECTS.DESCRIPTION}
-      </div>
+      </p>
     </div>
   </TopLayout>
+
   <BottomLayout>
-    <div
-      id="search-collection-wrapper"
-      class="animate"
-      style={{ minHeight: `${estimated_initial_size}px` }}
-    >
-      <SearchCollection
-        client:load
-        entry_name={"projects"}
-        tags={tags}
-        data={projects}
-      />
-    </div>
+    <ol class="space-y-6">
+      {
+        projects.map((project, idx) => (
+          <li class="editorial-card rounded-xl border border-border bg-surface-elevated p-6 sm:p-8 hover:border-accent">
+            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
+              <div class="space-y-3 max-w-2xl">
+                <div class="flex flex-wrap items-center gap-3 text-xs font-mono uppercase tracking-wider text-ink-muted">
+                  <span class="font-semibold text-accent">0{idx + 1}</span>
+                  <span aria-hidden="true">·</span>
+                  <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
+                    {project.data.status}
+                  </span>
+                  {project.data.role && (
+                    <>
+                      <span aria-hidden="true">·</span>
+                      <span>{project.data.role}</span>
+                    </>
+                  )}
+                  <span aria-hidden="true">·</span>
+                  <time datetime={project.data.date.toISOString()}>
+                    {formatShortDate(project.data.date)}
+                  </time>
+                </div>
+
+                <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+                  <a
+                    href={`/projects/${project.slug}/`}
+                    class="hover:text-accent transition-colors"
+                  >
+                    {project.data.title}
+                  </a>
+                </h2>
+
+                <p class="text-base text-ink-muted leading-relaxed">
+                  {project.data.summary}
+                </p>
+
+                <ul class="flex flex-wrap gap-1.5 pt-1" aria-label="Technologies">
+                  {project.data.tags.map((tag) => (
+                    <li class="rounded border border-border bg-surface px-2.5 py-0.5 text-xs font-mono text-ink-muted">
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div class="flex flex-wrap lg:flex-col items-start lg:items-end gap-2.5 shrink-0">
+                <a
+                  href={`/projects/${project.slug}/`}
+                  class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
+                >
+                  <span>Read dossier</span>
+                  <span aria-hidden="true">→</span>
+                </a>
+                {project.data.demoUrl && (
+                  <a
+                    href={project.data.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink hover:border-accent hover:text-accent transition-colors"
+                  >
+                    <span>Live site</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+                {project.data.repoUrl && (
+                  <a
+                    href={project.data.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
+                  >
+                    <span>Repository</span>
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                )}
+              </div>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </BottomLayout>
 </PageLayout>

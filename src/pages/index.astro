@@ -1,214 +1,494 @@
 ---
-import { getCollection } from "astro:content"
+import { getCollection, getEntry } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
-import ArrowCard from "@components/ArrowCard"
-import StackCard from "@components/StackCard.astro"
+import Container from "@components/Container.astro"
 import { SITE, SOCIALS } from "@consts"
-import TwinklingStars from "@components/TwinklingStars.astro"
-import MeteorShower from "@components/MeteorShower.astro"
+import { SPINE_PALETTES, sortBooks } from "@lib/bookshelf"
+import { formatCoordinates } from "@lib/atlas"
+import { formatDate, formatShortDate, readingTime } from "@lib/utils"
 
-const posts = (await getCollection("blog"))
-  .filter(post => !post.data.draft)
+const [rawPosts, rawProjects, rawBooks, rawTrips, nowEntry] = await Promise.all([
+  getCollection("blog"),
+  getCollection("projects"),
+  getCollection("books"),
+  getCollection("travel"),
+  getEntry("now", "current"),
+])
+
+const posts = rawPosts
+  .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0,3)
+  .slice(0, 4)
 
-const projects = (await getCollection("projects"))
-  .filter(project => !project.data.draft)
+const projects = rawProjects
+  .filter((project) => !project.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0,3)
+  .slice(0, 3)
 
-const stack = [
-  { 
-    text: "Astro", 
-    icon: "astro", 
-    href: "https://astro.build" 
-  },
-  { 
-    text: "Javascript", 
-    icon: "javascript", 
-    href: "https://www.javascript.com" 
-  },
-  { 
-    text: "Typescript", 
-    icon: "typescript", 
-    href: "https://www.typescriptlang.org" 
-  },
-  { 
-    text: "Tailwind", 
-    icon: "tailwind", 
-    href: "https://tailwindcss.com" 
-  },
-]
+const books = sortBooks(
+  rawBooks
+    .filter((book) => !book.data.draft)
+    .map((book) => ({
+      slug: book.slug,
+      title: book.data.title,
+      author: book.data.author,
+      status: book.data.status,
+      rating: book.data.rating,
+      dateRead: book.data.dateRead ? formatShortDate(book.data.dateRead) : undefined,
+      pages: book.data.pages,
+      tags: book.data.tags,
+      spineTheme: book.data.spineTheme,
+      quote: book.data.quote,
+      summary: book.data.summary,
+      notesHtml: "",
+    })),
+)
+
+const currentlyReadingBook = books.find((book) => book.status === "reading") ?? books[0]
+const featuredSpines = books.slice(0, 6)
+
+const trips = rawTrips
+  .filter((trip) => !trip.data.draft)
+  .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+
+const latestTrip = trips[0]
+const previewTrips = trips.slice(0, 4)
 ---
 
-<PageLayout title="Home" description={SITE.DESCRIPTION}>
+<PageLayout title={SITE.TITLE} description={SITE.DESCRIPTION}>
+  <!-- Editorial Masthead -->
+  <section class="pt-12 pb-12 sm:pt-20 sm:pb-16 border-b border-border">
+    <Container size="lg">
+      <div class="max-w-3xl space-y-6">
+        <p class="editorial-kicker">
+          Software Engineer · Reader · Traveler
+        </p>
 
-  <!-- Light Mode: Particles -->
-  <div class='absolute inset-0 block dark:hidden'>
-    <div id='particles1' class='fixed inset-0'></div>
-    <div id='particles2' class='fixed inset-0'></div>
-    <div id='particles3' class='fixed inset-0'></div>
-  </div>
+        <h1 class="editorial-display text-ink">
+          Field notes on resilient systems, good books, and places worth remembering.
+        </h1>
 
-  <!-- Dark Theme: Stars -->
-  <div class='absolute inset-0 bg-black hidden dark:block'>
-    <div id='stars1' class='fixed inset-0'></div>
-    <div id='stars2' class='fixed inset-0'></div>
-    <div id='stars3' class='fixed inset-0'></div>
-  </div>
+        <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+          I'm <strong class="font-semibold text-ink">Anuj Gautam</strong> — a software engineer working on data center infrastructure deployment at Google, with a PhD in usable security from the University of Tennessee. Outside the day job, I build small opinionated tools, scribble short notes on books, and collect passport stamps.
+        </p>
 
-  <!-- Dark Theme: Twinkling Stars / Metors -->
-  <div id="galaxy" class="fixed inset-0">
-    <div class="hidden dark:block">
-      <TwinklingStars/>
-      <MeteorShower/>
-    </div>
-  </div>
-
-  <script is:inline src="/js/bg.js"></script>
-  
-  <!-- HERO -->
-  <section class="relative h-screen w-full">
-    <div id="planetcont" class='animate absolute inset-0 top-1/4 overflow-hidden'>
-      <div id="crescent" class='absolute top-0 left-1/2 -translate-x-1/2 w-[250vw] min-h-[100vh] aspect-square rounded-full p-[1px] bg-gradient-to-b from-black/25 dark:from-white/75 from-0% to-transparent to-5%'>
-        <div id="planet" class='w-full h-full bg-white dark:bg-black rounded-full p-[1px] overflow-hidden flex justify-center'>
-          <div id="blur" class='w-full h-20 rounded-full bg-neutral-900/25 dark:bg-white/25 blur-3xl'/>
+        <div class="flex flex-wrap items-center gap-3 pt-2">
+          <a
+            href="/blog"
+            class="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-bg hover:bg-accent transition-colors"
+          >
+            <span>Read the blog</span>
+            <span aria-hidden="true">→</span>
+          </a>
+          <a
+            href="/books"
+            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          >
+            <span>Bookshelf</span>
+          </a>
+          <a
+            href="/travel"
+            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          >
+            <span>Travel Atlas</span>
+          </a>
+          <a
+            href="/projects"
+            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          >
+            <span>Projects</span>
+          </a>
         </div>
       </div>
-    </div>
-    <div class="animate absolute h-full w-full flex items-center justify-center">
-      <div class='relative w-full h-full flex items-center justify-center'>
-        <div class='p-5 text-center'>
-          <p class='animated text-lg md:text-xl lg:text-2xl font-semibold opacity-75'>
-            Hello, I am ...
-          </p>
-          <p class='animated text-2xl md:text-3xl lg:text-4xl font-bold uppercase text-black dark:text-white'>
-           Anuj Gautam 
-          </p>
-          <p class='animated text-sm md:text-base lg:text-lg opacity-75'>
-            I talk about things.
-          </p>
-          <div id="ctaButtons" class='animated flex flex-wrap gap-4 justify-center mt-5'>
-            <a href='/blog' class='py-2 px-4 rounded truncate text-xs md:text-sm lg:text-base bg-black dark:bg-white text-white dark:text-black hover:opacity-75 blend'>
-              Read my blog
-            </a>
-            <a href='/work' class='py-2 px-4 truncate rounded text-xs md:text-sm lg:text-base border border-black/25 dark:border-white/25 hover:bg-black/5 hover:dark:bg-white/15 blend'>
-              View my work
-            </a>
-          </div>
-        </div>
-      </div>
-    </div>
+    </Container>
   </section>
 
-  <div class="relative bg-white dark:bg-black">
-    <div class="mx-auto max-w-screen-sm p-5 space-y-24 pb-16">
+  <!-- Live "Currently / Field Desk" Strip -->
+  <section class="py-10 sm:py-12 border-b border-border bg-surface/45" aria-labelledby="field-desk-heading">
+    <Container size="lg">
+      <div class="flex items-baseline justify-between gap-4 mb-5">
+        <h2 id="field-desk-heading" class="editorial-kicker">
+          Currently · Field Desk
+        </h2>
+        <a
+          href="/now"
+          class="text-xs font-mono uppercase tracking-wider text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+        >
+          Full /now ledger →
+        </a>
+      </div>
 
-      <!-- About Section -->
-      <section class="animate">
-        <article>
-          I do things that I find fun, and software engineering as my day job.
-        </article>
-      </section>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {currentlyReadingBook && (
+          <a
+            href={`/books/#book-${currentlyReadingBook.slug}`}
+            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
+          >
+            <span class="text-xs font-mono uppercase tracking-widest text-accent">
+              Currently Reading
+            </span>
+            <div class="space-y-1">
+              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
+                {currentlyReadingBook.title}
+              </p>
+              <p class="text-xs text-ink-muted">{currentlyReadingBook.author}</p>
+            </div>
+          </a>
+        )}
 
-      <!-- Blog Preview Section -->
-      <section class="animate">
-        <div class="space-y-4">
-          <div class="flex justify-between">
-            <p class="font-semibold text-black dark:text-white">
-              Recent posts
+        {latestTrip && (
+          <a
+            href={`/travel/${latestTrip.slug}/`}
+            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
+          >
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-mono uppercase tracking-widest text-atlas">
+                Latest Stamp
+              </span>
+              <span class="rounded bg-atlas-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-atlas">
+                {latestTrip.data.stampCode}
+              </span>
+            </div>
+            <div class="space-y-1">
+              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
+                {latestTrip.data.city}, {latestTrip.data.country}
+              </p>
+              <p class="text-xs font-mono text-ink-muted">
+                {formatShortDate(latestTrip.data.date)}
+              </p>
+            </div>
+          </a>
+        )}
+
+        <a
+          href="/projects"
+          class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
+        >
+          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted">
+            Currently Building
+          </span>
+          <div class="space-y-1">
+            <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors leading-snug">
+              {nowEntry?.data.currentlyBuilding ?? "Personal CRM & Bookbinder Studio"}
             </p>
-            <a href="/blog" class="w-fit col-span-3 group flex gap-1 items-center underline decoration-[.5px] decoration-black/25 dark:decoration-white/50 hover:decoration-black dark:hover:decoration-white text-black dark:text-white underline-offset-2 blend">
-              <span class="text-black/75 dark:text-white/75 group-hover:text-black group-hover:dark:text-white blend">
-                All posts
-              </span>
-            </a>
           </div>
-          <ul class="space-y-4">
-            {posts.map((post) => (
-              <li>
-                <ArrowCard entry={post} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </a>
 
-      <!-- Tech Stack Section -->
-      <section class="animate">
-        <div class="space-y-4">
-          <p class="font-semibold text-black dark:text-white">
-            Website build with
-          </p>
-          <div class="flex flex-wrap items-center gap-2 mt-5">
-            {stack.map(item => (
-              <StackCard 
-                text={item.text}
-                icon={item.icon}
-                href={item.href}
-              />
-            ))}
-          </div>
-          <div>
-            Performing reactivity and statefulness, special guest
-            <a href="https://www.solidjs.com/" target="_blank" class="w-fit group underline decoration-[.5px] decoration-black/25 dark:decoration-white/50 hover:decoration-black dark:hover:decoration-white text-black dark:text-white underline-offset-2 blend">
-              <span class="text-black/75 dark:text-white/75 group-hover:text-black group-hover:dark:text-white blend">
-                SolidJS
-              </span>
-            </a>
-          </div>
-        </div>
-      </section>
-
-      <!-- Project Preview Section -->
-      <section class="animate">
-        <div class="space-y-4">
-          <div class="flex justify-between">
-            <p class="font-semibold text-black dark:text-white">
-              Recent projects
+        <a
+          href="/now"
+          class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
+        >
+          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted">
+            Updated {nowEntry ? formatShortDate(nowEntry.data.updatedAt) : "Recently"}
+          </span>
+          <div class="space-y-1">
+            <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors leading-snug">
+              {nowEntry?.data.listeningOrThinking ?? "Short, honest notes on books and systems."}
             </p>
-            <a href="/projects" class="w-fit col-span-3 group flex gap-1 items-center underline decoration-[.5px] decoration-black/25 dark:decoration-white/50 hover:decoration-black dark:hover:decoration-white text-black dark:text-white underline-offset-2 blend">
-              <span class="text-black/75 dark:text-white/75 group-hover:text-black group-hover:dark:text-white blend">
-                All projects
-              </span>
-            </a>
           </div>
-          <ul class="space-y-4">
-            {projects.map((project) => (
-              <li>
-                <ArrowCard entry={project} />
-              </li>
-            ))}
-          </ul>
-        </div>
-      </section>
+        </a>
+      </div>
+    </Container>
+  </section>
 
-      <!-- Contact Section -->
-      <section class="animate">
-        <div>
-          <p class="font-semibold text-black dark:text-white">
-            Let's Connect
-          </p>
-          <p>
-            Reach out to me via email or on social media.
-          </p>
-          <div class="grid grid-cols-4 gap-y-2 mt-4 auto-cols-min">
-            {SOCIALS.map(social => (
-              <div class="col-span-1 flex items-center gap-1">
-                <span class="whitespace-nowrap truncate">
-                  {social.NAME}
-                </span>
-              </div>
-              <div class="col-span-3 truncate">
-                <a href={social.HREF} target="_blank" class="w-fit col-span-3 group flex gap-1 items-center underline decoration-[.5px] decoration-black/25 dark:decoration-white/50 hover:decoration-black dark:hover:decoration-white text-black dark:text-white underline-offset-2 blend">
-                  <span class="text-black/75 dark:text-white/75 group-hover:text-black group-hover:dark:text-white blend">
-                    {social.TEXT}
+  <!-- Selected Writing -->
+  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="writing-heading">
+    <Container size="lg">
+      <div class="flex items-baseline justify-between gap-4 mb-8">
+        <div class="space-y-1">
+          <p class="editorial-kicker">Dispatches &amp; Notes</p>
+          <h2 id="writing-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+            Selected Writing
+          </h2>
+        </div>
+        <a
+          href="/blog"
+          class="text-sm font-medium text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+        >
+          All writing →
+        </a>
+      </div>
+
+      <ul class="divide-y divide-border border-y border-border">
+        {
+          posts.map((post) => (
+            <li>
+              <a
+                href={`/blog/${post.slug}/`}
+                class="group py-6 flex flex-col md:flex-row md:items-baseline justify-between gap-3 md:gap-8 hover:bg-surface/40 px-2 -mx-2 rounded-lg transition-colors"
+              >
+                <div class="space-y-1.5 max-w-2xl">
+                  <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink group-hover:text-accent transition-colors">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-sm text-ink-muted leading-relaxed">
+                    {post.data.summary}
+                  </p>
+                  <div class="flex flex-wrap gap-1.5 pt-1">
+                    {post.data.tags.map((tag) => (
+                      <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+                <div class="flex md:flex-col md:items-end gap-2 shrink-0 text-xs font-mono text-ink-muted">
+                  <time datetime={post.data.date.toISOString()}>
+                    {formatDate(post.data.date)}
+                  </time>
+                  <span>{readingTime(post.body)}</span>
+                </div>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </Container>
+  </section>
+
+  <!-- Engineering Projects (Numbered Dossiers) -->
+  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="projects-heading">
+    <Container size="lg">
+      <div class="flex items-baseline justify-between gap-4 mb-8">
+        <div class="space-y-1">
+          <p class="editorial-kicker">Workshop</p>
+          <h2 id="projects-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+            Engineering Projects
+          </h2>
+        </div>
+        <a
+          href="/projects"
+          class="text-sm font-medium text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+        >
+          All dossiers →
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        {
+          projects.map((project, idx) => (
+            <article class="editorial-card flex flex-col justify-between gap-5 rounded-xl border border-border bg-surface-elevated p-6 hover:border-accent">
+              <div class="space-y-3">
+                <div class="flex items-center justify-between gap-2 text-xs font-mono">
+                  <span class="text-ink-muted">0{idx + 1}</span>
+                  <span class="rounded bg-atlas-soft px-2 py-0.5 uppercase tracking-wider text-atlas font-medium">
+                    {project.data.status}
                   </span>
-                </a>
+                </div>
+
+                <h3 class="font-serif text-2xl font-medium text-ink">
+                  <a
+                    href={`/projects/${project.slug}/`}
+                    class="hover:text-accent transition-colors"
+                  >
+                    {project.data.title}
+                  </a>
+                </h3>
+
+                <p class="text-sm text-ink-muted leading-relaxed">
+                  {project.data.summary}
+                </p>
+
+                <div class="flex flex-wrap gap-1.5 pt-1">
+                  {project.data.tags.slice(0, 4).map((tag) => (
+                    <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </div>
-            ))}
+
+              <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs font-mono">
+                <a
+                  href={`/projects/${project.slug}/`}
+                  class="font-medium text-ink hover:text-accent transition-colors"
+                >
+                  Read dossier →
+                </a>
+                {project.data.demoUrl ? (
+                  <a
+                    href={project.data.demoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-atlas hover:text-accent transition-colors"
+                  >
+                    Live ↗
+                  </a>
+                ) : project.data.repoUrl ? (
+                  <a
+                    href={project.data.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="text-atlas hover:text-accent transition-colors"
+                  >
+                    GitHub ↗
+                  </a>
+                ) : null}
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </Container>
+  </section>
+
+  <!-- From the Bookshelf & Atlas -->
+  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="shelf-atlas-heading">
+    <Container size="lg">
+      <div class="mb-8 space-y-1">
+        <p class="editorial-kicker">Interactive Curiosities</p>
+        <h2 id="shelf-atlas-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+          From the Bookshelf &amp; Atlas
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Mini Bookshelf Teaser -->
+        <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6">
+          <div class="flex items-baseline justify-between gap-3">
+            <div class="space-y-1">
+              <h3 class="font-serif text-xl font-medium text-ink">Bookshelf</h3>
+              <p class="text-sm text-ink-muted">Quick marginalia &amp; favorites on the desk.</p>
+            </div>
+            <a
+              href="/books"
+              class="text-xs font-mono uppercase tracking-wider text-accent hover:underline underline-offset-4 shrink-0"
+            >
+              All {books.length} →
+            </a>
+          </div>
+
+          <div>
+            <div class="flex items-end justify-start gap-2 overflow-x-auto pt-4 pb-0 px-2">
+              {
+                featuredSpines.map((book) => {
+                  const palette = SPINE_PALETTES[book.spineTheme]
+                  return (
+                    <a
+                      href={`/books/#book-${book.slug}`}
+                      aria-label={`${book.title} by ${book.author}`}
+                      class="book-spine-btn shrink-0 flex flex-col items-center justify-between rounded-t border px-1.5 py-2.5"
+                      style={{
+                        "background-color": palette.bg,
+                        color: palette.text,
+                        "border-color": palette.border,
+                        "min-inline-size": "44px",
+                        "min-block-size": "168px",
+                      }}
+                    >
+                      <span
+                        aria-hidden="true"
+                        class="w-full h-0.5 rounded-full opacity-75"
+                        style={{ "background-color": palette.band }}
+                      />
+                      <span
+                        class="font-serif text-xs font-medium tracking-tight"
+                        style={{
+                          "writing-mode": "vertical-rl",
+                          "max-block-size": "124px",
+                          overflow: "hidden",
+                          "text-overflow": "ellipsis",
+                        }}
+                      >
+                        {book.title}
+                      </span>
+                      <span
+                        aria-hidden="true"
+                        class="w-full h-0.5 rounded-full opacity-70"
+                        style={{ "background-color": palette.band }}
+                      />
+                    </a>
+                  )
+                })
+              }
+            </div>
+            <div aria-hidden="true" class="h-2.5 w-full rounded-sm border-b-4 border-border bg-surface" />
+          </div>
         </div>
-      </section>
-    </div>
-  </div>
+
+        <!-- Mini Passport Stamps Teaser -->
+        <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6">
+          <div class="flex items-baseline justify-between gap-3">
+            <div class="space-y-1">
+              <h3 class="font-serif text-xl font-medium text-ink">Travel Atlas</h3>
+              <p class="text-sm text-ink-muted">Stamped coordinates &amp; field logs.</p>
+            </div>
+            <a
+              href="/travel"
+              class="text-xs font-mono uppercase tracking-wider text-atlas hover:underline underline-offset-4 shrink-0"
+            >
+              Open map →
+            </a>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            {
+              previewTrips.map((trip) => (
+                <a
+                  href={`/travel/${trip.slug}/`}
+                  class="editorial-card group rounded-lg border border-border bg-surface/65 p-3.5 space-y-1.5 hover:border-accent"
+                >
+                  <div class="flex items-center justify-between gap-2">
+                    <span class="rounded bg-accent-soft px-2 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-accent">
+                      {trip.data.stampCode}
+                    </span>
+                    <span class="font-mono text-[11px] text-ink-muted">
+                      {formatShortDate(trip.data.date)}
+                    </span>
+                  </div>
+                  <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors">
+                    {trip.data.city}
+                  </p>
+                  <p class="font-mono text-[10px] text-ink-muted truncate">
+                    {formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng })}
+                  </p>
+                </a>
+              ))
+            }
+          </div>
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Connect Strip -->
+  <section class="py-12 sm:py-14" aria-labelledby="connect-heading">
+    <Container size="lg">
+      <div class="rounded-xl border border-border bg-surface/70 p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+        <div class="space-y-1.5 max-w-xl">
+          <p class="editorial-kicker">Correspondence</p>
+          <h2 id="connect-heading" class="font-serif text-2xl font-medium text-ink">
+            Always glad to trade book recommendations, travel tips, or systems notes.
+          </h2>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2.5">
+          {
+            SOCIALS.map((social) => (
+              <a
+                href={social.HREF}
+                target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
+                rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+              >
+                <svg class="size-4 fill-current" aria-hidden="true">
+                  <use href={`/social.svg#${social.ICON}`}></use>
+                </svg>
+                <span>{social.NAME}</span>
+              </a>
+            ))
+          }
+          <a
+            href="/rss.xml"
+            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          >
+            <svg class="size-4 stroke-current" aria-hidden="true">
+              <use href="/ui.svg#rss"></use>
+            </svg>
+            <span>RSS</span>
+          </a>
+        </div>
+      </div>
+    </Container>
+  </section>
 </PageLayout>
