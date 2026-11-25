@@ -1,0 +1,173 @@
+import type { BookItem, BookSpineTheme, BookStatus } from "../types/domain.ts"
+
+export const BOOK_STATUS_ORDER: Readonly<Record<BookStatus, number>> = {
+  reading: 0,
+  favorite: 1,
+  finished: 2,
+  queued: 3,
+}
+
+export type BookStatusMeta = {
+  readonly label: string
+  readonly shortLabel: string
+  readonly description: string
+}
+
+export const BOOK_STATUS_META: Readonly<Record<BookStatus, BookStatusMeta>> = {
+  reading: {
+    label: "Currently Reading",
+    shortLabel: "Reading",
+    description: "Open on the desk right now",
+  },
+  favorite: {
+    label: "All-Time Favorite",
+    shortLabel: "Favorites",
+    description: "Books I return to and recommend often",
+  },
+  finished: {
+    label: "Finished",
+    shortLabel: "Finished",
+    description: "Completed with notes in the margins",
+  },
+  queued: {
+    label: "On the Stack",
+    shortLabel: "Queued",
+    description: "Waiting on the bedside table",
+  },
+}
+
+export type SpinePalette = {
+  readonly bg: string
+  readonly text: string
+  readonly band: string
+  readonly border: string
+}
+
+export const SPINE_PALETTES: Readonly<Record<BookSpineTheme, SpinePalette>> = {
+  burgundy: {
+    bg: "#6B242B",
+    text: "#F7EFE3",
+    band: "#D4A35A",
+    border: "#4B161C",
+  },
+  forest: {
+    bg: "#23473C",
+    text: "#F3EFE6",
+    band: "#C9A66B",
+    border: "#163028",
+  },
+  navy: {
+    bg: "#21344D",
+    text: "#F2EFE8",
+    band: "#D4AF7A",
+    border: "#142234",
+  },
+  ochre: {
+    bg: "#A46F2A",
+    text: "#1B1611",
+    band: "#3B2814",
+    border: "#774E19",
+  },
+  terracotta: {
+    bg: "#A6452E",
+    text: "#FBF5EC",
+    band: "#E8C89B",
+    border: "#792E1C",
+  },
+  slate: {
+    bg: "#42525E",
+    text: "#F4F1EA",
+    band: "#D2B48C",
+    border: "#2B3740",
+  },
+  charcoal: {
+    bg: "#2A2724",
+    text: "#F2ECE1",
+    band: "#C87D55",
+    border: "#171513",
+  },
+  plum: {
+    bg: "#4E2C46",
+    text: "#F7EFF4",
+    band: "#D9B382",
+    border: "#341B2E",
+  },
+}
+
+export type SpineMetrics = {
+  readonly widthPx: number
+  readonly heightPx: number
+  readonly bandOffsetPx: number
+}
+
+function stableHash(input: string): number {
+  let hash = 0
+  for (let i = 0; i < input.length; i += 1) {
+    hash = (hash * 31 + input.charCodeAt(i)) % 997
+  }
+  return Math.abs(hash)
+}
+
+export function computeSpineMetrics(pages: number | undefined, title: string): SpineMetrics {
+  const safePages =
+    typeof pages === "number" && Number.isFinite(pages) && pages > 0 ? pages : 280
+  const hash = stableHash(title)
+
+  const widthRaw = Math.round(38 + (safePages / 650) * 26)
+  const widthPx = Math.min(68, Math.max(44, widthRaw))
+
+  const titleBoost = Math.min(28, Math.floor(title.length * 0.7))
+  const heightRaw = 198 + titleBoost + (hash % 28)
+  const heightPx = Math.min(264, Math.max(198, heightRaw))
+
+  const bandOffsetPx = 14 + (hash % 12)
+
+  return { widthPx, heightPx, bandOffsetPx }
+}
+
+export function sortBooks(books: readonly BookItem[]): readonly BookItem[] {
+  return [...books].sort((a, b) => {
+    const statusDiff = BOOK_STATUS_ORDER[a.status] - BOOK_STATUS_ORDER[b.status]
+    if (statusDiff !== 0) {
+      return statusDiff
+    }
+
+    const timeA = a.dateRead ? new Date(a.dateRead).getTime() : 0
+    const timeB = b.dateRead ? new Date(b.dateRead).getTime() : 0
+    if (timeA !== timeB) {
+      return timeB - timeA
+    }
+
+    return a.title.localeCompare(b.title)
+  })
+}
+
+export function filterBooks(
+  books: readonly BookItem[],
+  status: BookStatus | "all",
+  query: string,
+): readonly BookItem[] {
+  const normalizedQuery = query.trim().toLowerCase()
+
+  return books.filter((book) => {
+    if (status !== "all" && book.status !== status) {
+      return false
+    }
+
+    if (normalizedQuery.length === 0) {
+      return true
+    }
+
+    const haystack = [
+      book.title,
+      book.author,
+      book.summary,
+      book.quote ?? "",
+      ...book.tags,
+    ]
+      .join(" ")
+      .toLowerCase()
+
+    return haystack.includes(normalizedQuery)
+  })
+}
