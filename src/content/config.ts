@@ -5,6 +5,7 @@ const work = defineCollection({
   schema: z.object({
     company: z.string(),
     role: z.string(),
+    location: z.string().optional(),
     dateStart: z.coerce.date(),
     dateEnd: z.union([z.coerce.date(), z.string()]),
   }),
@@ -21,25 +22,82 @@ const blog = defineCollection({
   }),
 })
 
+const books = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    author: z.string(),
+    status: z.enum(["reading", "favorite", "finished", "queued"]),
+    rating: z.number().int().min(1).max(5).optional(),
+    dateRead: z.coerce.date().optional(),
+    pages: z.number().int().positive().optional(),
+    tags: z.array(z.string()),
+    spineTheme: z.enum([
+      "burgundy",
+      "forest",
+      "navy",
+      "ochre",
+      "terracotta",
+      "slate",
+      "charcoal",
+      "plum",
+    ]),
+    quote: z.string().optional(),
+    summary: z.string(),
+    draft: z.boolean().optional(),
+  }),
+})
+
+const travel = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    city: z.string(),
+    country: z.string(),
+    region: z.enum([
+      "North America",
+      "Europe",
+      "Asia",
+      "South America",
+      "Africa",
+      "Oceania",
+    ]),
+    stampCode: z.string().min(2).max(5),
+    date: z.coerce.date(),
+    lat: z.number().min(-90).max(90),
+    lng: z.number().min(-180).max(180),
+    summary: z.string(),
+    highlights: z.array(z.string()),
+    draft: z.boolean().optional(),
+  }),
+})
+
 const projects = defineCollection({
   type: "content",
   schema: z.object({
     title: z.string(),
     summary: z.string(),
     date: z.coerce.date(),
+    status: z.enum(["active", "shipped", "research", "archived"]).default("shipped"),
+    role: z.string().optional(),
     tags: z.array(z.string()),
-    draft: z.boolean().optional(),
-    demoUrl: z.string().optional(),
     repoUrl: z.string().optional(),
+    demoUrl: z.string().optional(),
+    featured: z.boolean().optional(),
+    draft: z.boolean().optional(),
   }),
 })
 
-const legal = defineCollection({
+const now = defineCollection({
   type: "content",
   schema: z.object({
-    title: z.string(),
-    date: z.coerce.date(),
+    updatedAt: z.coerce.date(),
+    location: z.string(),
+    currentlyReading: z.string(),
+    currentlyBuilding: z.string(),
+    nextTrip: z.string(),
+    listeningOrThinking: z.string(),
   }),
 })
 
-export const collections = { work, blog, projects, legal }
+export const collections = { work, blog, books, travel, projects, now }
