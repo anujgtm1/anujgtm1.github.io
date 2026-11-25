@@ -3,102 +3,82 @@ import { SITE, SOCIALS } from "@consts"
 import Container from "@components/Container.astro"
 ---
 
-<footer class="relative bg-white dark:bg-black">
-  <div class="animate">
-    <section class="py-5">
-      <Container size="md">
-        <div class="flex items-center justify-center sm:justify-end">
-          <button id="back-to-top" aria-label="Back to top of page" class="group flex w-fit p-1.5 gap-1.5 text-sm items-center border rounded hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 transition-colors duration-300 ease-in-out">
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-current group-hover:stroke-black group-hover:dark:stroke-white rotate-90">
-              <line x1="19" y1="12" x2="5" y2="12" class="scale-x-0 group-hover:scale-x-100 translate-x-3 group-hover:translate-x-0 transition-all duration-300 ease-in-out" />
-              <polyline points="12 19 5 12 12 5" class="translate-x-1 group-hover:translate-x-0 transition-all duration-300 ease-in-out" />
+<footer class="mt-20 border-t border-border bg-surface/60">
+  <Container size="lg">
+    <div class="py-10 flex flex-col gap-8">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <a
+            href="/"
+            class="inline-flex items-center gap-2.5 text-ink hover:text-accent transition-colors"
+          >
+            <svg class="size-7 text-accent" aria-hidden="true">
+              <use href="/brand.svg#brand"></use>
             </svg>
-            <div class="w-full group-hover:text-black group-hover:dark:text-white transition-colors duration-300 ease-in-out">
-              Back to top
-            </div>
-          </button>
+            <span class="font-serif text-lg font-medium">{SITE.TITLE}</span>
+          </a>
         </div>
-      </Container>
-    </section>
-  
-    <section class=" py-5 overflow-hidden whitespace-nowrap border-t border-black/10 dark:border-white/25">
-      <Container size="md">
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="flex flex-col items-center sm:items-start">
-            <a href="/" class="flex gap-1 w-fit font-semibold text-current hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
-              <svg class="size-6 fill-current">
-                <use href="/brand.svg#brand"/>
-              </svg>
-              {SITE.TITLE}
-            </a>
-          </div>
-          <div class="flex gap-2 justify-center sm:justify-end items-center">
-            <span class="relative flex h-3 w-3">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-300"></span>
-              <span class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
-            </span>
-            All systems normal
-          </div>
-        </div>
-      </Container>
-    </section>
-  
-    <section class=" py-5 overflow-hidden whitespace-nowrap border-t border-black/10 dark:border-white/25">
-      <Container size="md">
-        <div class="h-full grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div class="order-2 sm:order-1 flex flex-col items-center justify-center sm:items-start">
-            <div class="legal">
-              <a href="/legal/terms" class="text-current hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
-                Terms
-              </a> |
-              <a href="/legal/privacy" class="text-current hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
-                Privacy
-              </a>
-            </div>
-            <div class="text-sm mt-2">
-              &copy; 2024 | All rights reserved
-            </div>
-          </div>
-  
-          <div class="order-1 sm:order-2 flex justify-center sm:justify-end">
-            <div class="flex flex-wrap gap-1 items-center justify-center">
-              {
-                SOCIALS.map((SOCIAL) => (
-                  <a 
-                    href={SOCIAL.HREF} 
-                    target="_blank" 
-                    aria-label={`${SITE.TITLE} on ${SOCIAL.NAME}`} 
-                    class="group size-10 rounded-full p-2 items-center justify-center hover:bg-black/5 dark:hover:bg-white/20  blend"
-                  >
-                    <svg class="size-full fill-current group-hover:fill-black group-hover:dark:fill-white blend">
-                      <use href={`/social.svg#${SOCIAL.ICON}`} />
-                    </svg>
-                  </a>
-                ))
-              }
-              </div>
-          </div>
-        </div>
-      </Container>
-    </section>
-  </div>
 
+        <button
+          id="back-to-top"
+          type="button"
+          class="inline-flex w-fit items-center gap-2 rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
+        >
+          <span aria-hidden="true">↑</span>
+          <span>Back to top</span>
+        </button>
+      </div>
+
+      <div class="border-t border-border pt-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 text-sm text-ink-muted">
+        <div class="space-y-1">
+          <p class="flex flex-wrap items-center gap-x-2 gap-y-1">
+            <span>Built with Astro &amp; curiosity</span>
+            <span aria-hidden="true">·</span>
+            <a href="/rss.xml" class="underline decoration-border underline-offset-4 hover:text-ink hover:decoration-accent transition-colors">
+              RSS
+            </a>
+            <span aria-hidden="true">·</span>
+            <a href="/now" class="underline decoration-border underline-offset-4 hover:text-ink hover:decoration-accent transition-colors">
+              /now
+            </a>
+          </p>
+          <p class="text-xs font-mono">
+            &copy; 2026 {SITE.AUTHOR}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-2">
+          {
+            SOCIALS.map((social) => (
+              <a
+                href={social.HREF}
+                target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
+                rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
+                aria-label={`${SITE.AUTHOR} — ${social.NAME}`}
+                class="inline-flex min-h-9 items-center gap-2 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-medium text-ink-muted hover:border-accent hover:text-ink transition-colors"
+              >
+                <svg class="size-3.5 fill-current" aria-hidden="true">
+                  <use href={`/social.svg#${social.ICON}`}></use>
+                </svg>
+                <span>{social.NAME}</span>
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </Container>
 </footer>
 
 <script is:inline>
-  function goBackToTop(event) {
-    event.preventDefault()
-    window.scrollTo({
+  (() => {
+    const button = document.getElementById("back-to-top")
+    button?.addEventListener("click", () => {
+      const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      window.scrollTo({
         top: 0,
-        behavior: "smooth"
+        behavior: reduced ? "auto" : "smooth",
+      })
     })
-  }
-
-  function initializeBackToTop() {
-    const backToTop = document.getElementById("back-to-top")
-    backToTop?.addEventListener("click", goBackToTop)
-  }
-
-  document.addEventListener("astro:after-swap", initializeBackToTop)
-  initializeBackToTop()
+  })()
 </script>

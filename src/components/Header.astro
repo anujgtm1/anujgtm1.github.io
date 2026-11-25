@@ -1,103 +1,237 @@
 ---
 import { SITE, LINKS } from "@consts"
-import { cn } from "@lib/utils"
-const { pathname } = Astro.url
-const subpath = pathname.match(/[^/]+/g)
 import Container from "@components/Container.astro"
+
+const { pathname } = Astro.url
+const firstSegment = pathname.split("/").filter(Boolean)[0]
+
+function isCurrentPath(href: string): boolean {
+  if (href === "/") {
+    return pathname === "/"
+  }
+  return pathname === href || `/${firstSegment}` === href
+}
 ---
 
-<header id="header" class="fixed top-0 w-full h-16 z-50 ">
-  <Container size="md">
-    <div class="relative h-full w-full">
-      <div class="absolute left-0 top-1/2 -translate-y-1/2 flex gap-1 font-semibold">
-        <a href="/" class="flex gap-1 text-current hover:text-black dark:hover:text-white transition-colors duration-300 ease-in-out">
-          <svg class="size-6 fill-current">
-            <use href="/brand.svg#brand"></use>
+<header id="site-header" class="site-header">
+  <Container size="lg">
+    <div id="header-inner" class="header-inner">
+      <a
+        href="/"
+        class="inline-flex items-center gap-2.5 text-ink hover:text-accent transition-colors"
+      >
+        <svg class="size-8 shrink-0 text-accent" aria-hidden="true">
+          <use href="/brand.svg#brand"></use>
+        </svg>
+        <span class="font-serif text-lg font-medium tracking-tight whitespace-nowrap">
+          {SITE.TITLE}
+        </span>
+      </a>
+
+      <nav class="site-nav" aria-label="Primary">
+        <button
+          id="menu-button"
+          class="menu-button inline-flex items-center gap-1.5 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          type="button"
+          popovertarget="site-menu"
+          popovertargetaction="toggle"
+          aria-controls="site-menu"
+        >
+          <svg class="size-4 stroke-current" aria-hidden="true">
+            <use href="/ui.svg#menu"></use>
           </svg>
-          <div>
-            {SITE.TITLE}
-          </div>
-        </a>
-      </div>
+          <span>Menu</span>
+        </button>
 
-    <div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-      <nav class="hidden md:flex items-center justify-center text-sm gap-1">
-        {
-          LINKS.map((LINK) => (
-            <a href={LINK.HREF} class={cn("h-8 rounded-full px-3 text-current", "flex items-center justify-center", "transition-colors duration-300 ease-in-out", pathname === LINK.HREF || "/" + subpath?.[0] === LINK.HREF ? "bg-black dark:bg-white text-white dark:text-black" : "hover:bg-black/5 dark:hover:bg-white/20 hover:text-black dark:hover:text-white")}>
-              {LINK.TEXT}
-            </a>
-          ))
-        }
+        <ul id="site-menu" class="site-menu" popover="auto">
+          {
+            LINKS.map((link) => {
+              const active = isCurrentPath(link.HREF)
+              return (
+                <li>
+                  <a
+                    href={link.HREF}
+                    aria-current={active ? "page" : undefined}
+                    class="nav-link w-full md:w-auto whitespace-nowrap"
+                  >
+                    {link.TEXT}
+                  </a>
+                </li>
+              )
+            })
+          }
+        </ul>
       </nav>
+
+      <div class="flex items-center gap-1.5">
+        <a
+          href="/search"
+          aria-label={`Search ${SITE.TITLE}`}
+          aria-current={isCurrentPath("/search") ? "page" : undefined}
+          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-border bg-surface-elevated p-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
+        >
+          <svg class="size-4 stroke-current" aria-hidden="true">
+            <use href="/ui.svg#search"></use>
+          </svg>
+        </a>
+
+        <button
+          id="theme-toggle"
+          type="button"
+          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-border bg-surface-elevated p-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
+        >
+          <span class="theme-toggle-to-dark">
+            <svg class="size-4 stroke-current" aria-hidden="true">
+              <use href="/ui.svg#moon"></use>
+            </svg>
+            <span class="sr-only">Switch to dark theme</span>
+          </span>
+          <span class="theme-toggle-to-light">
+            <svg class="size-4 stroke-current" aria-hidden="true">
+              <use href="/ui.svg#sun"></use>
+            </svg>
+            <span class="sr-only">Switch to light theme</span>
+          </span>
+        </button>
+      </div>
     </div>
-
-    <div class="buttons absolute right-0 top-1/2 -translate-y-1/2 flex gap-1">
-      <a href="/search" aria-label={`Search blog posts and projects on ${SITE.TITLE}`} class={cn("hidden md:flex", "size-9 rounded-full p-2 items-center justify-center", "bg-transparent hover:bg-black/5 dark:hover:bg-white/20", "stroke-current hover:stroke-black hover:dark:stroke-white", "border border-black/10 dark:border-white/25", "transition-colors duration-300 ease-in-out", pathname === "/search" || "/" + subpath?.[0] === "/search" ? "pointer-events-none bg-black dark:bg-white text-white dark:text-black" : "")}>
-        <svg class="size-full">
-          <use href="/ui.svg#search"></use>
-        </svg>
-      </a>
-
-      <a href="/rss.xml" target="_blank" aria-label={`Rss feed for ${SITE.TITLE}`} class={cn("hidden md:flex", "size-9 rounded-full p-2 items-center justify-center", "bg-transparent hover:bg-black/5 dark:hover:bg-white/20", "stroke-current hover:stroke-black hover:dark:stroke-white", "border border-black/10 dark:border-white/25", "transition-colors duration-300 ease-in-out")}>
-        <svg class="size-full">
-          <use href="/ui.svg#rss"></use>
-        </svg>
-      </a>
-
-      <button id="header-theme-button" aria-label={`Toggle light and dark theme`} class={cn("hidden md:flex", "size-9 rounded-full p-2 items-center justify-center", "bg-transparent hover:bg-black/5 dark:hover:bg-white/20", "stroke-current hover:stroke-black hover:dark:stroke-white", "border border-black/10 dark:border-white/25", "transition-colors duration-300 ease-in-out")}>
-        <svg class="size-full block dark:hidden">
-          <use href="/ui.svg#sun"></use>
-        </svg>
-        <svg class="size-full hidden dark:block">
-          <use href="/ui.svg#moon"></use>
-        </svg>
-      </button>
-
-      <button id="header-drawer-button" aria-label={`Toggle drawer open and closed`} class={cn("flex md:hidden", "size-9 rounded-full p-2 items-center justify-center", "bg-transparent hover:bg-black/5 dark:hover:bg-white/20", "stroke-current hover:stroke-black hover:dark:stroke-white", "border border-black/10 dark:border-white/25", "transition-colors duration-300 ease-in-out")}>
-        <svg id="drawer-open" class="size-full">
-          <use href="/ui.svg#menu"></use>
-        </svg>
-        <svg id="drawer-close" class="size-full">
-          <use href="/ui.svg#x"></use>
-        </svg>
-      </button>
-    </div>
-  </div>
   </Container>
 </header>
 
-<style>
-  #header-drawer-button > #drawer-open {
-    @apply block;
-  }
-
-  #header-drawer-button > #drawer-close {
-    @apply hidden;
-  }
-
-  #header-drawer-button.open > #drawer-open {
-    @apply hidden;
-  }
-
-  #header-drawer-button.open > #drawer-close {
-    @apply block;
-  }
-</style>
-
 <script is:inline>
-  function toggleDrawer() {
-    const drawer = document.getElementById("drawer")
-    const drawerButton = document.getElementById("header-drawer-button")
-    drawer?.classList.toggle("open")
-    drawerButton?.classList.toggle("open")
-  }
+  (() => {
+    const STORAGE_KEY = "color-scheme"
+    const mql = window.matchMedia("(prefers-color-scheme: dark)")
 
-  function initializeDrawerButton() {
-    const drawerButton = document.getElementById("header-drawer-button")
-    drawerButton?.addEventListener("click", toggleDrawer)
-  }
+    function readStoredScheme() {
+      try {
+        const value = localStorage.getItem(STORAGE_KEY)
+        if (value === "light" || value === "dark") {
+          return value
+        }
+      } catch {
+        // Storage unavailable
+      }
+      return null
+    }
 
-  document.addEventListener("astro:after-swap", initializeDrawerButton)
-  initializeDrawerButton()
+    function applyScheme(stored) {
+      const meta = document.querySelector('meta[name="color-scheme"]')
+      if (meta) {
+        meta.setAttribute("content", stored ?? "light dark")
+      }
+      const renderedDark = stored === "dark" || (stored === null && mql.matches)
+      document.documentElement.classList.toggle("dark", renderedDark)
+    }
+
+    function toggleTheme() {
+      const stored = readStoredScheme()
+      const systemScheme = mql.matches ? "dark" : "light"
+      const renderedScheme = stored ?? systemScheme
+      const targetScheme = renderedScheme === "dark" ? "light" : "dark"
+
+      let nextStored = null
+      if (targetScheme !== systemScheme) {
+        nextStored = targetScheme
+        try {
+          localStorage.setItem(STORAGE_KEY, targetScheme)
+        } catch {
+          // Apply even when persistence is unavailable
+        }
+      } else {
+        try {
+          localStorage.removeItem(STORAGE_KEY)
+        } catch {
+          // Ignore storage errors
+        }
+      }
+
+      applyScheme(nextStored)
+    }
+
+    const themeButton = document.getElementById("theme-toggle")
+    themeButton?.addEventListener("click", toggleTheme)
+
+    window.addEventListener("storage", (event) => {
+      if (event.key === STORAGE_KEY) {
+        applyScheme(readStoredScheme())
+      }
+    })
+
+    mql.addEventListener("change", () => {
+      // Keep Tailwind .dark compatibility synced when following system; NEVER clear a stored override
+      applyScheme(readStoredScheme())
+    })
+
+    // Responsive single-nav measurement (modern-web-guidance navbar pattern)
+    const header = document.getElementById("site-header")
+    const inner = document.getElementById("header-inner")
+    const menu = document.getElementById("site-menu")
+    const menuButton = document.getElementById("menu-button")
+
+    if (header && inner && menu) {
+      const supportsPopover = Object.hasOwn(HTMLElement.prototype, "popover")
+      let lastCollapsedWidth = 0
+
+      if (!supportsPopover && menuButton) {
+        menuButton.addEventListener("click", () => {
+          menu.classList.toggle(":popover-open")
+        })
+      }
+
+      function syncNavLayout(forceMeasure) {
+        const currentWidth = header.clientWidth
+        const isCurrentlyWide = header.classList.contains("is-wide")
+        if (!forceMeasure && !isCurrentlyWide && currentWidth <= lastCollapsedWidth) {
+          return
+        }
+
+        const wasPopoverOpen =
+          !isCurrentlyWide &&
+          (supportsPopover ? menu.matches(":popover-open") : menu.classList.contains(":popover-open"))
+
+        header.classList.add("is-measuring")
+        menu.removeAttribute("popover")
+        header.classList.add("is-wide")
+
+        const fitsInline = inner.scrollWidth <= inner.clientWidth + 1
+
+        if (fitsInline) {
+          header.classList.add("is-wide")
+          menu.removeAttribute("popover")
+          menu.classList.remove(":popover-open")
+        } else {
+          header.classList.remove("is-wide")
+          menu.setAttribute("popover", "auto")
+          lastCollapsedWidth = currentWidth
+          if (wasPopoverOpen) {
+            if (supportsPopover && typeof menu.showPopover === "function") {
+              try {
+                menu.showPopover()
+              } catch {
+                // Ignore if already open
+              }
+            } else {
+              menu.classList.add(":popover-open")
+            }
+          }
+        }
+
+        requestAnimationFrame(() => {
+          header.classList.remove("is-measuring")
+        })
+      }
+
+      syncNavLayout(true)
+
+      if (typeof ResizeObserver !== "undefined") {
+        const observer = new ResizeObserver(() => syncNavLayout(false))
+        observer.observe(header)
+        observer.observe(menu)
+      }
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => syncNavLayout(true))
+      }
+    }
+  })()
 </script>

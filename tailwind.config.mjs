@@ -7,51 +7,99 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        "sans": ["Atkinson", ...defaultTheme.fontFamily.sans],
+        serif: ["Newsreader", "Georgia", ...defaultTheme.fontFamily.serif],
+        sans: ["Plus Jakarta Sans", ...defaultTheme.fontFamily.sans],
+        mono: ["JetBrains Mono", ...defaultTheme.fontFamily.mono],
+      },
+      colors: {
+        bg: "var(--bg)",
+        surface: "var(--surface)",
+        "surface-elevated": "var(--surface-elevated)",
+        ink: "var(--ink)",
+        "ink-muted": "var(--ink-muted)",
+        border: "var(--border)",
+        accent: "var(--accent)",
+        "accent-soft": "var(--accent-soft)",
+        atlas: "var(--atlas)",
+        "atlas-soft": "var(--atlas-soft)",
       },
       typography: {
         DEFAULT: {
           css: {
-            maxWidth: "full",
+            maxWidth: "65ch",
+            color: "var(--ink)",
+            lineHeight: "1.7",
+            "--tw-prose-body": "var(--ink)",
+            "--tw-prose-headings": "var(--ink)",
+            "--tw-prose-lead": "var(--ink-muted)",
+            "--tw-prose-links": "var(--accent)",
+            "--tw-prose-bold": "var(--ink)",
+            "--tw-prose-counters": "var(--ink-muted)",
+            "--tw-prose-bullets": "var(--accent)",
+            "--tw-prose-hr": "var(--border)",
+            "--tw-prose-quotes": "var(--ink)",
+            "--tw-prose-quote-borders": "var(--accent)",
+            "--tw-prose-captions": "var(--ink-muted)",
+            "--tw-prose-code": "var(--ink)",
+            "--tw-prose-pre-code": "#F2ECE1",
+            "--tw-prose-pre-bg": "#1C1A17",
+            "--tw-prose-th-borders": "var(--border)",
+            "--tw-prose-td-borders": "var(--border)",
+            "h1, h2, h3, h4": {
+              fontFamily: "Newsreader, Georgia, serif",
+              fontWeight: "500",
+              letterSpacing: "-0.015em",
+            },
+            blockquote: {
+              fontFamily: "Newsreader, Georgia, serif",
+              fontStyle: "italic",
+              fontWeight: "400",
+              borderLeftWidth: "2px",
+              paddingLeft: "1.15rem",
+            },
+            a: {
+              textDecorationColor: "var(--border)",
+              textUnderlineOffset: "3px",
+              transition: "color 150ms ease, text-decoration-color 150ms ease",
+              "&:hover": {
+                textDecorationColor: "var(--accent)",
+              },
+            },
+            "code::before": { content: "none" },
+            "code::after": { content: "none" },
+            code: {
+              fontFamily: "'JetBrains Mono', ui-monospace, monospace",
+              fontSize: "0.875em",
+              backgroundColor: "var(--surface)",
+              padding: "0.15rem 0.35rem",
+              borderRadius: "0.25rem",
+              border: "1px solid var(--border)",
+            },
+            "pre code": {
+              backgroundColor: "transparent",
+              border: "none",
+              padding: "0",
+            },
           },
         },
-      },
-      rotate: {
-        "45": "45deg",
-        "135": "135deg",
-        "225": "225deg",
-        "315": "315deg",
-      },
-      animation: {
-        twinkle: "twinkle 2s ease-in-out forwards",
-        meteor: "meteor 3s ease-in-out forwards",
-      },
-      keyframes: {
-        twinkle: {
-          "0%": { 
-            opacity: 0, 
-            transform: "rotate(0deg)" 
-          },
-          "50%": { 
-            opacity: 1,
-            transform: "rotate(180deg)" 
-          },
-          "100%": { 
-            opacity: 0, 
-            transform: "rotate(360deg)" 
-          },
-        },
-        meteor: {
-          "0%": { 
-            opacity: 0, 
-            transform: "translateY(200%)" 
-          },
-          "50%": { 
-            opacity: 1  
-          },
-          "100%": { 
-            opacity: 0, 
-            transform: "translateY(0)" 
+        invert: {
+          css: {
+            "--tw-prose-body": "var(--ink)",
+            "--tw-prose-headings": "var(--ink)",
+            "--tw-prose-lead": "var(--ink-muted)",
+            "--tw-prose-links": "var(--accent)",
+            "--tw-prose-bold": "var(--ink)",
+            "--tw-prose-counters": "var(--ink-muted)",
+            "--tw-prose-bullets": "var(--accent)",
+            "--tw-prose-hr": "var(--border)",
+            "--tw-prose-quotes": "var(--ink)",
+            "--tw-prose-quote-borders": "var(--accent)",
+            "--tw-prose-captions": "var(--ink-muted)",
+            "--tw-prose-code": "var(--ink)",
+            "--tw-prose-pre-code": "#F2ECE1",
+            "--tw-prose-pre-bg": "#181613",
+            "--tw-prose-th-borders": "var(--border)",
+            "--tw-prose-td-borders": "var(--border)",
           },
         },
       },
