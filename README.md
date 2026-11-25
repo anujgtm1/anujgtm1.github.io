@@ -1,89 +1,31 @@
-![Astro Sphere Lighthouse Score](_astrosphere.jpg)
+# anujgtm.com
 
-Astro Sphere is a static, minimalist, lightweight, lightning fast portfolio and blog theme based on my personal website.
+Personal website, field journal, interactive bookshelf, travel atlas, and engineering portfolio of **Anuj Gautam**.
 
-It is primarily Astro, Tailwind and Typescript, with a very small amount of SolidJS for stateful components.
+Built with **Astro 4**, **SolidJS**, **Tailwind CSS**, and **TypeScript**, designed in an *Editorial Field Journal* aesthetic with dual **Warm Archival Paper** / **Dark Atlas** themes powered by native CSS `color-scheme` and `light-dark()`.
 
-## 🚀 Deploy your own
+## Features
 
-[![Deploy with Vercel](_deploy_vercel.svg)](https://vercel.com/new/clone?repository-url=https://github.com/markhorn-dev/astro-sphere)  [![Deploy with Netlify](_deploy_netlify.svg)](https://app.netlify.com/start/deploy?repository=https://github.com/markhorn-dev/astro-sphere)
+- **Blog & Dispatches (`/blog`)** — Short notes on books, software systems, and places worth remembering, complete with topic filters, Fuse.js search, and a CSS scroll-driven reading progress bar.
+- **Interactive Bookshelf (`/books`)** — Year-by-year visual book cover wall (`Covers` / `Shelf` / `Catalog`), automatic ISBN cover resolution with bespoke archival cloth fallbacks, native `<dialog closedby="any">` marginalia modal, and a zero-dependency **Goodreads CSV importer**.
+- **Interactive Travel Atlas (`/travel`)** — Custom equirectangular SVG world projection with interactive destination pins, vintage SVG passport stamp inspector, region filters, and full trip logs.
+- **Engineering Dossiers (`/projects`)** — Showcasing *Bookbinder Studio*, *Travel Planner*, and *Personal CRM*.
+- **Work Timeline (`/work`) & `/now` Ledger (`/now`)** — Career history and a live Field Desk snapshot.
+- **Unified Search (`/search`) & RSS (`/rss.xml`)** — Instant client-side search across essays, projects, books, and travel logs.
+- **Mobile-First Publishing (`.pages.yml`)** — Ready for [Pages CMS](https://app.pagescms.org) out of the box; see [`WRITING.md`](./WRITING.md).
 
-## 📋 Features
+## Commands
 
-- ✅ 100/100 Lighthouse performance
-- ✅ Responsive
-- ✅ Accessible
-- ✅ SEO-friendly
-- ✅ Typesafe
-- ✅ Minimal style
-- ✅ Light/Dark Theme
-- ✅ Animated UI
-- ✅ Tailwind styling
-- ✅ Auto generated sitemap
-- ✅ Auto generated RSS Feed
-- ✅ Markdown support
-- ✅ MDX Support (components in your markdown)
-- ✅ Searchable content (posts and projects)
-- ✅ Code Blocks - copy to clipboard
+| Command | Action |
+| :--- | :--- |
+| `npm run dev` | Start local dev server at `localhost:4321` |
+| `npm run build` | Run `astro check` typechecking + static production build to `dist/` |
+| `npm run preview` | Preview the production build locally |
+| `npm run test:unit` | Run unit tests (`atlas`, `bookshelf`, `goodreads`, `rss`, `search`) |
+| `npm run test:e2e` | Run end-to-end HTTP/HTML route & content verification against `dist/` |
+| `npm test` | Run both unit and E2E test suites |
+| `npm run import:goodreads -- <export.csv>` | Import books & dates from a Goodreads CSV export into `src/content/books/` |
 
-## 💯 Lighthouse score
-![Astro Sphere Lighthouse Score](_lighthouse.png)
+## Deployment
 
-## 🕊️ Lightweight
-All pages under 100kb (including fonts)
-
-## ⚡︎ Fast
-Rendered in ~40ms on localhost
-
-## 📄 Configuration
-
-The blog posts on the demo serve as the documentation and configuration.
-
-## 💻 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-Replace npm with your package manager of choice. `npm`, `pnpm`, `yarn`, `bun`, etc
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run dev:network`     | Starts dev server on local network               |
-| `npm run sync`            | Generates TypeScript types for all Astro modules.|
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run preview:network` | Starts preview server on local network           |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
-| `npm run lint`            | Run ESLint                                       |
-| `npm run lint:fix`        | Auto-fix ESLint issues                           |
-
-## 🗺️ Roadmap
-
-A few features I plan to implement
-- ⬜ Article Pages - Table of Contents
-- ⬜ Article Pages - Share on social media
-
-## ✨ Acknowledgement
-
-Theme inspired by [Paco Coursey](https://paco.me/), [Lee Robinson](https://leerob.io/) and [Hayden Bleasel](https://www.haydenbleasel.com/)
-
-
-## 🏛️ License
-
-MIT
-
-
-# 1.0.1 Update
-
-Added ability to run dev and preview on local network.
-added npm run dev:network
-added npm run preview:network
-
-Added slightly more particle density in both light and dark mode.
-
-Added subtle dark mode star and meteor animations.
-
-Removed eslint config
-
+Pushes to `master` automatically build and deploy to GitHub Pages (`https://www.anujgtm.com`) via [`.github/workflows/astro.yml`](./.github/workflows/astro.yml).

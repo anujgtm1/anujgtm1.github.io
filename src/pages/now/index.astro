@@ -1,0 +1,68 @@
+---
+import { getEntry } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import { NOW } from "@consts"
+import { formatDate } from "@lib/utils"
+
+const entry = await getEntry("now", "current")
+if (!entry) {
+  throw new Error("Missing src/content/now/current.md")
+}
+
+const { Content } = await entry.render()
+const {
+  updatedAt,
+  location,
+  currentlyReading,
+  currentlyBuilding,
+  nextTrip,
+  listeningOrThinking,
+} = entry.data
+
+const ledgerItems = [
+  { label: "Location", value: location },
+  { label: "Currently Reading", value: currentlyReading },
+  { label: "Currently Building", value: currentlyBuilding },
+  { label: "Next Trip", value: nextTrip },
+  { label: "On My Mind", value: listeningOrThinking },
+] as const
+---
+
+<PageLayout title={NOW.TITLE} description={NOW.DESCRIPTION}>
+  <TopLayout size="md">
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">
+        Field Desk · Updated {formatDate(updatedAt)}
+      </p>
+      <h1 class="editorial-title text-ink">{NOW.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {NOW.DESCRIPTION}
+      </p>
+    </div>
+  </TopLayout>
+
+  <BottomLayout size="md">
+    <div class="space-y-10">
+      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {
+          ledgerItems.map((item) => (
+            <div class="rounded-xl border border-border bg-surface-elevated p-5 space-y-1.5">
+              <dt class="text-xs font-mono uppercase tracking-widest text-ink-muted">
+                {item.label}
+              </dt>
+              <dd class="font-serif text-lg text-ink leading-snug">
+                {item.value}
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+
+      <article class="pt-2">
+        <Content />
+      </article>
+    </div>
+  </BottomLayout>
+</PageLayout>

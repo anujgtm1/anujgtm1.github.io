@@ -2,57 +2,54 @@
 import { type CollectionEntry, getCollection } from "astro:content"
 
 type Props = {
-  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">
+  entry:
+    | CollectionEntry<"blog">
+    | CollectionEntry<"projects">
+    | CollectionEntry<"travel">
 }
 
-// Get the requested entry
 const { entry } = Astro.props
 const { collection } = entry
 const { Content } = await entry.render()
 
-// Get the next and prev entries (modulo to wrap index)
 const items = (await getCollection(collection))
-  .filter(post => !post.data.draft)
+  .filter((item) => !item.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-const index = items.findIndex(x => x.slug === entry.slug)
-const prev = items[(index - 1 + items.length) % items.length]
-const next = items[(index + 1) % items.length]
+
+const index = items.findIndex((item) => item.slug === entry.slug)
+const prev = items.length > 1 ? items[(index - 1 + items.length) % items.length] : null
+const next = items.length > 1 ? items[(index + 1) % items.length] : null
 ---
 
-<div>
-  <article>
-    <Content/>
+<div class="space-y-12">
+  <article class="pt-4">
+    <Content />
   </article>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-    <a href={`/${prev.collection}/${prev.slug}`} class="group p-4 gap-3 flex items-center border rounded-lg hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 blend">
-      <div class="order-2 w-full h-full group-hover:text-black group-hover:dark:text-white blend">
-        <div class="flex flex-wrap gap-2">
-          <div class="text-sm uppercase">
-            Prev
-          </div>
-        </div>
-        <div class="font-semibold mt-3 text-black dark:text-white">
+
+  {prev && next && (
+    <nav aria-label="Related entries" class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-border pt-8">
+      <a
+        href={`/${prev.collection}/${prev.slug}/`}
+        class="editorial-card group flex flex-col justify-between gap-2 rounded-lg border border-border bg-surface-elevated p-5 hover:border-accent"
+      >
+        <span class="text-xs font-mono uppercase tracking-wider text-ink-muted">
+          ← Previous
+        </span>
+        <span class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
           {prev.data.title}
-        </div>
-      </div>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="order-1 stroke-current group-hover:stroke-black group-hover:dark:stroke-white rotate-180">
-        <line x1="5" y1="12" x2="19" y2="12" class="scale-x-0 group-hover:scale-x-100 translate-x-4 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-        <polyline points="12 5 19 12 12 19" class="translate-x-0 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-      </svg>
-    </a>
-    <a href={`/${next.collection}/${next.slug}`} class="group p-4 gap-3 flex items-center border rounded-lg hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 transition-colors duration-300 ease-in-out">
-      <div class="w-full h-full text-right group-hover:text-black group-hover:dark:text-white blend">
-        <div class="text-sm uppercase">
-          Next
-        </div>
-        <div class="font-semibold mt-3 text-black dark:text-white">
+        </span>
+      </a>
+      <a
+        href={`/${next.collection}/${next.slug}/`}
+        class="editorial-card group flex flex-col justify-between gap-2 rounded-lg border border-border bg-surface-elevated p-5 text-start sm:text-end hover:border-accent"
+      >
+        <span class="text-xs font-mono uppercase tracking-wider text-ink-muted">
+          Next →
+        </span>
+        <span class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
           {next.data.title}
-        </div>
-      </div>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-current group-hover:stroke-black group-hover:dark:stroke-white">
-        <line x1="5" y1="12" x2="19" y2="12" class="scale-x-0 group-hover:scale-x-100 translate-x-4 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-        <polyline points="12 5 19 12 12 19" class="translate-x-0 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-      </svg>
-    </a>
-  </div>
+        </span>
+      </a>
+    </nav>
+  )}
 </div>

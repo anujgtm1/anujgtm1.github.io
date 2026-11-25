@@ -1,0 +1,312 @@
+media:
+  input: public/images/uploads
+  output: /images/uploads
+
+content:
+  - name: blog
+    label: Blog & Short Notes
+    type: collection
+    path: src/content/blog
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, date, draft]
+      primary: title
+      sort: [date]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: summary
+        label: One-line Summary
+        type: text
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: tags
+        label: Tags
+        type: string
+        list: true
+        default: []
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Content
+        type: rich-text
+
+  - name: books
+    label: Bookshelf & Marginalia
+    type: collection
+    path: src/content/books
+    filename: "{primary}.md"
+    view:
+      fields: [title, author, status, dateRead]
+      primary: title
+      sort: [dateRead, title]
+      default:
+        sort: dateRead
+        order: desc
+    fields:
+      - name: title
+        label: Book Title
+        type: string
+        required: true
+      - name: author
+        label: Author
+        type: string
+        required: true
+      - name: status
+        label: Shelf Status
+        type: select
+        required: true
+        default: finished
+        options:
+          values: [reading, favorite, finished, queued]
+      - name: summary
+        label: Quick Take (1-2 sentences)
+        type: text
+        required: true
+      - name: isbn
+        label: ISBN-10 or ISBN-13 (auto-fetches cover)
+        type: string
+        required: false
+      - name: coverUrl
+        label: Custom Cover Image (optional)
+        type: image
+        required: false
+      - name: dateRead
+        label: Date Finished (optional)
+        type: date
+        required: false
+      - name: yearRead
+        label: Year Read Override (optional)
+        type: number
+        required: false
+      - name: rating
+        label: Rating 1-5 (optional)
+        type: number
+        required: false
+      - name: pages
+        label: Pages (optional)
+        type: number
+        required: false
+      - name: spineTheme
+        label: Archival Cloth Color
+        type: select
+        required: false
+        default: charcoal
+        options:
+          values: [burgundy, forest, navy, ochre, terracotta, slate, charcoal, plum]
+      - name: quote
+        label: Favorite Quote (optional)
+        type: text
+        required: false
+      - name: tags
+        label: Tags (optional)
+        type: string
+        list: true
+        required: false
+        default: []
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Marginalia / Quick Notes
+        type: rich-text
+
+  - name: travel
+    label: Travel Atlas
+    type: collection
+    path: src/content/travel
+    filename: "{primary}.md"
+    view:
+      fields: [city, country, stampCode, date]
+      primary: city
+      sort: [date]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Field Log Title
+        type: string
+        required: true
+      - name: city
+        label: City / Place
+        type: string
+        required: true
+      - name: country
+        label: Country
+        type: string
+        required: true
+      - name: region
+        label: Region
+        type: select
+        required: true
+        options:
+          values: ["North America", "Europe", "Asia", "South America", "Africa", "Oceania"]
+      - name: stampCode
+        label: Stamp Code (e.g. HND, KEF, ZRH)
+        type: string
+        required: true
+      - name: date
+        label: Trip Date
+        type: date
+        required: true
+      - name: lat
+        label: Latitude (-90 to 90)
+        type: number
+        required: true
+      - name: lng
+        label: Longitude (-180 to 180)
+        type: number
+        required: true
+      - name: summary
+        label: Summary
+        type: text
+        required: true
+      - name: highlights
+        label: Highlights
+        type: string
+        list: true
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Field Notes
+        type: rich-text
+
+  - name: projects
+    label: Projects
+    type: collection
+    path: src/content/projects
+    filename: "{primary}.md"
+    view:
+      fields: [title, status, date]
+      primary: title
+      sort: [date]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Project Name
+        type: string
+        required: true
+      - name: summary
+        label: Summary
+        type: text
+        required: true
+      - name: date
+        label: Date
+        type: date
+        required: true
+      - name: status
+        label: Status
+        type: select
+        default: shipped
+        options:
+          values: [active, shipped, research, archived]
+      - name: role
+        label: Role
+        type: string
+        required: false
+      - name: tags
+        label: Tech Stack / Tags
+        type: string
+        list: true
+      - name: demoUrl
+        label: Live URL
+        type: string
+        required: false
+      - name: repoUrl
+        label: GitHub Repository URL
+        type: string
+        required: false
+      - name: featured
+        label: Featured
+        type: boolean
+        default: false
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Engineering Dossier
+        type: rich-text
+
+  - name: work
+    label: Work History
+    type: collection
+    path: src/content/work
+    filename: "{primary}.md"
+    view:
+      fields: [company, role, dateStart]
+      primary: company
+      sort: [dateStart]
+    fields:
+      - name: company
+        label: Company / Institution
+        type: string
+        required: true
+      - name: role
+        label: Role
+        type: string
+        required: true
+      - name: location
+        label: Location
+        type: string
+        required: false
+      - name: dateStart
+        label: Start Date
+        type: date
+        required: true
+      - name: dateEnd
+        label: End Date (or "Now")
+        type: string
+        required: true
+      - name: body
+        label: Description
+        type: rich-text
+
+  - name: now
+    label: Now Page (/now)
+    type: file
+    path: src/content/now/current.md
+    fields:
+      - name: updatedAt
+        label: Last Updated
+        type: date
+        required: true
+      - name: location
+        label: Current Location
+        type: string
+        required: true
+      - name: currentlyReading
+        label: Currently Reading
+        type: string
+        required: true
+      - name: currentlyBuilding
+        label: Currently Building
+        type: string
+        required: true
+      - name: nextTrip
+        label: Next Trip
+        type: string
+        required: true
+      - name: listeningOrThinking
+        label: On My Mind
+        type: string
+        required: true
+      - name: body
+        label: Full /now Notes
+        type: rich-text

@@ -1,25 +1,46 @@
-type Props = {
-    onSearchInput: (e: Event) => void;
-    query: () => string;
-    setQuery: (value: string) => void;
-    placeholderText: string;
-};
+import type { JSX } from "solid-js"
 
-export default function SearchBar({ onSearchInput, query, setQuery, placeholderText }: Props) {
-    return (<div class="relative">
-        <svg class="absolute size-6 left-2 top-[0.45rem] stroke-neutral-400 dark:stroke-neutral-500 pointer-events-none">
-            <use href={`/ui.svg#search`} />
-        </svg>
-        <input name="search" type="text" value={query()} onInput={onSearchInput} autocomplete="off" spellcheck={false} placeholder={placeholderText} class="w-full px-10 py-1.5 rounded outline-none placeholder-neutral-400 dark:placeholder-neutral-500 text-black dark:text-white bg-black/5 dark:bg-white/10 hover:bg-black/10 hover:dark:bg-white/15 focus:bg-black/10 focus:dark:bg-white/15 border border-black/10 dark:border-white/10 focus:border-black/40 focus:dark:border-white/40" />
-        {query().length > 0 && (
-            <button
-                onClick={() => setQuery("")}
-                class="absolute flex justify-center items-center h-full w-10 right-0 top-0 stroke-neutral-400 dark:stroke-neutral-500 hover:stroke-neutral-600 hover:dark:stroke-neutral-300"
-            >
-                <svg class="size-5">
-                    <use href={`/ui.svg#x`} />
-                </svg>
-            </button>
-        )}
-    </div>)
+type Props = {
+  readonly onSearchInput: JSX.EventHandlerUnion<HTMLInputElement, InputEvent>
+  readonly query: () => string
+  readonly setQuery: (value: string) => void
+  readonly placeholderText: string
+}
+
+export default function SearchBar(props: Props) {
+  return (
+    <div class="relative">
+      <svg
+        class="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 size-4 stroke-ink-muted"
+        aria-hidden="true"
+      >
+        <use href="/ui.svg#search" />
+      </svg>
+
+      <input
+        name="search"
+        type="search"
+        value={props.query()}
+        onInput={props.onSearchInput}
+        autocomplete="off"
+        spellcheck={false}
+        placeholder={props.placeholderText}
+        aria-label={props.placeholderText}
+        class="w-full rounded-lg border border-border bg-surface-elevated py-2.5 pl-10 pr-10 text-sm text-ink placeholder:text-ink-muted focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
+      />
+
+      {props.query().length > 0 && (
+        <button
+          type="button"
+          onClick={() => props.setQuery("")}
+          aria-label="Clear search"
+          class="absolute right-2.5 top-1/2 -translate-y-1/2 inline-flex size-7 items-center justify-center rounded-md text-ink-muted hover:text-ink transition-colors"
+        >
+          <svg class="size-4 stroke-current" aria-hidden="true">
+            <use href="/ui.svg#x" />
+          </svg>
+        </button>
+      )}
+    </div>
+  )
 }

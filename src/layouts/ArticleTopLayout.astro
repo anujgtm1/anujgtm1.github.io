@@ -1,71 +1,125 @@
 ---
 import type { CollectionEntry } from "astro:content"
 import { formatDate, readingTime } from "@lib/utils"
+import { formatCoordinates } from "@lib/atlas"
 
 type Props = {
-  entry: CollectionEntry<"projects"> | CollectionEntry<"blog">
+  entry:
+    | CollectionEntry<"projects">
+    | CollectionEntry<"blog">
+    | CollectionEntry<"travel">
 }
 
 const { entry } = Astro.props
 const { collection, data, body } = entry
 const { title, summary, date } = data
 
+const backLabels: Readonly<Record<Props["entry"]["collection"], string>> = {
+  blog: "Back to all essays",
+  projects: "Back to all projects",
+  travel: "Back to travel atlas",
+}
+
 const demoUrl = collection === "projects" ? data.demoUrl : null
 const repoUrl = collection === "projects" ? data.repoUrl : null
+const projectStatus = collection === "projects" ? data.status : null
+const projectRole = collection === "projects" ? data.role : null
+const tags = collection === "travel" ? data.highlights : data.tags
+const travelMeta =
+  collection === "travel"
+    ? {
+        city: data.city,
+        country: data.country,
+        region: data.region,
+        stampCode: data.stampCode,
+        coords: formatCoordinates({ lat: data.lat, lng: data.lng }),
+      }
+    : null
 ---
 
-<div>
-  <a href={`/${collection}`} class="group w-fit p-1.5 gap-1.5 text-sm flex items-center border rounded hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 transition-colors duration-300 ease-in-out">
-    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-current group-hover:stroke-black group-hover:dark:stroke-white">
-      <line x1="19" y1="12" x2="5" y2="12" class="scale-x-0 group-hover:scale-x-100 translate-x-3 group-hover:translate-x-0 transition-all duration-300 ease-in-out" />
-      <polyline points="12 19 5 12 12 5" class="translate-x-1 group-hover:translate-x-0 transition-all duration-300 ease-in-out" />
-    </svg>
-    <div class="w-full group-hover:text-black group-hover:dark:text-white transition-colors duration-300 ease-in-out">
-      Back to {collection}
-    </div>
+<header class="space-y-6 border-b border-border pb-8">
+  <a
+    href={`/${collection}`}
+    class="inline-flex w-fit items-center gap-2 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
+  >
+    <span aria-hidden="true">←</span>
+    <span>{backLabels[collection]}</span>
   </a>
-  <div class="flex flex-wrap text-sm uppercase mt-12 gap-3 opacity-75">
-    <div class="flex items-center gap-2">
-      <svg class="size-5 stroke-current">
-        <use href="/ui.svg#calendar"/>
-      </svg>
-      {formatDate(date)}
+
+  <div class="space-y-4">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2 text-xs font-mono uppercase tracking-wider text-ink-muted">
+      <time datetime={date.toISOString()}>{formatDate(date)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readingTime(body)}</span>
+      {projectStatus && (
+        <>
+          <span aria-hidden="true">·</span>
+          <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
+            {projectStatus}
+          </span>
+        </>
+      )}
+      {travelMeta && (
+        <>
+          <span aria-hidden="true">·</span>
+          <span class="rounded bg-accent-soft px-2 py-0.5 text-accent font-medium">
+            {travelMeta.stampCode} · {travelMeta.city}, {travelMeta.country}
+          </span>
+          <span aria-hidden="true">·</span>
+          <span>{travelMeta.coords}</span>
+        </>
+      )}
     </div>
-    <div class="flex items-center gap-2">
-      <svg class="size-5 stroke-current">
-        <use href="/ui.svg#book-open"/>
-      </svg>
-      {readingTime(body)}
+
+    <h1 class="editorial-title text-ink">
+      {title}
+    </h1>
+
+    <p class="max-w-2xl text-lg text-ink-muted leading-relaxed">
+      {summary}
+    </p>
+
+    {projectRole && (
+      <p class="text-sm font-mono text-ink-muted">
+        {projectRole}
+      </p>
+    )}
+  </div>
+
+  {tags.length > 0 && (
+    <ul class="flex flex-wrap gap-2" aria-label="Topics">
+      {tags.map((tag) => (
+        <li class="rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono text-ink-muted">
+          {tag}
+        </li>
+      ))}
+    </ul>
+  )}
+
+  {(demoUrl || repoUrl) && (
+    <div class="flex flex-wrap gap-3 pt-1">
+      {demoUrl && (
+        <a
+          href={demoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
+        >
+          <span>Live site</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      )}
+      {repoUrl && (
+        <a
+          href={repoUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+        >
+          <span>Source repository</span>
+          <span aria-hidden="true">↗</span>
+        </a>
+      )}
     </div>
-  </div>
-  <h1 class="text-3xl font-semibold text-black dark:text-white mt-2">
-    {title}
-  </h1>
-  <div class="mt-1">
-    {summary}
-  </div>
-  {(demoUrl || repoUrl) && 
-  <div class="mt-4 flex flex-wrap gap-2">
-    {demoUrl && 
-      <a href={demoUrl} target="_blank" class="group flex gap-2 items-center px-3 py-1.5 truncate rounded text-xs md:text-sm lg:text-base border border-black/25 dark:border-white/25 hover:bg-black/5 hover:dark:bg-white/15 blend">
-        <svg class="size-4">
-          <use href="/ui.svg#globe" class="fill-current group-hover:fill-black group-hover:dark:fill-white blend"/>
-        </svg>
-        <span class="text-current group-hover:text-black group-hover:dark:text-white blend">
-          See Demo
-        </span>
-      </a>
-    }
-    {repoUrl && 
-      <a href={repoUrl} target="_blank" class="group flex gap-2 items-center px-3 py-1.5 truncate rounded text-xs md:text-sm lg:text-base border border-black/25 dark:border-white/25 hover:bg-black/5 hover:dark:bg-white/15 blend">
-        <svg class="size-4">
-          <use href="/ui.svg#link" class="fill-current group-hover:fill-black group-hover:dark:fill-white blend"/>
-        </svg>
-        <span class="text-current group-hover:text-black group-hover:dark:text-white blend">
-          See Repository
-        </span>
-      </a>
-    }
-  </div> 
-  }
-</div>
+  )}
+</header>

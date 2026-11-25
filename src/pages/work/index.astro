@@ -6,54 +6,73 @@ import BottomLayout from "@layouts/BottomLayout.astro"
 import { WORK } from "@consts"
 
 const collection = await getCollection("work")
-
-collection.sort((a, b) => new Date(b.data.dateStart).getTime() - new Date(a.data.dateStart).getTime())
+collection.sort(
+  (a, b) => new Date(b.data.dateStart).getTime() - new Date(a.data.dateStart).getTime(),
+)
 
 const work = await Promise.all(
   collection.map(async (item) => {
     const { Content } = await item.render()
     return { ...item, Content }
-  })
+  }),
 )
 
-function formatWorkDate(input: Date | string) {
+function formatWorkDate(input: Date | string): string {
   if (typeof input === "string") return input
-
-  const month = input.toLocaleDateString("en-US", {
-    month: "short",
-  })
-
-  const year = new Date(input).getFullYear()
+  const month = input.toLocaleDateString("en-US", { month: "short" })
+  const year = input.getFullYear()
   return `${month} ${year}`
 }
 ---
 
 <PageLayout title={WORK.TITLE} description={WORK.DESCRIPTION}>
-  <TopLayout>
-    <div class="animate page-heading">
-      {WORK.TITLE}
+  <TopLayout size="md">
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">Curriculum Vitae · Timeline</p>
+      <h1 class="editorial-title text-ink">{WORK.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {WORK.DESCRIPTION}
+      </p>
     </div>
   </TopLayout>
-  <BottomLayout>
-    <ul>
-      { 
+
+  <BottomLayout size="md">
+    <ol class="relative border-l border-border pl-6 sm:pl-8 space-y-10">
+      {
         work.map((entry) => (
-          <li class="animate border-b border-black/10 dark:border-white/25 mt-4 py-8 first-of-type:mt-0 first-of-type:pt-0 last-of-type:border-none">
-            <div class="text-sm uppercase mb-4">
-              {formatWorkDate(entry.data.dateStart)} - {formatWorkDate(entry.data.dateEnd)}
+          <li class="relative">
+            <span
+              aria-hidden="true"
+              class="absolute -left-[1.95rem] sm:-left-[2.45rem] top-1.5 size-3 rounded-full border-2 border-bg bg-accent"
+            />
+            <div class="space-y-2">
+              <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono uppercase tracking-wider text-ink-muted">
+                <span>
+                  {formatWorkDate(entry.data.dateStart)} — {formatWorkDate(entry.data.dateEnd)}
+                </span>
+                {entry.data.location && (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <span>{entry.data.location}</span>
+                  </>
+                )}
+              </div>
+
+              <h2 class="font-serif text-2xl font-medium text-ink">
+                {entry.data.company}
+              </h2>
+
+              <p class="text-sm font-semibold text-atlas">
+                {entry.data.role}
+              </p>
+
+              <article class="prose dark:prose-invert pt-1 pb-0">
+                <entry.Content />
+              </article>
             </div>
-            <div class="text-black dark:text-white font-semibold">
-              {entry.data.company}
-            </div>
-            <div class="text-sm font-semibold">
-              {entry.data.role}
-            </div>
-            <article class="prose dark:prose-invert">
-              <entry.Content />
-            </article>
           </li>
         ))
       }
-    </ul>
+    </ol>
   </BottomLayout>
 </PageLayout>

@@ -1,44 +1,55 @@
-import { formatDate, truncateText } from "@lib/utils"
+import { For } from "solid-js"
 import type { CollectionEntry } from "astro:content"
+import { formatDate } from "@lib/utils"
 
 type Props = {
-  entry: CollectionEntry<"blog"> | CollectionEntry<"projects">
-  pill?: boolean
+  readonly entry: CollectionEntry<"blog"> | CollectionEntry<"projects">
+  readonly pill?: boolean
 }
 
-export default function ArrowCard({ entry, pill }: Props) {
+export default function ArrowCard(props: Props) {
   return (
-    <a href={`/${entry.collection}/${entry.slug}`} class="group p-4 gap-3 flex items-center border rounded-lg hover:bg-black/5 hover:dark:bg-white/10 border-black/15 dark:border-white/20 transition-colors duration-300 ease-in-out">
-      <div class="w-full group-hover:text-black group-hover:dark:text-white blend">
-        <div class="flex flex-wrap items-center gap-2">
-          {pill &&
-            <div class="text-sm capitalize px-2 py-0.5 rounded-full border border-black/15 dark:border-white/25">
-              {entry.collection === "blog" ? "post" : "project"}
-            </div>
-          }
-          <div class="text-sm uppercase">
-            {formatDate(entry.data.date)}
-          </div>
-        </div>
-        <div class="font-semibold mt-3 text-black dark:text-white line-clamp-2">
-          {entry.data.title}
+    <a
+      href={`/${props.entry.collection}/${props.entry.slug}/`}
+      class="editorial-card group flex items-center justify-between gap-4 rounded-xl border border-border bg-surface-elevated p-5 hover:border-accent"
+    >
+      <div class="min-w-0 flex-1 space-y-2">
+        <div class="flex flex-wrap items-center gap-2 text-xs font-mono uppercase tracking-wider text-ink-muted">
+          {props.pill && (
+            <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
+              {props.entry.collection === "blog" ? "Essay" : "Project"}
+            </span>
+          )}
+          <time datetime={props.entry.data.date.toISOString()}>
+            {formatDate(props.entry.data.date)}
+          </time>
         </div>
 
-        <div class="text-sm line-clamp-2">
-          {entry.data.summary}
-        </div>
-        <ul class="flex flex-wrap mt-2 gap-1">
-          {entry.data.tags.map((tag: string) => ( // this line has an error; Parameter 'tag' implicitly has an 'any' type.ts(7006)
-            <li class="text-xs uppercase py-0.5 px-2 rounded bg-black/5 dark:bg-white/20 text-black/75 dark:text-white/75">
-              {truncateText(tag, 20)}
-            </li>
-          ))}
+        <h2 class="font-serif text-xl sm:text-2xl font-medium text-ink group-hover:text-accent transition-colors">
+          {props.entry.data.title}
+        </h2>
+
+        <p class="text-sm text-ink-muted leading-relaxed">
+          {props.entry.data.summary}
+        </p>
+
+        <ul class="flex flex-wrap gap-1.5 pt-1">
+          <For each={props.entry.data.tags}>
+            {(tag) => (
+              <li class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
+                {tag}
+              </li>
+            )}
+          </For>
         </ul>
       </div>
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="stroke-current group-hover:stroke-black group-hover:dark:stroke-white">
-        <line x1="5" y1="12" x2="19" y2="12" class="scale-x-0 group-hover:scale-x-100 translate-x-4 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-        <polyline points="12 5 19 12 12 19" class="translate-x-0 group-hover:translate-x-1 transition-all duration-300 ease-in-out" />
-      </svg>
+
+      <span
+        aria-hidden="true"
+        class="shrink-0 font-mono text-lg text-ink-muted group-hover:text-accent transition-colors"
+      >
+        →
+      </span>
     </a>
   )
 }

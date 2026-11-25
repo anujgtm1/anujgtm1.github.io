@@ -1,0 +1,33 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import ArticleTopLayout from "@layouts/ArticleTopLayout.astro"
+import ArticleBottomLayout from "@layouts/ArticleBottomLayout.astro"
+
+export async function getStaticPaths() {
+  const trips = await getCollection("travel")
+  return trips.map((trip) => ({
+    params: { slug: trip.slug },
+    props: trip,
+  }))
+}
+
+type Props = CollectionEntry<"travel">
+const trip = Astro.props
+const { city, country, title, summary } = trip.data
+---
+
+<PageLayout
+  title={`${city}, ${country} — ${title}`}
+  description={summary}
+  showReadingProgress={true}
+>
+  <TopLayout size="md">
+    <ArticleTopLayout entry={trip} />
+  </TopLayout>
+  <BottomLayout size="md">
+    <ArticleBottomLayout entry={trip} />
+  </BottomLayout>
+</PageLayout>

@@ -1,36 +1,45 @@
 import { clsx, type ClassValue } from "clsx"
 import { twMerge } from "tailwind-merge"
 
-export function cn(...inputs: ClassValue[]) {
+export function cn(...inputs: ClassValue[]): string {
   return twMerge(clsx(inputs))
 }
 
-export function formatDate(date: Date) {
+export function formatDate(date: Date): string {
   return Intl.DateTimeFormat("en-US", {
     month: "short",
     day: "2-digit",
-    year: "numeric"
+    year: "numeric",
   }).format(date)
 }
 
-export function readingTime(html: string) {
-  const textOnly = html.replace(/<[^>]+>/g, "")
+export function formatShortDate(date: Date): string {
+  return Intl.DateTimeFormat("en-US", {
+    month: "short",
+    year: "numeric",
+  }).format(date)
+}
+
+export function readingTime(html: string): string {
+  const textOnly = html.replace(/<[^>]+>/g, " ").trim()
+  if (textOnly.length === 0) {
+    return "1 min read"
+  }
   const wordCount = textOnly.split(/\s+/).length
-  const readingTimeMinutes = ((wordCount / 200) + 1).toFixed()
+  const readingTimeMinutes = Math.max(1, Math.round(wordCount / 200))
   return `${readingTimeMinutes} min read`
 }
 
-
 export function truncateText(str: string, maxLength: number): string {
-  const ellipsis = '…';
+  const ellipsis = "…"
 
-  if (str.length <= maxLength) return str;
+  if (str.length <= maxLength) return str
 
-  const trimmed = str.trimEnd();
-  if (trimmed.length <= maxLength) return trimmed;
+  const trimmed = str.trimEnd()
+  if (trimmed.length <= maxLength) return trimmed
 
-  const cutoff = maxLength - ellipsis.length;
-  let sliced = str.slice(0, cutoff).trimEnd();
+  const cutoff = maxLength - ellipsis.length
+  const sliced = str.slice(0, cutoff).trimEnd()
 
-  return sliced + ellipsis;
+  return sliced + ellipsis
 }

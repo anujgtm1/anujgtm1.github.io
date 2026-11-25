@@ -1,5 +1,5 @@
 {
-  "name": "astro-sphere",
+  "name": "anujgtm-site",
   "type": "module",
   "version": "1.0.0",
   "scripts": {
@@ -11,7 +11,11 @@
     "preview:network": "astro dev --host",
     "astro": "astro",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "test:unit": "node --experimental-strip-types --test tests/unit/*.test.ts",
+    "test:e2e": "node --test tests/e2e/site.test.mjs",
+    "test": "npm run test:unit && npm run test:e2e",
+    "import:goodreads": "node --experimental-strip-types scripts/import-goodreads.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.5.6",

@@ -1,29 +1,110 @@
 ---
-import { type CollectionEntry, getCollection } from "astro:content";
-import PageLayout from "@layouts/PageLayout.astro";
-import TopLayout from "@layouts/TopLayout.astro";
-import BottomLayout from "@layouts/BottomLayout.astro";
-import Search from "@components/Search";
-import { SEARCH } from "@consts";
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import Search from "@components/Search"
+import { SEARCH } from "@consts"
+import {
+  normalizeBlogToSearchItem,
+  normalizeBookToSearchItem,
+  normalizeProjectToSearchItem,
+  normalizeTravelToSearchItem,
+} from "@lib/search"
+import { deriveYearRead } from "@lib/bookshelf"
+import { formatShortDate } from "@lib/utils"
+import type { SearchItem } from "@types"
 
-const posts = (await getCollection("blog")).filter((post) => !post.data.draft);
+const [rawPosts, rawProjects, rawBooks, rawTrips] = await Promise.all([
+  getCollection("blog"),
+  getCollection("projects"),
+  getCollection("books"),
+  getCollection("travel"),
+])
 
-const projects = (await getCollection("projects")).filter(
-  (post) => !post.data.draft,
-);
-
-const data = [...posts, ...projects] as CollectionEntry<"blog">[];
+const items: readonly SearchItem[] = [
+  ...rawPosts
+    .filter((post) => !post.data.draft)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .map((post) =>
+      normalizeBlogToSearchItem({
+        slug: post.slug,
+        title: post.data.title,
+        summary: post.data.summary,
+        date: formatShortDate(post.data.date),
+        tags: post.data.tags,
+      }),
+    ),
+  ...rawProjects
+    .filter((project) => !project.data.draft)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .map((project) =>
+      normalizeProjectToSearchItem({
+        slug: project.slug,
+        title: project.data.title,
+        summary: project.data.summary,
+        date: formatShortDate(project.data.date),
+        status: project.data.status,
+        role: project.data.role,
+        tags: project.data.tags,
+        repoUrl: project.data.repoUrl,
+        demoUrl: project.data.demoUrl,
+        featured: project.data.featured,
+      }),
+    ),
+  ...rawBooks
+    .filter((book) => !book.data.draft)
+    .map((book) =>
+      normalizeBookToSearchItem({
+        slug: book.slug,
+        title: book.data.title,
+        author: book.data.author,
+        status: book.data.status,
+        rating: book.data.rating,
+        dateRead: book.data.dateRead ? formatShortDate(book.data.dateRead) : undefined,
+        yearRead: deriveYearRead(book.data.dateRead, book.data.yearRead),
+        pages: book.data.pages,
+        isbn: book.data.isbn,
+        coverUrl: book.data.coverUrl,
+        tags: book.data.tags,
+        spineTheme: book.data.spineTheme,
+        quote: book.data.quote,
+        summary: book.data.summary,
+        notesHtml: "",
+      }),
+    ),
+  ...rawTrips
+    .filter((trip) => !trip.data.draft)
+    .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
+    .map((trip) =>
+      normalizeTravelToSearchItem({
+        slug: trip.slug,
+        title: trip.data.title,
+        city: trip.data.city,
+        country: trip.data.country,
+        region: trip.data.region,
+        stampCode: trip.data.stampCode,
+        date: formatShortDate(trip.data.date),
+        coordinates: { lat: trip.data.lat, lng: trip.data.lng },
+        summary: trip.data.summary,
+        highlights: trip.data.highlights,
+      }),
+    ),
+]
 ---
 
 <PageLayout title={SEARCH.TITLE} description={SEARCH.DESCRIPTION}>
-  <TopLayout>
-    <div class="animate page-heading">
-      {SEARCH.TITLE}
+  <TopLayout size="md">
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">Unified Index · {items.length} Records</p>
+      <h1 class="editorial-title text-ink">{SEARCH.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {SEARCH.DESCRIPTION}
+      </p>
     </div>
   </TopLayout>
-  <BottomLayout>
-    <div class="animate">
-      <Search client:load data={data} />
-    </div>
+
+  <BottomLayout size="md">
+    <Search client:load items={items} />
   </BottomLayout>
 </PageLayout>
