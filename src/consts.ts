@@ -9,12 +9,13 @@ export const SITE: Site = {
 
 export const BLOG: Page = {
   TITLE: "Blog",
-  DESCRIPTION: "Essays and field notes on software systems, philosophy, books, and craft.",
+  DESCRIPTION: "Short notes on books, software, and places worth remembering.",
 }
 
 export const BOOKS: Page = {
   TITLE: "Bookshelf",
-  DESCRIPTION: "A living shelf of favorite books, marginalia, and what is currently open on my desk.",
+  DESCRIPTION:
+    "A living shelf of books on my desk, favorites, and quick marginalia — funny, interesting, or occasionally grim.",
 }
 
 export const TRAVEL: Page = {

@@ -2,7 +2,6 @@
 title: "Meditations"
 author: "Marcus Aurelius"
 status: "finished"
-rating: 5
 dateRead: "Jan 05 2025"
 pages: 254
 tags:

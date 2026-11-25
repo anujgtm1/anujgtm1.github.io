@@ -2,7 +2,6 @@
 title: "Vagabonding"
 author: "Rolf Potts"
 status: "finished"
-rating: 4
 dateRead: "Aug 09 2024"
 pages: 224
 tags:

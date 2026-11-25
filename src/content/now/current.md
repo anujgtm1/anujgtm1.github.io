@@ -1,22 +1,22 @@
 ---
-updatedAt: "Apr 22 2026"
+updatedAt: "Nov 25 2026"
 location: "United States"
 currentlyReading: "Invisible Cities — Italo Calvino"
-currentlyBuilding: "Data center infrastructure deployment software at Google"
+currentlyBuilding: "Personal CRM (Cloudflare Workers & D1) + iterating on Bookbinder Studio & Travel Planner"
 nextTrip: "Planning an autumn return to Kyoto & Hokkaido"
-listeningOrThinking: "How usable security lessons translate to resilient fleet operations"
+listeningOrThinking: "Short, honest book notes — interesting, funny, or wryly grim"
 ---
 
 Inspired by [nownownow.com](https://nownownow.com), this page is a short snapshot of what is on my desk and on my mind right now.
 
-## Engineering & Work
+## Building
 
-Spending my days at **Google** working on data center infrastructure deployment software — thinking a lot about safe rollouts, state-machine clarity, and making complex systems calmer for the engineers operating them.
+By day I work on data center infrastructure deployment software at **Google**. Outside of work, I am wrapping up **Personal CRM** (shipping soon on Cloudflare Workers and D1 so keeping up with friends and family takes one tap) while polishing **Bookbinder Studio** and **Travel Planner**.
 
 ## Reading & Writing
 
-Slowly savoring Italo Calvino's *Invisible Cities* a few pages at a time, revisiting Camus and Hamming, and building a habit of publishing shorter, more honest field notes right here on the site.
+Reading plenty of books lately and leaning into short, unhurried notes — not formal reviews, just quick marginalia on whatever struck me as funny, sharp, or grimly true. Currently lingering inside Italo Calvino's *Invisible Cities*.
 
 ## On the Horizon
 
-Mapping out the next long trip, keeping the digital bookshelf stocked with real notes instead of star counts, and spending more weekends outdoors away from screens.
+Mapping out the next long trip in Travel Planner, binding a couple of favorite paperbacks with Bookbinder Studio, and spending more weekends outdoors away from screens.

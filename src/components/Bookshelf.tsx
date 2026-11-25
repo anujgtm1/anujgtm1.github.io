@@ -435,7 +435,7 @@ export default function Bookshelf(props: Props) {
                   <Show when={book().notesHtml.length > 0}>
                     <div class="space-y-2">
                       <h2 class="text-xs font-mono uppercase tracking-widest text-ink-muted">
-                        Marginalia &amp; Notes
+                        Marginalia &amp; Quick Notes
                       </h2>
                       <div
                         class="prose dark:prose-invert prose-sm max-w-none text-ink"
