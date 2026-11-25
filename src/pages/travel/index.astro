@@ -32,10 +32,12 @@ const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
 <PageLayout title={TRAVEL.TITLE} description={TRAVEL.DESCRIPTION}>
   <TopLayout>
     <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">Field Atlas · {trips.length} Passport Stamps</p>
+      <p class="editorial-kicker">
+        {trips.length > 0 ? `Field Atlas · ${trips.length} Passport Stamps` : "Field Atlas · Ready for Stamps"}
+      </p>
       <h1 class="editorial-title text-ink">{TRAVEL.TITLE}</h1>
       <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {TRAVEL.DESCRIPTION} Select any pin on the projection or browse the stamps below to read trip logs.
+        {TRAVEL.DESCRIPTION}{trips.length > 0 ? " Select any pin on the projection or browse the stamps below to read trip logs." : ""}
       </p>
     </div>
   </TopLayout>

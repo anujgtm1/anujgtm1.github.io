@@ -27,7 +27,10 @@ const ledgerItems = [
   { label: "Currently Building", value: currentlyBuilding },
   { label: "Next Trip", value: nextTrip },
   { label: "On My Mind", value: listeningOrThinking },
-] as const
+].filter(
+  (item): item is { readonly label: string; readonly value: string } =>
+    typeof item.value === "string" && item.value.trim().length > 0,
+)
 ---
 
 <PageLayout title={NOW.TITLE} description={NOW.DESCRIPTION}>

@@ -15,6 +15,15 @@ const FORBIDDEN_TEMPLATE_STRINGS = [
   "Website build with",
 ]
 
+const FORBIDDEN_DUMMY_STRINGS = [
+  "Invisible Cities",
+  "Late Autumn Alleys",
+  "Why I Keep a Digital Bookshelf",
+  "Field Notes on Building Resilient",
+  "Kyoto & Hokkaido",
+  "HND",
+]
+
 let serverProcess = null
 
 async function waitForServer(url, timeoutMs = 15000) {
@@ -77,10 +86,8 @@ after(async () => {
 const HTML_ROUTES = [
   "/",
   "/blog/",
-  "/blog/2026-04-22-sisyphus-chooses-to-push/",
   "/books/",
   "/travel/",
-  "/travel/tokyo/",
   "/projects/",
   "/projects/bookbinder-studio/",
   "/projects/travel-planner/",
@@ -90,7 +97,7 @@ const HTML_ROUTES = [
   "/search/",
 ]
 
-test("all primary HTML routes return 200, declare dual color-scheme, and contain zero template leftovers", async () => {
+test("all active HTML routes return 200, declare dual color-scheme, and contain zero template or dummy strings", async () => {
   for (const route of HTML_ROUTES) {
     const { status, body } = await fetchText(route)
     assert.equal(status, 200, `Expected 200 for ${route}, got ${status}`)
@@ -99,58 +106,57 @@ test("all primary HTML routes return 200, declare dual color-scheme, and contain
       `Missing color-scheme meta tag on ${route}`,
     )
     assert.ok(body.includes("Anuj Gautam"), `Missing author brand on ${route}`)
-    for (const forbidden of FORBIDDEN_TEMPLATE_STRINGS) {
+    for (const forbidden of [...FORBIDDEN_TEMPLATE_STRINGS, ...FORBIDDEN_DUMMY_STRINGS]) {
       assert.ok(
         !body.includes(forbidden),
-        `Found forbidden template leftover "${forbidden}" on ${route}`,
+        `Found forbidden string "${forbidden}" on ${route}`,
       )
     }
   }
 })
 
-test("homepage renders editorial masthead, real projects, field desk, bookshelf, and travel previews", async () => {
+test("draft blog entries are excluded from static output", async () => {
+  const { status } = await fetchText("/blog/2026-04-22-sisyphus-chooses-to-push/")
+  assert.equal(status, 404, "Draft blog post should not be built into live routes")
+})
+
+test("homepage renders editorial masthead, Day Job field desk card, real projects, and graceful empty teasers", async () => {
   const { body } = await fetchText("/")
   assert.ok(body.includes("Software Engineer"))
-  assert.ok(body.includes("Currently Reading"))
+  assert.ok(body.includes("Day Job"))
+  assert.ok(body.includes("Google · Software Engineer"))
+  assert.ok(body.includes("Currently Building"))
   assert.ok(body.includes("Bookbinder Studio"))
   assert.ok(body.includes("Travel Planner"))
   assert.ok(body.includes("Personal CRM"))
-  assert.ok(body.includes("Invisible Cities"))
-  assert.ok(body.includes("HND"))
+  assert.ok(body.includes("First dispatches on the desk"))
+  assert.ok(body.includes("Stocking the Shelf"))
+  assert.ok(body.includes("Ready for Stamps"))
 })
 
-test("blog preserves Anuj's Sisyphus note and includes reading progress bar on article pages", async () => {
-  const indexRes = await fetchText("/blog/")
-  assert.ok(indexRes.body.includes("Sisyphus chooses to push the boulder"))
-
-  const postRes = await fetchText("/blog/2026-04-22-sisyphus-chooses-to-push/")
-  assert.ok(postRes.body.includes("Sisyphus still chooses push the boulder"))
-  assert.ok(postRes.body.includes('id="reading-progress"'))
+test("blog renders clean Notes Desk empty state when no posts are published", async () => {
+  const { body } = await fetchText("/blog/")
+  assert.ok(body.includes("Dispatches · Notes Desk"))
+  assert.ok(body.includes("First dispatches on the desk"))
 })
 
-test("bookshelf renders year-by-year cover wall, native closedby dialog, and Bookbinder Studio link", async () => {
+test("bookshelf renders warm empty state, native closedby dialog, and Bookbinder Studio link", async () => {
   const { body } = await fetchText("/books/")
-  assert.ok(body.includes("2026"))
-  assert.ok(body.includes("2025"))
-  assert.ok(body.includes("2024"))
-  assert.ok(body.includes("The Myth of Sisyphus"))
+  assert.ok(body.includes("Reading Room · Stocking the Shelf"))
+  assert.ok(body.includes("Reading covers and quick notes from the margins are on the way."))
   assert.ok(body.includes('closedby="any"'))
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
 
-test("travel atlas renders world projection, Tokyo stamp, and Travel Planner companion link", async () => {
-  const indexRes = await fetchText("/travel/")
-  assert.ok(indexRes.body.includes("Archival World Projection"))
-  assert.ok(indexRes.body.includes("Tokyo"))
-  assert.ok(indexRes.body.includes("HND"))
-  assert.ok(indexRes.body.includes("https://travel.anujgtm.com"))
-
-  const tokyoRes = await fetchText("/travel/tokyo/")
-  assert.ok(tokyoRes.body.includes("Late Autumn Alleys"))
-  assert.ok(tokyoRes.body.includes("35.68° N, 139.65° E"))
+test("travel atlas renders world projection, empty passport inspector, and Travel Planner companion link", async () => {
+  const { body } = await fetchText("/travel/")
+  assert.ok(body.includes("Field Atlas · Ready for Stamps"))
+  assert.ok(body.includes("Archival World Projection"))
+  assert.ok(body.includes("No stamps logged yet"))
+  assert.ok(body.includes("https://travel.anujgtm.com"))
 })
 
-test("projects and work showcase Anuj's authentic engineering history and real builds", async () => {
+test("projects, project dossiers, work, and /now showcase Anuj's real engineering history and builds", async () => {
   const projectsRes = await fetchText("/projects/")
   assert.ok(projectsRes.body.includes("Bookbinder Studio"))
   assert.ok(projectsRes.body.includes("https://anujgtm.com/Bookbinder/"))
@@ -159,20 +165,33 @@ test("projects and work showcase Anuj's authentic engineering history and real b
   assert.ok(projectsRes.body.includes("Personal CRM"))
   assert.ok(projectsRes.body.includes("https://github.com/anujgtm1/personal-crm"))
 
+  const dossierRes = await fetchText("/projects/bookbinder-studio/")
+  assert.ok(dossierRes.body.includes('id="reading-progress"'))
+
   const workRes = await fetchText("/work/")
   assert.ok(workRes.body.includes("Google"))
   assert.ok(workRes.body.includes("University of Illinois"))
   assert.ok(workRes.body.includes("Facebook"))
   assert.ok(workRes.body.includes("University of Tennessee"))
+
+  const nowRes = await fetchText("/now/")
+  assert.ok(nowRes.body.includes("Personal CRM"))
+  assert.ok(nowRes.body.includes("Google"))
+  assert.ok(!nowRes.body.includes("Currently Reading"))
+  assert.ok(!nowRes.body.includes("Next Trip"))
 })
 
-test("rss.xml returns valid XML with canonical links for blog, travel, and projects", async () => {
+test("rss.xml returns valid XML containing real projects and zero dummy or draft entries", async () => {
   const { status, body } = await fetchText("/rss.xml")
   assert.equal(status, 200)
   assert.ok(body.includes("<rss"))
-  assert.ok(body.includes("/blog/2026-04-22-sisyphus-chooses-to-push/"))
-  assert.ok(body.includes("/travel/tokyo/"))
   assert.ok(body.includes("/projects/bookbinder-studio/"))
+  assert.ok(body.includes("/projects/travel-planner/"))
+  assert.ok(body.includes("/projects/personal-crm/"))
+  assert.ok(!body.includes("sisyphus-chooses-to-push"))
+  for (const forbidden of FORBIDDEN_DUMMY_STRINGS) {
+    assert.ok(!body.includes(forbidden), `Found dummy string "${forbidden}" in /rss.xml`)
+  }
 })
 
 test("Pages CMS config (.pages.yml) exists and configures all collections", () => {

@@ -46,7 +46,11 @@ export default function TravelAtlas(props: Props) {
         <div class="lg:col-span-8 rounded-xl border border-border bg-surface-elevated p-4 sm:p-5 space-y-3">
           <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono uppercase tracking-wider text-ink-muted">
             <span>Archival World Projection</span>
-            <span>{filteredTrips().length} Stamped Destinations</span>
+            <span>
+              {props.trips.length > 0
+                ? `${filteredTrips().length} Stamped Destinations`
+                : "Ready for Stamps"}
+            </span>
           </div>
 
           <div class="relative w-full aspect-[2/1] overflow-hidden rounded-lg border border-border bg-surface">
@@ -165,7 +169,69 @@ export default function TravelAtlas(props: Props) {
         </div>
 
         {/* Active Stamp Inspector Card */}
-        <Show when={activeTrip()}>
+        <Show
+          when={activeTrip()}
+          fallback={
+            <aside
+              aria-label="Passport stamp inspector"
+              class="lg:col-span-4 rounded-xl border border-dashed border-border bg-surface-elevated p-6 space-y-5"
+            >
+              <div class="flex items-start justify-between gap-4">
+                <div class="space-y-1">
+                  <p class="text-xs font-mono uppercase tracking-widest text-atlas">
+                    Passport Inspector
+                  </p>
+                  <h2 class="font-serif text-2xl font-medium text-ink">
+                    Ready for Stamps
+                  </h2>
+                </div>
+
+                <svg
+                  viewBox="0 0 88 88"
+                  class="size-16 shrink-0 text-ink-muted/50 -rotate-6"
+                  aria-hidden="true"
+                >
+                  <circle
+                    cx="44"
+                    cy="44"
+                    r="39"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.75"
+                    stroke-dasharray="4 3"
+                  />
+                  <circle
+                    cx="44"
+                    cy="44"
+                    r="32"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1"
+                  />
+                  <text
+                    x="44"
+                    y="48"
+                    text-anchor="middle"
+                    fill="currentColor"
+                    font-size="11"
+                    font-family="JetBrains Mono, monospace"
+                    letter-spacing="1.5"
+                  >
+                    ---
+                  </text>
+                </svg>
+              </div>
+
+              <div class="rounded-md border border-border bg-surface px-3 py-2 font-mono text-xs text-ink-muted">
+                Awaiting first coordinates
+              </div>
+
+              <p class="text-sm text-ink-muted leading-relaxed">
+                No stamps logged yet — coordinates and trip notes will appear here as journeys are added.
+              </p>
+            </aside>
+          }
+        >
           {(trip) => (
             <aside
               aria-label="Selected destination stamp"
@@ -269,7 +335,8 @@ export default function TravelAtlas(props: Props) {
       </div>
 
       {/* Passport Stamp Collection Grid */}
-      <section class="space-y-5" aria-labelledby="passport-stamps-heading">
+      <Show when={props.trips.length > 0}>
+        <section class="space-y-5" aria-labelledby="passport-stamps-heading">
         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-4">
           <h2 id="passport-stamps-heading" class="font-serif text-2xl font-medium text-ink">
             Passport Stamp Collection
@@ -359,7 +426,8 @@ export default function TravelAtlas(props: Props) {
             }}
           </For>
         </div>
-      </section>
+        </section>
+      </Show>
     </div>
   )
 }

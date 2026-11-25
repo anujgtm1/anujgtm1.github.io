@@ -56,6 +56,19 @@ const trips = rawTrips
 
 const latestTrip = trips[0]
 const previewTrips = trips.slice(0, 4)
+
+const showDayJobCard = !currentlyReadingBook && !latestTrip
+const fieldDeskCount =
+  (currentlyReadingBook ? 1 : 0) +
+  (latestTrip ? 1 : 0) +
+  (showDayJobCard ? 1 : 0) +
+  2
+const fieldDeskGridClass =
+  fieldDeskCount >= 4
+    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
+    : fieldDeskCount === 3
+      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
+      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
 ---
 
 <PageLayout title={SITE.TITLE} description={SITE.DESCRIPTION}>
@@ -121,7 +134,26 @@ const previewTrips = trips.slice(0, 4)
         </a>
       </div>
 
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div class={`grid ${fieldDeskGridClass} gap-4`}>
+        {showDayJobCard && (
+          <a
+            href="/work"
+            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
+          >
+            <span class="text-xs font-mono uppercase tracking-widest text-atlas">
+              Day Job
+            </span>
+            <div class="space-y-1">
+              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
+                Google · Software Engineer
+              </p>
+              <p class="text-xs text-ink-muted">
+                Data center infrastructure deployment software
+              </p>
+            </div>
+          </a>
+        )}
+
         {currentlyReadingBook && (
           <a
             href={`/books/#book-${currentlyReadingBook.slug}`}
@@ -212,40 +244,51 @@ const previewTrips = trips.slice(0, 4)
         </a>
       </div>
 
-      <ul class="divide-y divide-border border-y border-border">
-        {
-          posts.map((post) => (
-            <li>
-              <a
-                href={`/blog/${post.slug}/`}
-                class="group py-6 flex flex-col md:flex-row md:items-baseline justify-between gap-3 md:gap-8 hover:bg-surface/40 px-2 -mx-2 rounded-lg transition-colors"
-              >
-                <div class="space-y-1.5 max-w-2xl">
-                  <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink group-hover:text-accent transition-colors">
-                    {post.data.title}
-                  </h3>
-                  <p class="text-sm text-ink-muted leading-relaxed">
-                    {post.data.summary}
-                  </p>
-                  <div class="flex flex-wrap gap-1.5 pt-1">
-                    {post.data.tags.map((tag) => (
-                      <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
-                        {tag}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-                <div class="flex md:flex-col md:items-end gap-2 shrink-0 text-xs font-mono text-ink-muted">
-                  <time datetime={post.data.date.toISOString()}>
-                    {formatDate(post.data.date)}
-                  </time>
-                  <span>{readingTime(post.body)}</span>
-                </div>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
+      {
+        posts.length > 0 ? (
+          <ul class="divide-y divide-border border-y border-border">
+            {
+              posts.map((post) => (
+                <li>
+                  <a
+                    href={`/blog/${post.slug}/`}
+                    class="group py-6 flex flex-col md:flex-row md:items-baseline justify-between gap-3 md:gap-8 hover:bg-surface/40 px-2 -mx-2 rounded-lg transition-colors"
+                  >
+                    <div class="space-y-1.5 max-w-2xl">
+                      <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink group-hover:text-accent transition-colors">
+                        {post.data.title}
+                      </h3>
+                      <p class="text-sm text-ink-muted leading-relaxed">
+                        {post.data.summary}
+                      </p>
+                      <div class="flex flex-wrap gap-1.5 pt-1">
+                        {post.data.tags.map((tag) => (
+                          <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                    <div class="flex md:flex-col md:items-end gap-2 shrink-0 text-xs font-mono text-ink-muted">
+                      <time datetime={post.data.date.toISOString()}>
+                        {formatDate(post.data.date)}
+                      </time>
+                      <span>{readingTime(post.body)}</span>
+                    </div>
+                  </a>
+                </li>
+              ))
+            }
+          </ul>
+        ) : (
+          <div class="rounded-xl border border-dashed border-border bg-surface/55 p-8 sm:p-10 space-y-2">
+            <p class="editorial-kicker text-accent">Notes Desk</p>
+            <p class="font-serif text-xl sm:text-2xl font-medium text-ink">
+              First dispatches on the desk — short notes on books, software, and places coming soon.
+            </p>
+          </div>
+        )
+      }
     </Container>
   </section>
 
@@ -357,56 +400,72 @@ const previewTrips = trips.slice(0, 4)
               href="/books"
               class="text-xs font-mono uppercase tracking-wider text-accent hover:underline underline-offset-4 shrink-0"
             >
-              All {books.length} →
+              {books.length > 0 ? `All ${books.length} →` : "Visit shelf →"}
             </a>
           </div>
 
-          <div>
-            <div class="flex items-end justify-start gap-2 overflow-x-auto pt-4 pb-0 px-2">
-              {
-                featuredSpines.map((book) => {
-                  const palette = SPINE_PALETTES[book.spineTheme]
-                  return (
-                    <a
-                      href={`/books/#book-${book.slug}`}
-                      aria-label={`${book.title} by ${book.author}`}
-                      class="book-spine-btn shrink-0 flex flex-col items-center justify-between rounded-t border px-1.5 py-2.5"
-                      style={{
-                        "background-color": palette.bg,
-                        color: palette.text,
-                        "border-color": palette.border,
-                        "min-inline-size": "44px",
-                        "min-block-size": "168px",
-                      }}
-                    >
-                      <span
-                        aria-hidden="true"
-                        class="w-full h-0.5 rounded-full opacity-75"
-                        style={{ "background-color": palette.band }}
-                      />
-                      <span
-                        class="my-2 font-serif text-xs font-medium tracking-tight"
-                        style={{
-                          "writing-mode": "vertical-rl",
-                          "max-block-size": "112px",
-                          overflow: "hidden",
-                          "text-overflow": "ellipsis",
-                        }}
-                      >
-                        {book.title}
-                      </span>
-                      <span
-                        aria-hidden="true"
-                        class="w-full h-0.5 rounded-full opacity-70"
-                        style={{ "background-color": palette.band }}
-                      />
-                    </a>
-                  )
-                })
-              }
-            </div>
-            <div aria-hidden="true" class="h-2.5 w-full rounded-sm border-b-4 border-border bg-surface" />
-          </div>
+          {
+            featuredSpines.length > 0 ? (
+              <div>
+                <div class="flex items-end justify-start gap-2 overflow-x-auto pt-4 pb-0 px-2">
+                  {
+                    featuredSpines.map((book) => {
+                      const palette = SPINE_PALETTES[book.spineTheme]
+                      return (
+                        <a
+                          href={`/books/#book-${book.slug}`}
+                          aria-label={`${book.title} by ${book.author}`}
+                          class="book-spine-btn shrink-0 flex flex-col items-center justify-between rounded-t border px-1.5 py-2.5"
+                          style={{
+                            "background-color": palette.bg,
+                            color: palette.text,
+                            "border-color": palette.border,
+                            "min-inline-size": "44px",
+                            "min-block-size": "168px",
+                          }}
+                        >
+                          <span
+                            aria-hidden="true"
+                            class="w-full h-0.5 rounded-full opacity-75"
+                            style={{ "background-color": palette.band }}
+                          />
+                          <span
+                            class="my-2 font-serif text-xs font-medium tracking-tight"
+                            style={{
+                              "writing-mode": "vertical-rl",
+                              "max-block-size": "112px",
+                              overflow: "hidden",
+                              "text-overflow": "ellipsis",
+                            }}
+                          >
+                            {book.title}
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            class="w-full h-0.5 rounded-full opacity-70"
+                            style={{ "background-color": palette.band }}
+                          />
+                        </a>
+                      )
+                    })
+                  }
+                </div>
+                <div aria-hidden="true" class="h-2.5 w-full rounded-sm border-b-4 border-border bg-surface" />
+              </div>
+            ) : (
+              <div class="rounded-lg border border-dashed border-border bg-surface/60 p-5 space-y-2">
+                <p class="text-xs font-mono uppercase tracking-widest text-accent">
+                  Stocking the Shelf
+                </p>
+                <p class="font-serif text-base font-medium text-ink">
+                  2024–2026 reading covers &amp; quick marginalia on the way.
+                </p>
+                <p class="text-xs text-ink-muted leading-relaxed">
+                  Recent reads, favorites, and short margin notes will appear here as volumes are shelved.
+                </p>
+              </div>
+            )
+          }
         </div>
 
         <!-- Mini Passport Stamps Teaser -->
@@ -424,31 +483,47 @@ const previewTrips = trips.slice(0, 4)
             </a>
           </div>
 
-          <div class="grid grid-cols-2 gap-3">
-            {
-              previewTrips.map((trip) => (
-                <a
-                  href={`/travel/${trip.slug}/`}
-                  class="editorial-card group rounded-lg border border-border bg-surface/65 p-3.5 space-y-1.5 hover:border-accent"
-                >
-                  <div class="flex items-center justify-between gap-2">
-                    <span class="rounded bg-accent-soft px-2 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-accent">
-                      {trip.data.stampCode}
-                    </span>
-                    <span class="font-mono text-[11px] text-ink-muted">
-                      {formatShortDate(trip.data.date)}
-                    </span>
-                  </div>
-                  <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors">
-                    {trip.data.city}
-                  </p>
-                  <p class="font-mono text-[10px] text-ink-muted truncate">
-                    {formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng })}
-                  </p>
-                </a>
-              ))
-            }
-          </div>
+          {
+            previewTrips.length > 0 ? (
+              <div class="grid grid-cols-2 gap-3">
+                {
+                  previewTrips.map((trip) => (
+                    <a
+                      href={`/travel/${trip.slug}/`}
+                      class="editorial-card group rounded-lg border border-border bg-surface/65 p-3.5 space-y-1.5 hover:border-accent"
+                    >
+                      <div class="flex items-center justify-between gap-2">
+                        <span class="rounded bg-accent-soft px-2 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-accent">
+                          {trip.data.stampCode}
+                        </span>
+                        <span class="font-mono text-[11px] text-ink-muted">
+                          {formatShortDate(trip.data.date)}
+                        </span>
+                      </div>
+                      <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors">
+                        {trip.data.city}
+                      </p>
+                      <p class="font-mono text-[10px] text-ink-muted truncate">
+                        {formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng })}
+                      </p>
+                    </a>
+                  ))
+                }
+              </div>
+            ) : (
+              <div class="rounded-lg border border-dashed border-border bg-surface/60 p-5 space-y-2">
+                <p class="text-xs font-mono uppercase tracking-widest text-atlas">
+                  Ready for Stamps
+                </p>
+                <p class="font-serif text-base font-medium text-ink">
+                  Stamped coordinates &amp; trip notes coming soon.
+                </p>
+                <p class="text-xs text-ink-muted leading-relaxed">
+                  The archival world projection is live on the Travel Atlas page, ready for the first field logs.
+                </p>
+              </div>
+            )
+          }
         </div>
       </div>
     </Container>
