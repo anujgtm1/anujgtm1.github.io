@@ -29,7 +29,7 @@ export type NaturalEarthGraticule = {
 
 /**
  * Natural Earth I forward projection (Tom Patterson, 2012) matching
- * `src/data/worldCountries.ts` and `src/data/usStatesWorld.ts` pixel-for-pixel.
+ * `src/data/worldCountries.ts` pixel-for-pixel.
  */
 export function projectNaturalEarth(coords: Coordinates): MapPoint {
   const phi = Math.max(WORLD_NE_LAT_MIN, Math.min(WORLD_NE_LAT_MAX, coords.lat)) * DEG_TO_RAD

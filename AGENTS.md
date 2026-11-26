@@ -37,7 +37,7 @@ This repository builds Anuj Gautam's personal editorial field journal, interacti
 | **Site Metadata, Nav & Socials** | `src/consts.ts` (`SITE`, page titles/descriptions, `LINKS`, `SOCIALS`), `src/components/Header.astro`, `src/components/Footer.astro` |
 | **Homepage & Field Desk** | `src/pages/index.astro` |
 | **Bookshelf** | `src/pages/books/index.astro`, `src/components/Bookshelf.tsx`, `src/lib/bookshelf.ts`, `tests/unit/bookshelf.test.ts` |
-| **Travel Atlas** | `src/pages/travel/index.astro`, `src/pages/travel/[...slug].astro`, `src/components/TravelAtlas.tsx`, `src/lib/atlas.ts`, `tests/unit/atlas.test.ts` |
+| **Travel Atlas** | `src/pages/travel/index.astro`, `src/pages/travel/[...slug].astro`, `src/components/UnifiedTravelAtlas.tsx`, `src/components/ParkEmblem.tsx`, `src/data/nationalParks.ts`, `src/data/parkJournal.ts`, `src/data/visitedCountries.ts`, `src/lib/parks.ts`, `src/lib/worldProjection.ts`, `src/lib/atlas.ts`, `tests/unit/parks.test.ts`, `tests/unit/atlas.test.ts` |
 | **Unified Search** | `src/pages/search/index.astro`, `src/components/Search.tsx`, `src/lib/search.ts`, `tests/unit/search.test.ts` |
 | **RSS Feed** | `src/pages/rss.xml.ts`, `src/lib/rss.ts`, `tests/unit/rss.test.ts` |
 | **Goodreads Importer** | `scripts/import-goodreads.mjs`, `src/lib/goodreads.ts`, `tests/unit/goodreads.test.ts` |
