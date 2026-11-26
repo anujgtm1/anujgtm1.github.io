@@ -2,6 +2,11 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import { NATIONAL_PARKS } from "../../src/data/nationalParks.ts"
 import {
+  ALASKA_VOLCANIC_PARK_ARTWORKS,
+  ALL_PARK_ARTWORKS,
+  ALPINE_FORESTS_PARK_ARTWORKS,
+  COASTS_EAST_PARK_ARTWORKS,
+  DESERTS_KARST_PARK_ARTWORKS,
   PARK_ARTWORKS,
   PILOT_PARK_ARTWORKS,
   SOUTHWEST_PARK_ARTWORKS,
@@ -164,29 +169,9 @@ test("Natural Earth I world countries, graticule, and projected park coordinates
   assert.equal(visitedOnly[0]?.id, USA_ISO_ID)
 })
 
-test("Bespoke WPA park artworks cover all 19 pilot + Southwest parks with unique layered geometry and valid palettes", () => {
-  const expectedCodes = [
-    "ARCH",
-    "BIBE",
-    "BLCA",
-    "BRCA",
-    "CANY",
-    "CARE",
-    "CONG",
-    "GRCA",
-    "GUMO",
-    "HAVO",
-    "MEVE",
-    "MORA",
-    "NERI",
-    "PEFO",
-    "SAGU",
-    "VOYA",
-    "WHSA",
-    "WICA",
-    "ZION",
-  ]
-  const parkCodeSet = new Set(NATIONAL_PARKS.map((p) => p.code))
+test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique layered geometry and valid palettes", () => {
+  const expectedCodes = NATIONAL_PARKS.map((p) => p.code).sort()
+  const parkCodeSet = new Set(expectedCodes)
   const validInks = new Set<ParkArtworkInk>([
     "sky-top",
     "sky-bottom",
@@ -204,6 +189,12 @@ test("Bespoke WPA park artworks cover all 19 pilot + Southwest parks with unique
 
   assert.equal(PILOT_PARK_ARTWORKS.length, 8)
   assert.equal(SOUTHWEST_PARK_ARTWORKS.length, 11)
+  assert.equal(DESERTS_KARST_PARK_ARTWORKS.length, 10)
+  assert.equal(ALPINE_FORESTS_PARK_ARTWORKS.length, 11)
+  assert.equal(ALASKA_VOLCANIC_PARK_ARTWORKS.length, 11)
+  assert.equal(COASTS_EAST_PARK_ARTWORKS.length, 12)
+  assert.equal(ALL_PARK_ARTWORKS.length, 63)
+
   const actualCodes = Object.keys(PARK_ARTWORKS).sort()
   assert.deepEqual(actualCodes, expectedCodes)
 
@@ -219,8 +210,8 @@ test("Bespoke WPA park artworks cover all 19 pilot + Southwest parks with unique
     assert.match(spec.accentDark, hexColorRe, `${code} accentDark must be a 6-digit hex pigment`)
     assert.ok(validSkyMoods.has(spec.skyMood), `${code} has invalid skyMood: ${spec.skyMood}`)
     assert.ok(
-      spec.nodes.length >= 14,
-      `${code} must have richly layered geometry (>= 14 nodes), got ${spec.nodes.length}`,
+      spec.nodes.length >= 18,
+      `${code} must have richly layered geometry (>= 18 nodes), got ${spec.nodes.length}`,
     )
 
     for (const node of spec.nodes) {
@@ -243,5 +234,6 @@ test("Bespoke WPA park artworks cover all 19 pilot + Southwest parks with unique
     geometrySignatures.add(signature)
   }
 
+  assert.equal(geometrySignatures.size, 63)
   assert.equal(getParkArtwork("UNKNOWN_CODE"), undefined)
 })
