@@ -56,7 +56,7 @@ export default function BookcaseLayers(props: Props) {
           <button
             type="button"
             aria-expanded={!collapsed()}
-            aria-controls="bookcase-tiers"
+            aria-controls={collapsed() ? undefined : "bookcase-tiers"}
             onClick={() => setCollapsed((prev) => !prev)}
             class="inline-flex items-center rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
           >

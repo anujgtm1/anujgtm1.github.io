@@ -90,6 +90,7 @@ export default function PhotoGallery(props: Props) {
     if (dialogRef) {
       dialogRef.returnValue = ""
     }
+    setFailedLightboxUrl(null)
     setSelectedSlug(null)
   }
 
@@ -238,7 +239,7 @@ export default function PhotoGallery(props: Props) {
                 const isPriorityFrame = () => index() < 2
 
                 return (
-                  <article class="photo-masonry-item">
+                  <figure class="photo-masonry-item">
                     <button
                       type="button"
                       id={`photo-${photo.slug}`}
@@ -300,7 +301,7 @@ export default function PhotoGallery(props: Props) {
                         </Show>
                       </div>
                     </button>
-                  </article>
+                  </figure>
                 )
               }}
             </For>
@@ -415,7 +416,10 @@ export default function PhotoGallery(props: Props) {
                         <span>{photo().location}</span>
                       </Show>
                       <Show when={photo().camera}>
-                        <span>· {photo().camera}</span>
+                        <span>
+                          {photo().location ? "· " : ""}
+                          {photo().camera}
+                        </span>
                       </Show>
                     </div>
                   </div>

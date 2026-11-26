@@ -521,6 +521,14 @@ dialog::backdrop {
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
+.editorial-card {
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.photo-card {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .book-spine-btn {
     transition:
@@ -579,14 +587,6 @@ dialog::backdrop {
   .photo-card:focus-visible .photo-card-img {
     transform: scale(1.025);
   }
-}
-
-.editorial-card {
-  transition: border-color 180ms ease, background-color 180ms ease;
-}
-
-.photo-card {
-  transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
 /* Code block copy button */
