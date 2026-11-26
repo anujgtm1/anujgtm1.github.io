@@ -120,7 +120,7 @@ test("draft blog entries are excluded from static output", async () => {
   assert.equal(status, 404, "Draft blog post should not be built into live routes")
 })
 
-test("homepage renders editorial masthead, Day Job field desk card, real projects, and graceful empty teasers", async () => {
+test("homepage renders editorial masthead, Day Job field desk card, real projects, native bookshelf modal, and graceful empty teasers", async () => {
   const { body } = await fetchText("/")
   assert.ok(body.includes("Software Engineer"))
   assert.ok(body.includes("Day Job"))
@@ -132,6 +132,10 @@ test("homepage renders editorial masthead, Day Job field desk card, real project
   assert.ok(body.includes("First dispatches on the desk"))
   assert.ok(body.includes("Stocking the Shelf"))
   assert.ok(body.includes("Ready for Stamps"))
+  assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes('aria-labelledby="home-book-dialog-title"'))
+  assert.ok(!body.includes('role="dialog"'))
+  assert.ok(!body.includes('aria-modal='))
 })
 
 test("blog renders clean Notes Desk empty state when no posts are published", async () => {
@@ -145,6 +149,9 @@ test("bookshelf renders warm empty state, native closedby dialog, and Bookbinder
   assert.ok(body.includes("Reading Room · Stocking the Shelf"))
   assert.ok(body.includes("Reading covers and quick notes from the margins are on the way."))
   assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes('aria-labelledby="book-dialog-title"'))
+  assert.ok(!body.includes('role="dialog"'))
+  assert.ok(!body.includes('aria-modal='))
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
 
