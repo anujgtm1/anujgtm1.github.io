@@ -434,6 +434,12 @@ dialog::backdrop {
   backdrop-filter: blur(3px);
 }
 
+dialog.swiss-lightbox:modal {
+  border-radius: 0;
+  inline-size: min(94dvw, 64rem);
+  max-block-size: min(92dvh, 58rem);
+}
+
 /* Editorial Reading Progress Bar (scroll-driven animation + fallback) */
 .reading-progress {
   position: fixed;
@@ -506,10 +512,47 @@ dialog::backdrop {
   .editorial-card:hover {
     transform: translateY(-2px);
   }
+
+  .editorial-photo {
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .group:hover .editorial-photo,
+  .editorial-photo:hover {
+    transform: scale(1.028);
+  }
+
+  .editorial-plate {
+    transition:
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 260ms ease,
+      border-color 180ms ease;
+  }
+
+  .group:hover .editorial-plate,
+  .editorial-plate:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 38px -24px rgb(19 18 16 / 0.36);
+  }
 }
 
 .editorial-card {
   transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.editorial-photo-frame {
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px -24px rgb(19 18 16 / 0.32);
+}
+
+.editorial-plate {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.group:hover .editorial-plate,
+.editorial-plate:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 
 /* Code block copy button */

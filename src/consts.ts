@@ -12,6 +12,12 @@ export const BLOG: Page = {
   DESCRIPTION: "Short notes on books, software, and places worth remembering.",
 }
 
+export const PHOTOS: Page = {
+  TITLE: "Photos",
+  DESCRIPTION:
+    "Contact plates and quiet frames from travels, the workshop bench, and everyday walks.",
+}
+
 export const BOOKS: Page = {
   TITLE: "Bookshelf",
   DESCRIPTION:
@@ -26,6 +32,12 @@ export const TRAVEL: Page = {
 export const PROJECTS: Page = {
   TITLE: "Projects",
   DESCRIPTION: "Selected engineering dossiers, research systems, and personal tools.",
+}
+
+export const ABOUT: Page = {
+  TITLE: "About",
+  DESCRIPTION:
+    "Background, engineering chapters, what is currently on my desk, and how to get in touch.",
 }
 
 export const WORK: Page = {
@@ -45,11 +57,11 @@ export const SEARCH: Page = {
 
 export const LINKS: Links = [
   { TEXT: "Blog", HREF: "/blog" },
+  { TEXT: "Photos", HREF: "/photos" },
   { TEXT: "Books", HREF: "/books" },
   { TEXT: "Travel", HREF: "/travel" },
   { TEXT: "Projects", HREF: "/projects" },
-  { TEXT: "Work", HREF: "/work" },
-  { TEXT: "Now", HREF: "/now" },
+  { TEXT: "About", HREF: "/about" },
 ]
 
 export const SOCIALS: Socials = [

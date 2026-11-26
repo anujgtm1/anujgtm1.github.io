@@ -5,14 +5,20 @@ import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
 import TravelAtlas from "@components/TravelAtlas"
 import { TRAVEL } from "@consts"
+import { buildTravelThumbnails } from "@lib/photos"
 import { formatShortDate } from "@lib/utils"
-import type { TravelItem } from "@types"
+import type { PhotoItem, TravelItem } from "@types"
 
-const rawTrips = (await getCollection("travel"))
+const [rawTrips, rawPhotos] = await Promise.all([
+  getCollection("travel"),
+  getCollection("photos"),
+])
+
+const publishedTrips = rawTrips
   .filter((entry) => !entry.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 
-const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
+const trips: readonly TravelItem[] = publishedTrips.map((entry) => ({
   slug: entry.slug,
   title: entry.data.title,
   city: entry.data.city,
@@ -26,7 +32,45 @@ const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
   },
   summary: entry.data.summary,
   highlights: entry.data.highlights,
+  coverImage: entry.data.coverImage,
+  coverImageAlt: entry.data.coverImageAlt,
 }))
+
+const photos: readonly PhotoItem[] = rawPhotos
+  .filter((photo) => !photo.data.draft)
+  .map((photo) => ({
+    slug: photo.slug,
+    title: photo.data.title,
+    image: photo.data.image,
+    alt: photo.data.alt,
+    date: formatShortDate(photo.data.date),
+    dateMs: photo.data.date.getTime(),
+    location: photo.data.location,
+    camera: photo.data.camera,
+    caption: photo.data.caption,
+    category: photo.data.category,
+    featured: photo.data.featured,
+    linkedHref: photo.data.linkedHref,
+    linkedLabel: photo.data.linkedLabel,
+    draft: photo.data.draft,
+  }))
+
+const thumbnails = buildTravelThumbnails(
+  publishedTrips.map((entry) => ({
+    slug: entry.slug,
+    title: entry.data.title,
+    city: entry.data.city,
+    country: entry.data.country,
+    stampCode: entry.data.stampCode,
+    date: formatShortDate(entry.data.date),
+    dateMs: entry.data.date.getTime(),
+    summary: entry.data.summary,
+    coverImage: entry.data.coverImage,
+    coverImageAlt: entry.data.coverImageAlt,
+    draft: entry.data.draft,
+  })),
+  photos,
+)
 ---
 
 <PageLayout title={TRAVEL.TITLE} description={TRAVEL.DESCRIPTION}>
@@ -37,18 +81,18 @@ const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
       </p>
       <h1 class="editorial-title text-ink">{TRAVEL.TITLE}</h1>
       <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {TRAVEL.DESCRIPTION}{trips.length > 0 ? " Select any pin on the projection or browse the stamps below to read trip logs." : ""}
+        {TRAVEL.DESCRIPTION}{trips.length > 0 ? " Select any pin on the projection or browse the dispatches and photo frames below." : ""}
       </p>
     </div>
   </TopLayout>
 
   <BottomLayout>
-    <div class="space-y-12">
-      <TravelAtlas client:load trips={trips} />
+    <div class="space-y-12 pb-8">
+      <TravelAtlas client:load trips={trips} thumbnails={thumbnails} />
 
       <aside
         aria-label="Companion project"
-        class="rounded-xl border border-border bg-surface/75 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        class="rounded-none border border-border bg-surface/50 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
       >
         <div class="space-y-1">
           <p class="editorial-kicker">Companion Trip Tool</p>
@@ -59,21 +103,21 @@ const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
             Built my own map-first workspace for multi-stop routes, shared bookings, and travel expenses.
           </p>
         </div>
-        <div class="flex flex-wrap items-center gap-2 shrink-0">
+        <div class="flex flex-wrap items-center gap-3 shrink-0 font-mono text-xs uppercase tracking-[0.12em]">
           <a
             href="https://travel.anujgtm.com"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
+            class="inline-flex items-center gap-1.5 rounded-none bg-ink px-4 py-2 text-bg hover:bg-accent transition-colors"
           >
-            <span>Open travel.anujgtm.com</span>
-            <span aria-hidden="true">→</span>
+            <span>travel.anujgtm.com</span>
+            <span aria-hidden="true">↗</span>
           </a>
           <a
             href="/projects/travel-planner/"
-            class="inline-flex items-center rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink-muted hover:border-accent hover:text-ink transition-colors"
+            class="inline-flex items-center rounded-none border border-border bg-surface-elevated px-3.5 py-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
           >
-            Project dossier
+            Dossier →
           </a>
         </div>
       </aside>

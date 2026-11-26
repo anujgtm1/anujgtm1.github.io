@@ -3,6 +3,7 @@ import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
+import ProjectVisualPlate from "@components/ProjectVisualPlate.astro"
 import { PROJECTS } from "@consts"
 import { formatShortDate } from "@lib/utils"
 
@@ -13,7 +14,7 @@ const projects = (await getCollection("projects"))
 
 <PageLayout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
   <TopLayout>
-    <div class="space-y-3 border-b border-border pb-8">
+    <div class="space-y-3 pb-2">
       <p class="editorial-kicker">Engineering Dossiers · {projects.length} Builds</p>
       <h1 class="editorial-title text-ink">{PROJECTS.TITLE}</h1>
       <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
@@ -23,86 +24,96 @@ const projects = (await getCollection("projects"))
   </TopLayout>
 
   <BottomLayout>
-    <ol class="space-y-6">
+    <ol class="pb-10">
       {
-        projects.map((project, idx) => (
-          <li class="editorial-card rounded-xl border border-border bg-surface-elevated p-6 sm:p-8 hover:border-accent">
-            <div class="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-6">
-              <div class="space-y-3 max-w-2xl">
-                <div class="flex flex-wrap items-center gap-3 text-xs font-mono uppercase tracking-wider text-ink-muted">
-                  <span class="font-semibold text-accent">0{idx + 1}</span>
-                  <span aria-hidden="true">·</span>
-                  <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
-                    {project.data.status}
-                  </span>
-                  {project.data.role && (
-                    <>
-                      <span aria-hidden="true">·</span>
-                      <span>{project.data.role}</span>
-                    </>
-                  )}
-                  <span aria-hidden="true">·</span>
-                  <time datetime={project.data.date.toISOString()}>
-                    {formatShortDate(project.data.date)}
-                  </time>
-                </div>
-
-                <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-                  <a
-                    href={`/projects/${project.slug}/`}
-                    class="hover:text-accent transition-colors"
-                  >
-                    {project.data.title}
-                  </a>
-                </h2>
-
-                <p class="text-base text-ink-muted leading-relaxed">
-                  {project.data.summary}
-                </p>
-
-                <ul class="flex flex-wrap gap-1.5 pt-1" aria-label="Technologies">
-                  {project.data.tags.map((tag) => (
-                    <li class="rounded border border-border bg-surface px-2.5 py-0.5 text-xs font-mono text-ink-muted">
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div class="flex flex-wrap lg:flex-col items-start lg:items-end gap-2.5 shrink-0">
+        projects.map((project, idx) => {
+          const isReversed = idx % 2 === 1
+          return (
+            <li class="border-t border-border pt-10 pb-12 last:pb-2">
+              <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                 <a
                   href={`/projects/${project.slug}/`}
-                  class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
+                  aria-label={`Open ${project.data.title} engineering dossier`}
+                  class={`group block lg:col-span-7 focus-visible:rounded-none ${
+                    isReversed ? "lg:order-2" : "lg:order-1"
+                  }`}
                 >
-                  <span>Read dossier</span>
-                  <span aria-hidden="true">→</span>
+                  <ProjectVisualPlate slug={project.slug} title={project.data.title} />
                 </a>
-                {project.data.demoUrl && (
-                  <a
-                    href={project.data.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink hover:border-accent hover:text-accent transition-colors"
-                  >
-                    <span>Live site</span>
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                )}
-                {project.data.repoUrl && (
-                  <a
-                    href={project.data.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
-                  >
-                    <span>Repository</span>
-                    <span aria-hidden="true">↗</span>
-                  </a>
-                )}
+
+                <div
+                  class={`lg:col-span-5 space-y-4 ${
+                    isReversed ? "lg:order-1" : "lg:order-2"
+                  }`}
+                >
+                  <div class="flex flex-wrap items-baseline gap-3 text-xs font-mono uppercase tracking-wider text-ink-muted">
+                    <span class="font-serif text-3xl sm:text-4xl font-normal text-ink-muted/60 tabular-nums leading-none">
+                      {String(idx + 1).padStart(2, "0")}
+                    </span>
+                    <span aria-hidden="true" class="h-px w-6 bg-border self-center" />
+                    <span class="text-atlas font-medium">{project.data.status}</span>
+                    {project.data.role && (
+                      <>
+                        <span aria-hidden="true">·</span>
+                        <span>{project.data.role}</span>
+                      </>
+                    )}
+                    <span aria-hidden="true">·</span>
+                    <time datetime={project.data.date.toISOString()}>
+                      {formatShortDate(project.data.date)}
+                    </time>
+                  </div>
+
+                  <h2 class="font-serif text-3xl sm:text-[2.15rem] font-medium text-ink leading-tight">
+                    <a
+                      href={`/projects/${project.slug}/`}
+                      class="hover:text-accent transition-colors"
+                    >
+                      {project.data.title}
+                    </a>
+                  </h2>
+
+                  <p class="text-base text-ink-muted leading-relaxed">
+                    {project.data.summary}
+                  </p>
+
+                  <p class="font-mono text-xs tracking-wide text-ink-muted pt-1">
+                    {project.data.tags.join(" · ")}
+                  </p>
+
+                  <div class="flex flex-wrap items-center gap-6 pt-2">
+                    <a
+                      href={`/projects/${project.slug}/`}
+                      class="text-sm font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+                    >
+                      Read dossier →
+                    </a>
+                    {project.data.demoUrl && (
+                      <a
+                        href={project.data.demoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="font-mono text-xs uppercase tracking-wider text-atlas hover:text-accent transition-colors"
+                      >
+                        Live app ↗
+                      </a>
+                    )}
+                    {project.data.repoUrl && (
+                      <a
+                        href={project.data.repoUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="font-mono text-xs uppercase tracking-wider text-ink-muted hover:text-accent transition-colors"
+                      >
+                        GitHub ↗
+                      </a>
+                    )}
+                  </div>
+                </div>
               </div>
-            </div>
-          </li>
-        ))
+            </li>
+          )
+        })
       }
     </ol>
   </BottomLayout>
