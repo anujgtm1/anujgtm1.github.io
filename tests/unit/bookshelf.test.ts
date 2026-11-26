@@ -8,10 +8,11 @@ import {
   deriveYearRead,
   filterBooks,
   formatRating,
+  formatSpineTitle,
   getAuthorInitials,
   getAvailableYears,
   groupBooksByYear,
-  partitionBookcaseLayers,
+  packBooksIntoShelves,
   renderBookNotesHtml,
   resolveBookCoverUrl,
   sortBooks,
@@ -65,16 +66,137 @@ const sampleBooks: readonly BookItem[] = [
   },
 ]
 
-test("computeSpineMetrics produces deterministic clamped geometry", () => {
-  const thin = computeSpineMetrics(120, "Short")
-  const thick = computeSpineMetrics(1200, "A Remarkably Long Archival Volume About Systems")
+test("computeSpineMetrics produces deterministic non-linear thickness and title-length-independent height variance", () => {
+  const novella = computeSpineMetrics(86, "Animal Farm")
+  const medium = computeSpineMetrics(318, "1984")
+  const thick = computeSpineMetrics(928, "The Brothers Karamazov")
+  const doorstopper = computeSpineMetrics(1796, "Complete Works")
   const fallback = computeSpineMetrics(undefined, "Untitled")
+  const hugeTitle = computeSpineMetrics(
+    300,
+    "A Remarkably Exhaustive Multi-Volume Archival Treatise on Distributed Systems, Consensus, and Modern Computing Infrastructure",
+  )
 
-  assert.deepEqual(thin, computeSpineMetrics(120, "Short"))
-  assert.ok(thin.widthPx >= 44 && thin.widthPx <= 68)
-  assert.ok(thick.widthPx >= 44 && thick.widthPx <= 68)
-  assert.ok(thick.widthPx > thin.widthPx)
-  assert.ok(fallback.heightPx >= 198 && fallback.heightPx <= 264)
+  assert.deepEqual(novella, computeSpineMetrics(86, "Animal Farm"))
+  assert.ok(novella.widthPx >= 34 && novella.widthPx <= 74)
+  assert.ok(medium.widthPx > novella.widthPx)
+  assert.ok(thick.widthPx > medium.widthPx)
+  assert.ok(doorstopper.widthPx >= thick.widthPx && doorstopper.widthPx <= 74)
+
+  // Diminishing marginal width per page (sqrt curve keeps novellas readable without making epics absurd)
+  const smallGrowthPerPage = (medium.widthPx - novella.widthPx) / (318 - 86)
+  const largeGrowthPerPage = (thick.widthPx - medium.widthPx) / (928 - 318)
+  assert.ok(smallGrowthPerPage > largeGrowthPerPage)
+
+  // Realistic height variance across distinct books, never inflated by long subtitles
+  const heights = new Set(
+    [
+      computeSpineMetrics(250, "Dune"),
+      computeSpineMetrics(250, "Sapiens"),
+      computeSpineMetrics(250, "Snow Crash"),
+      computeSpineMetrics(250, "Piranesi"),
+      computeSpineMetrics(250, "The Overstory"),
+    ].map((m) => m.heightPx),
+  )
+  assert.ok(heights.size >= 3)
+  assert.ok(fallback.heightPx >= 192 && fallback.heightPx <= 254)
+  assert.ok(hugeTitle.heightPx >= 192 && hugeTitle.heightPx <= 254)
+  assert.ok(novella.bandOffsetPx >= 14 && novella.bandOffsetPx <= 25)
+})
+
+test("formatSpineTitle keeps short titles intact and prunes long titles cleanly at word boundaries", () => {
+  assert.equal(formatSpineTitle("1984", 192), "1984")
+  assert.equal(formatSpineTitle("  Invisible Cities  ", 220), "Invisible Cities")
+
+  const longTitle =
+    "Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems"
+  const shortSpine = formatSpineTitle(longTitle, 192)
+  const tallSpine = formatSpineTitle(longTitle, 254)
+
+  assert.ok(shortSpine.endsWith("…"))
+  assert.ok(shortSpine.length <= 19)
+  assert.ok(tallSpine.endsWith("…"))
+  assert.ok(tallSpine.length <= 29)
+  assert.ok(tallSpine.length >= shortSpine.length)
+
+  const subtitleBoundary = formatSpineTitle("Sapiens: A Brief History of Humankind", 220)
+  assert.ok(subtitleBoundary.endsWith("…"))
+  assert.ok(!/[:,\-–—/(\s]…$/.test(subtitleBoundary))
+  assert.ok(subtitleBoundary.length <= 24)
+
+  const punctuationOnly = formatSpineTitle(":::::-----:::::-----:::::", 192)
+  assert.ok(punctuationOnly.endsWith("…"))
+  assert.ok(punctuationOnly.length > 1 && punctuationOnly.length <= 19)
+})
+
+test("packBooksIntoShelves separates Currently Reading and packs rows dynamically by container width", () => {
+  const libraryFixture: readonly BookItem[] = [
+    ...sampleBooks,
+    ...Array.from({ length: 12 }, (_, idx) => ({
+      slug: `fixture-${idx + 1}`,
+      title: `Archival Volume ${idx + 1}`,
+      author: "A. Reader",
+      status: "finished" as const,
+      yearRead: 2024,
+      pages: 220 + idx * 70,
+      tags: ["Fiction"],
+      spineTheme: "slate" as const,
+      summary: "Fixture volume for shelf packing tests.",
+      notesHtml: "",
+    })),
+  ]
+
+  const wide = packBooksIntoShelves(libraryFixture, 900, 8)
+  const narrow = packBooksIntoShelves(libraryFixture, 260, 8)
+
+  assert.equal(wide[0]?.kind, "reading")
+  assert.equal(wide[0]?.label, "Currently Reading")
+  assert.deepEqual(
+    wide[0]?.books.map((b) => b.slug),
+    ["invisible-cities"],
+  )
+  assert.equal(wide[1]?.kind, "library")
+  assert.equal(wide[1]?.label, "Shelf 01")
+
+  const wideLibraryCount = wide.filter((s) => s.kind === "library").length
+  const narrowLibraryCount = narrow.filter((s) => s.kind === "library").length
+  assert.ok(narrowLibraryCount > wideLibraryCount)
+
+  // Every packed row with 2+ books must fit within its shelf width budget
+  for (const section of [...wide, ...narrow]) {
+    assert.ok(section.books.length >= 1)
+    const budget = section === wide.find((s) => s === section) ? 900 : 260
+    const rowWidth =
+      section.books.reduce((sum, b) => sum + computeSpineMetrics(b.pages, b.title).widthPx, 0) +
+      Math.max(0, section.books.length - 1) * 8
+    if (section.books.length > 1) {
+      assert.ok(rowWidth <= budget, `${section.label} overflowed ${budget}px (${rowWidth}px)`)
+    }
+  }
+
+  // Always places at least 1 book per shelf even on very narrow widths
+  const ultraNarrow = packBooksIntoShelves(libraryFixture, 120, 8)
+  assert.ok(ultraNarrow.every((section) => section.books.length >= 1))
+  const totalPacked = ultraNarrow.reduce((sum, s) => sum + s.books.length, 0)
+  assert.equal(totalPacked, libraryFixture.length)
+
+  // Multiple reading books across rows get numbered Currently Reading labels
+  const manyReading: readonly BookItem[] = Array.from({ length: 6 }, (_, idx) => ({
+    slug: `reading-${idx + 1}`,
+    title: `Current Read ${idx + 1}`,
+    author: "B. Author",
+    status: "reading" as const,
+    yearRead: null,
+    pages: 800,
+    tags: ["Reading"],
+    spineTheme: "forest" as const,
+    summary: "Currently reading fixture.",
+    notesHtml: "",
+  }))
+  const readingSections = packBooksIntoShelves(manyReading, 200, 8)
+  assert.ok(readingSections.length > 1)
+  assert.equal(readingSections[0]?.label, "Currently Reading · 01")
+  assert.equal(readingSections[1]?.label, "Currently Reading · 02")
 })
 
 test("sortBooks orders reading first, then favorites, then finished by dateRead", () => {
@@ -137,154 +259,9 @@ test("groupBooksByYear and getAvailableYears group reading first and years desce
   assert.equal(deriveYearRead(undefined), null)
 })
 
-function makeBooks(count: number): readonly BookItem[] {
-  return Array.from({ length: count }, (_, idx) => ({
-    slug: `book-${idx + 1}`,
-    title: `Volume ${idx + 1}`,
-    author: `Author ${idx + 1}`,
-    status: "finished" as const,
-    yearRead: 2025,
-    pages: 260 + idx * 10,
-    tags: ["Archive"],
-    spineTheme: "navy" as const,
-    summary: `Summary for volume ${idx + 1}.`,
-    notesHtml: "",
-  }))
-}
-
 test("buildBookHref returns canonical bookshelf hash URL", () => {
   assert.equal(buildBookHref("ddia"), "/books/#book-ddia")
   assert.equal(buildBookHref("the-myth-of-sisyphus"), "/books/#book-the-myth-of-sisyphus")
-})
-
-test("partitionBookcaseLayers handles empty and single-shelf sets (1..5 books)", () => {
-  assert.deepEqual(partitionBookcaseLayers([]), {
-    layers: [],
-    totalLayers: 0,
-    hiddenBookCount: 0,
-  })
-
-  const one = partitionBookcaseLayers(makeBooks(1))
-  assert.equal(one.totalLayers, 1)
-  assert.equal(one.hiddenBookCount, 0)
-  assert.equal(one.layers.length, 1)
-  assert.equal(one.layers[0]?.index, 0)
-  assert.equal(one.layers[0]?.label, "Shelf 01")
-  assert.equal(one.layers[0]?.books.length, 1)
-
-  const five = partitionBookcaseLayers(makeBooks(5))
-  assert.equal(five.totalLayers, 1)
-  assert.equal(five.hiddenBookCount, 0)
-  assert.deepEqual(
-    five.layers.map((layer) => [layer.label, layer.books.length]),
-    [["Shelf 01", 5]],
-  )
-})
-
-test("partitionBookcaseLayers balances 6..12 books cleanly across 2 shelves", () => {
-  const six = partitionBookcaseLayers(makeBooks(6))
-  assert.equal(six.totalLayers, 2)
-  assert.equal(six.hiddenBookCount, 0)
-  assert.deepEqual(
-    six.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 3],
-      ["Shelf 02", 3],
-    ],
-  )
-
-  const seven = partitionBookcaseLayers(makeBooks(7))
-  assert.deepEqual(
-    seven.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 4],
-      ["Shelf 02", 3],
-    ],
-  )
-
-  const twelve = partitionBookcaseLayers(makeBooks(12))
-  assert.deepEqual(
-    twelve.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 6],
-      ["Shelf 02", 6],
-    ],
-  )
-})
-
-test("partitionBookcaseLayers distributes larger sets evenly and supports capped vs expanded layers", () => {
-  const seventeen = partitionBookcaseLayers(makeBooks(17))
-  assert.equal(seventeen.totalLayers, 3)
-  assert.equal(seventeen.hiddenBookCount, 0)
-  assert.deepEqual(
-    seventeen.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 6],
-      ["Shelf 02", 6],
-      ["Shelf 03", 5],
-    ],
-  )
-
-  const capped = partitionBookcaseLayers(makeBooks(25))
-  assert.equal(capped.totalLayers, 4)
-  assert.equal(capped.layers.length, 3)
-  assert.deepEqual(
-    capped.layers.map((layer) => [layer.index, layer.label, layer.books.length]),
-    [
-      [0, "Shelf 01", 7],
-      [1, "Shelf 02", 6],
-      [2, "Shelf 03", 6],
-    ],
-  )
-  assert.equal(capped.hiddenBookCount, 6)
-
-  const expanded = partitionBookcaseLayers(makeBooks(25), {
-    maxVisibleLayers: Number.POSITIVE_INFINITY,
-  })
-  assert.equal(expanded.totalLayers, 4)
-  assert.equal(expanded.layers.length, 4)
-  assert.equal(expanded.hiddenBookCount, 0)
-  assert.deepEqual(
-    expanded.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 7],
-      ["Shelf 02", 6],
-      ["Shelf 03", 6],
-      ["Shelf 04", 6],
-    ],
-  )
-})
-
-test("partitionBookcaseLayers honors custom booksPerShelf and clamps invalid values", () => {
-  const sideFive = partitionBookcaseLayers(makeBooks(5), { booksPerShelf: 5 })
-  assert.equal(sideFive.totalLayers, 1)
-  assert.equal(sideFive.layers[0]?.books.length, 5)
-
-  const sideEleven = partitionBookcaseLayers(makeBooks(11), { booksPerShelf: 5 })
-  assert.equal(sideEleven.totalLayers, 3)
-  assert.deepEqual(
-    sideEleven.layers.map((layer) => [layer.label, layer.books.length]),
-    [
-      ["Shelf 01", 4],
-      ["Shelf 02", 4],
-      ["Shelf 03", 3],
-    ],
-  )
-
-  const narrow = partitionBookcaseLayers(makeBooks(4), { booksPerShelf: 3 })
-  assert.equal(narrow.totalLayers, 2)
-  assert.deepEqual(
-    narrow.layers.map((layer) => layer.books.length),
-    [2, 2],
-  )
-
-  const clamped = partitionBookcaseLayers(makeBooks(10), {
-    booksPerShelf: 0,
-    maxVisibleLayers: Number.POSITIVE_INFINITY,
-  })
-  assert.equal(clamped.totalLayers, 10)
-  assert.equal(clamped.layers[9]?.label, "Shelf 10")
-  assert.equal(clamped.hiddenBookCount, 0)
 })
 
 test("formatRating and getAuthorInitials handle normal and edge inputs", () => {

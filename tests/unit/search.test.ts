@@ -57,8 +57,10 @@ test("normalizers produce typed SearchItem entries with canonical hrefs", () => 
     caption: "Warm morning light across wet cobblestones.",
     date: "Jan 2026",
     dateIso: "2026-01-09T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 0, 9),
     location: "Lisbon, Portugal",
     album: "Streets",
+    category: "travel",
     camera: "Ricoh GR III",
     tags: ["Street"],
   })
@@ -69,6 +71,8 @@ test("normalizers produce typed SearchItem entries with canonical hrefs", () => 
     alt: "Calm tide at dusk",
     date: "Feb 2026",
     dateIso: "2026-02-01T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 1, 1),
+    category: "everyday",
     tags: [],
   })
 

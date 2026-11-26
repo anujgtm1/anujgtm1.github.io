@@ -21,12 +21,17 @@ const photos: readonly PhotoItem[] = sortPhotos(
     caption: entry.data.caption,
     date: formatShortDate(entry.data.date),
     dateIso: entry.data.date.toISOString(),
+    dateMs: entry.data.date.getTime(),
     location: entry.data.location,
     album: entry.data.album,
+    category: entry.data.category,
     camera: entry.data.camera,
     aspectRatio: entry.data.aspectRatio,
     featured: entry.data.featured,
     tags: entry.data.tags,
+    linkedHref: entry.data.linkedHref,
+    linkedLabel: entry.data.linkedLabel,
+    draft: entry.data.draft,
   })),
 )
 
@@ -39,8 +44,8 @@ const albums = buildPhotoAlbums(photos)
       <p class="editorial-kicker">
         {
           photos.length > 0
-            ? `Darkroom · ${albums.length} ${albums.length === 1 ? "Album" : "Albums"} · ${photos.length} ${photos.length === 1 ? "Frame" : "Frames"}`
-            : "Darkroom · Contact Sheets on the Way"
+            ? `Through the Lens · ${albums.length} ${albums.length === 1 ? "Album" : "Albums"} · ${photos.length} ${photos.length === 1 ? "Frame" : "Frames"}`
+            : "Through the Lens · Photo Archive"
         }
       </p>
       <h1 class="editorial-title text-ink">{PHOTOS.TITLE}</h1>

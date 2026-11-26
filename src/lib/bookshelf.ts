@@ -108,21 +108,126 @@ function stableHash(input: string): number {
   return Math.abs(hash)
 }
 
+const MIN_SPINE_PAGES = 60
+const MAX_SPINE_PAGES = 1600
+const MIN_SPINE_SQRT = Math.sqrt(MIN_SPINE_PAGES)
+const MAX_SPINE_SQRT = Math.sqrt(MAX_SPINE_PAGES)
+
 export function computeSpineMetrics(pages: number | undefined, title: string): SpineMetrics {
   const safePages =
     typeof pages === "number" && Number.isFinite(pages) && pages > 0 ? pages : 280
+  const clampedPages = Math.min(MAX_SPINE_PAGES, Math.max(MIN_SPINE_PAGES, safePages))
+  const t = (Math.sqrt(clampedPages) - MIN_SPINE_SQRT) / (MAX_SPINE_SQRT - MIN_SPINE_SQRT)
   const hash = stableHash(title)
 
-  const widthRaw = Math.round(38 + (safePages / 650) * 26)
-  const widthPx = Math.min(68, Math.max(44, widthRaw))
-
-  const titleBoost = Math.min(28, Math.floor(title.length * 0.7))
-  const heightRaw = 198 + titleBoost + (hash % 28)
-  const heightPx = Math.min(264, Math.max(198, heightRaw))
-
+  const widthPx = Math.min(74, Math.max(34, Math.round(34 + t * 40)))
+  const heightRaw = 192 + Math.round(t * 14) + (hash % 47)
+  const heightPx = Math.min(254, Math.max(192, heightRaw))
   const bandOffsetPx = 14 + (hash % 12)
 
   return { widthPx, heightPx, bandOffsetPx }
+}
+
+export function formatSpineTitle(title: string, heightPx: number): string {
+  const trimmed = title.trim()
+  const maxChars = Math.max(16, Math.min(34, Math.floor((heightPx - 76) / 6)))
+  if (trimmed.length <= maxChars) {
+    return trimmed
+  }
+
+  const rawSlice = trimmed.slice(0, maxChars - 1)
+  const boundaryWindow = trimmed.slice(0, maxChars)
+  const minBoundary = Math.floor(maxChars * 0.55)
+  const lastSpace = boundaryWindow.lastIndexOf(" ")
+  const candidate = lastSpace >= minBoundary ? boundaryWindow.slice(0, lastSpace) : rawSlice
+  const cleaned = candidate.replace(/[\s:,;\-–—/(]+$/, "")
+  const base = cleaned.length > 0 ? cleaned : rawSlice.trimEnd()
+
+  return `${base.length > 0 ? base : rawSlice}…`
+}
+
+export type ShelfSection = {
+  readonly key: string
+  readonly label: string
+  readonly kind: "reading" | "library"
+  readonly books: readonly BookItem[]
+}
+
+function packRows(
+  items: readonly BookItem[],
+  maxWidthPx: number,
+  gapPx: number,
+): readonly (readonly BookItem[])[] {
+  if (items.length === 0) {
+    return []
+  }
+
+  const rows: BookItem[][] = []
+  let currentRow: BookItem[] = []
+  let currentWidth = 0
+
+  for (const book of items) {
+    const bookWidth = computeSpineMetrics(book.pages, book.title).widthPx
+    const nextWidth = currentRow.length === 0 ? bookWidth : currentWidth + gapPx + bookWidth
+
+    if (currentRow.length > 0 && nextWidth > maxWidthPx) {
+      rows.push(currentRow)
+      currentRow = [book]
+      currentWidth = bookWidth
+    } else {
+      currentRow.push(book)
+      currentWidth = nextWidth
+    }
+  }
+
+  if (currentRow.length > 0) {
+    rows.push(currentRow)
+  }
+
+  return rows
+}
+
+export function packBooksIntoShelves(
+  books: readonly BookItem[],
+  shelfWidthPx: number,
+  gapPx = 8,
+): readonly ShelfSection[] {
+  const safeWidth = Math.max(
+    200,
+    Number.isFinite(shelfWidthPx) ? Math.floor(shelfWidthPx) : 200,
+  )
+  const safeGap = Number.isFinite(gapPx) && gapPx >= 0 ? gapPx : 8
+
+  const reading = books.filter((book) => book.status === "reading")
+  const rest = books.filter((book) => book.status !== "reading")
+
+  const sections: ShelfSection[] = []
+
+  const readingRows = packRows(reading, safeWidth, safeGap)
+  for (let idx = 0; idx < readingRows.length; idx += 1) {
+    const row = readingRows[idx]
+    const indexLabel = String(idx + 1).padStart(2, "0")
+    sections.push({
+      key: `reading-${idx + 1}`,
+      label: readingRows.length > 1 ? `Currently Reading · ${indexLabel}` : "Currently Reading",
+      kind: "reading",
+      books: row,
+    })
+  }
+
+  const libraryRows = packRows(rest, safeWidth, safeGap)
+  for (let idx = 0; idx < libraryRows.length; idx += 1) {
+    const row = libraryRows[idx]
+    const indexLabel = String(idx + 1).padStart(2, "0")
+    sections.push({
+      key: `shelf-${idx + 1}`,
+      label: `Shelf ${indexLabel}`,
+      kind: "library",
+      books: row,
+    })
+  }
+
+  return sections
 }
 
 export function sortBooks(books: readonly BookItem[]): readonly BookItem[] {
@@ -322,86 +427,6 @@ function formatInlineMarkdown(text: string): string {
 
 export function buildBookHref(slug: string): string {
   return `/books/#book-${slug}`
-}
-
-export type BookShelfLayer = {
-  readonly index: number
-  readonly label: string
-  readonly books: readonly BookItem[]
-}
-
-export type BookcasePartition = {
-  readonly layers: readonly BookShelfLayer[]
-  readonly totalLayers: number
-  readonly hiddenBookCount: number
-}
-
-export function partitionBookcaseLayers(
-  books: readonly BookItem[],
-  options?: {
-    readonly booksPerShelf?: number
-    readonly maxVisibleLayers?: number
-  },
-): BookcasePartition {
-  if (books.length === 0) {
-    return {
-      layers: [],
-      totalLayers: 0,
-      hiddenBookCount: 0,
-    }
-  }
-
-  const rawPerShelf = options?.booksPerShelf ?? 8
-  const booksPerShelf = Number.isFinite(rawPerShelf)
-    ? Math.max(1, Math.floor(rawPerShelf))
-    : 8
-
-  const rawMaxVisible = options?.maxVisibleLayers ?? 3
-  const maxVisibleLayers =
-    rawMaxVisible === Number.POSITIVE_INFINITY
-      ? Number.POSITIVE_INFINITY
-      : Number.isFinite(rawMaxVisible)
-        ? Math.max(0, Math.floor(rawMaxVisible))
-        : 3
-
-  let totalLayers: number
-  if (booksPerShelf >= 6 && books.length <= 5) {
-    totalLayers = 1
-  } else if (booksPerShelf >= 6 && books.length <= 12) {
-    totalLayers = 2
-  } else {
-    totalLayers = Math.ceil(books.length / booksPerShelf)
-  }
-
-  const allLayers: BookShelfLayer[] = []
-  let cursor = 0
-
-  for (let i = 0; i < totalLayers; i += 1) {
-    const remainingBooks = books.length - cursor
-    const remainingLayers = totalLayers - i
-    const count = Math.ceil(remainingBooks / remainingLayers)
-    const slice = books.slice(cursor, cursor + count)
-    cursor += count
-    allLayers.push({
-      index: i,
-      label: `Shelf ${String(i + 1).padStart(2, "0")}`,
-      books: slice,
-    })
-  }
-
-  const layers =
-    maxVisibleLayers === Number.POSITIVE_INFINITY
-      ? allLayers
-      : allLayers.slice(0, maxVisibleLayers)
-
-  const visibleBookCount = layers.reduce((sum, layer) => sum + layer.books.length, 0)
-  const hiddenBookCount = books.length - visibleBookCount
-
-  return {
-    layers,
-    totalLayers,
-    hiddenBookCount,
-  }
 }
 
 export function formatRating(rating: number | undefined): string {

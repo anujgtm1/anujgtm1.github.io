@@ -448,6 +448,19 @@ export default function PhotoGallery(props: Props) {
                     </p>
                   </Show>
 
+                  <Show when={photo().linkedHref}>
+                    {(href) => (
+                      <p class="pt-1">
+                        <a
+                          href={href()}
+                          class="font-mono text-xs uppercase tracking-[0.12em] text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent transition-colors"
+                        >
+                          {photo().linkedLabel ?? "Open linked entry →"}
+                        </a>
+                      </p>
+                    )}
+                  </Show>
+
                   <Show when={photo().tags.length > 0}>
                     <div class="flex flex-wrap gap-1.5 pt-1">
                       <For each={photo().tags}>

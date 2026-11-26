@@ -7,10 +7,13 @@ import {
   buildAlbumHref,
   buildPhotoAlbums,
   buildPhotoHref,
+  buildTravelThumbnails,
   filterPhotoAlbums,
   filterPhotos,
   getAdjacentPhotoIndex,
   getPhotoAlbums,
+  pickFeaturedPhoto,
+  pickPortraitPhoto,
   resolvePhotoAlbumName,
   resolvePhotoThumbnail,
   slugifyAlbumName,
@@ -27,8 +30,10 @@ const SAMPLE_PHOTOS: readonly PhotoItem[] = [
     caption: "Last light after the rain cleared along the crest.",
     date: "Oct 2025",
     dateIso: "2025-10-14T00:00:00.000Z",
+    dateMs: Date.UTC(2025, 9, 14),
     location: "Smoky Mountains, TN",
     album: "Mountains",
+    category: "travel",
     camera: "Fujifilm X100VI",
     aspectRatio: "landscape",
     featured: false,
@@ -41,8 +46,10 @@ const SAMPLE_PHOTOS: readonly PhotoItem[] = [
     alt: "Quiet stone alley at sunrise",
     date: "Jan 2026",
     dateIso: "2026-01-09T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 0, 9),
     location: "Lisbon, Portugal",
     album: "Streets",
+    category: "travel",
     camera: "Ricoh GR III",
     aspectRatio: "portrait",
     featured: true,
@@ -57,8 +64,10 @@ const SAMPLE_PHOTOS: readonly PhotoItem[] = [
     caption: "Mist rolling across the trailhead.",
     date: "Jan 2026",
     dateIso: "2026-01-09T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 0, 9),
     location: "Olympic Peninsula, WA",
     album: " Mountains ",
+    category: "travel",
     camera: "Sony A7C II",
     aspectRatio: "square",
     featured: false,
@@ -71,7 +80,9 @@ const SAMPLE_PHOTOS: readonly PhotoItem[] = [
     alt: "Alpenglow across snowy peaks",
     date: "Jan 2026",
     dateIso: "2026-01-09T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 0, 9),
     album: "   ",
+    category: "everyday",
     aspectRatio: "wide",
     featured: false,
     tags: ["Snow"],
@@ -137,10 +148,26 @@ test("resolvePhotoThumbnail prefers trimmed thumbnailUrl and falls back to image
   )
 })
 
-test("sortPhotos places featured first, then newest dateIso descending, then title ascending", () => {
+test("sortPhotos excludes drafts, places featured first, then newest date descending, then title ascending", () => {
   const originalSlugs = SAMPLE_PHOTOS.map((photo) => photo.slug)
-  const sorted = sortPhotos(SAMPLE_PHOTOS)
+  const withDraft: readonly PhotoItem[] = [
+    ...SAMPLE_PHOTOS,
+    {
+      slug: "draft-hidden",
+      title: "Hidden Draft",
+      imageUrl: "/images/draft.jpg",
+      alt: "Hidden draft",
+      date: "Dec 2026",
+      dateIso: "2026-12-01T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 11, 1),
+      category: "everyday",
+      featured: true,
+      tags: [],
+      draft: true,
+    },
+  ]
 
+  const sorted = sortPhotos(withDraft)
   assert.deepEqual(
     sorted.map((photo) => photo.slug),
     ["morning-alley", "alpenglow-pass", "cedar-rain", "golden-hour-ridge"],
@@ -165,8 +192,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Dawn light in Kyoto",
       date: "Apr 2026",
       dateIso: "2026-04-02T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 3, 2),
       location: "Kyoto, Japan",
       album: "Kyoto",
+      category: "travel",
       featured: false,
       tags: ["Japan"],
     },
@@ -177,8 +206,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Paper lantern in rain",
       date: "Jan 2026",
       dateIso: "2026-01-18T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 0, 18),
       location: "Gion, Kyoto",
       album: " kyoto ",
+      category: "travel",
       featured: true,
       tags: ["Rain"],
     },
@@ -189,8 +220,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Cedar eaves",
       date: "Feb 2026",
       dateIso: "2026-02-10T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 1, 10),
       location: "Arashiyama, Kyoto",
       album: "KYOTO",
+      category: "travel",
       featured: false,
       tags: ["Wood"],
     },
@@ -201,8 +234,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Canal reflection",
       date: "Mar 2026",
       dateIso: "2026-03-04T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 2, 4),
       location: "Fushimi, Kyoto",
       album: "Kyoto",
+      category: "travel",
       featured: false,
       tags: ["Water"],
     },
@@ -213,8 +248,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Old mountain ridge",
       date: "Nov 2024",
       dateIso: "2024-11-05T00:00:00.000Z",
+      dateMs: Date.UTC(2024, 10, 5),
       location: "Blue Ridge, NC",
       album: "Mountains",
+      category: "travel",
       featured: false,
       tags: ["Hills"],
     },
@@ -225,8 +262,10 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Recent ridge",
       date: "Feb 2026",
       dateIso: "2026-02-12T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 1, 12),
       location: "Blue Ridge, NC",
       album: "Mountains",
+      category: "travel",
       featured: false,
       tags: ["Hills"],
     },
@@ -237,14 +276,15 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
       alt: "Sidewalk shadows",
       date: "May 2026",
       dateIso: "2026-05-01T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 4, 1),
       location: "Chicago, IL",
+      category: "everyday",
       tags: ["Walk"],
     },
   ]
 
   const albums = buildPhotoAlbums(photos)
 
-  // Named albums sorted newest photo dateIso descending; Field Notes placed last despite newer date
   assert.deepEqual(
     albums.map((album) => album.slug),
     ["kyoto", "mountains", "field-notes"],
@@ -252,28 +292,20 @@ test("buildPhotoAlbums groups case/spacing variants, selects covers, formats dat
 
   const kyoto = albums[0]
   assert.ok(kyoto)
-  // Merged all 4 case/whitespace variants under first seen sorted photo's trimmed display name
   assert.equal(kyoto.count, 4)
   assert.equal(kyoto.name, "kyoto")
-  // Featured photo wins cover even though kyoto-dawn is newer
   assert.equal(kyoto.coverPhoto.slug, "kyoto-lantern")
-  // Preview photos capped at 3 starting with coverPhoto
   assert.deepEqual(
     kyoto.previewPhotos.map((photo) => photo.slug),
     ["kyoto-lantern", "kyoto-dawn", "kyoto-canal"],
   )
-  // Same year with distinct months shows oldest – newest date without duplicating year-only range
   assert.equal(kyoto.dateRange, "Jan 2026 – Apr 2026")
-  // Locations capped at 3 unique entries
   assert.equal(kyoto.locations.length, 3)
 
   const mountains = albums[1]
   assert.ok(mountains)
-  // No featured photo -> falls back to newest photo
   assert.equal(mountains.coverPhoto.slug, "ridge-2026")
-  // Multi-year span formats as YYYY – YYYY
   assert.equal(mountains.dateRange, "2024 – 2026")
-  // Duplicate locations are deduplicated
   assert.deepEqual(mountains.locations, ["Blue Ridge, NC"])
 
   const fieldNotes = albums[2]
@@ -292,6 +324,8 @@ test("buildPhotoAlbums preserves single-date formatting and returns Field Notes 
       alt: "Frame A",
       date: "Jan 2026",
       dateIso: "2026-01-05T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 0, 5),
+      category: "everyday",
       tags: [],
     },
     {
@@ -301,7 +335,9 @@ test("buildPhotoAlbums preserves single-date formatting and returns Field Notes 
       alt: "Frame B",
       date: "Jan 2026",
       dateIso: "2026-01-20T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 0, 20),
       album: "   ",
+      category: "everyday",
       tags: [],
     },
   ]
@@ -346,7 +382,9 @@ test("getPhotoAlbums returns unique non-empty trimmed albums sorted by count des
       alt: "Fog along the rocky coast",
       date: "Feb 2026",
       dateIso: "2026-02-01T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 1, 1),
       album: "Architecture",
+      category: "travel",
       tags: [],
     },
   ])
@@ -367,49 +405,169 @@ test("filterPhotos filters by trimmed album name and case-insensitive search acr
     ["golden-hour-ridge", "cedar-rain"],
   )
 
-  // Search by camera
   assert.deepEqual(
     filterPhotos(SAMPLE_PHOTOS, "all", "x100vi").map((photo) => photo.slug),
     ["golden-hour-ridge"],
   )
-
-  // Search by location
   assert.deepEqual(
     filterPhotos(SAMPLE_PHOTOS, "all", "lisbon").map((photo) => photo.slug),
     ["morning-alley"],
   )
-
-  // Search by caption
   assert.deepEqual(
     filterPhotos(SAMPLE_PHOTOS, "all", "trailhead").map((photo) => photo.slug),
     ["cedar-rain"],
   )
-
-  // Search by tag
   assert.deepEqual(
     filterPhotos(SAMPLE_PHOTOS, "all", "snow").map((photo) => photo.slug),
     ["alpenglow-pass"],
   )
-
-  // Combined album + query
   assert.deepEqual(
     filterPhotos(SAMPLE_PHOTOS, "Mountains", "fog").map((photo) => photo.slug),
     ["cedar-rain"],
   )
-
-  // Non-matching query returns empty
   assert.deepEqual(filterPhotos(SAMPLE_PHOTOS, "Streets", "fog"), [])
 })
 
 test("getAdjacentPhotoIndex wraps cleanly around bounds and returns -1 for empty lists", () => {
   assert.equal(getAdjacentPhotoIndex(0, 0, "next"), -1)
   assert.equal(getAdjacentPhotoIndex(0, -3, "prev"), -1)
-
   assert.equal(getAdjacentPhotoIndex(0, 1, "next"), 0)
   assert.equal(getAdjacentPhotoIndex(0, 1, "prev"), 0)
-
   assert.equal(getAdjacentPhotoIndex(0, 4, "prev"), 3)
   assert.equal(getAdjacentPhotoIndex(3, 4, "next"), 0)
   assert.equal(getAdjacentPhotoIndex(1, 4, "next"), 2)
   assert.equal(getAdjacentPhotoIndex(2, 4, "prev"), 1)
+})
+
+const EDITORIAL_PHOTOS: readonly PhotoItem[] = [
+  {
+    slug: "older-craft",
+    title: "Bench Thread",
+    imageUrl: "/images/uploads/bench.jpg",
+    alt: "Bookbinding thread on bench",
+    date: "Jan 2026",
+    dateIso: "2026-01-15T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 0, 15),
+    category: "craft",
+    featured: true,
+    tags: [],
+  },
+  {
+    slug: "newest-travel",
+    title: "Harbor Mist",
+    imageUrl: "/images/uploads/harbor.jpg",
+    alt: "Fog over morning harbor",
+    date: "May 2026",
+    dateIso: "2026-05-20T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 4, 20),
+    location: "San Francisco",
+    album: "California",
+    caption: "Early ferry crossing.",
+    category: "travel",
+    tags: [],
+  },
+  {
+    slug: "portrait-featured",
+    title: "Studio Desk Portrait",
+    imageUrl: "/images/uploads/portrait.jpg",
+    alt: "Portrait at studio desk",
+    date: "Jun 2026",
+    dateIso: "2026-06-01T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 5, 1),
+    category: "portrait",
+    featured: true,
+    tags: [],
+  },
+  {
+    slug: "draft-photo",
+    title: "Hidden Frame",
+    imageUrl: "/images/uploads/draft.jpg",
+    alt: "Draft frame",
+    date: "Dec 2026",
+    dateIso: "2026-12-01T00:00:00.000Z",
+    dateMs: Date.UTC(2026, 11, 1),
+    category: "travel",
+    featured: true,
+    tags: [],
+    draft: true,
+  },
+]
+
+test("pickFeaturedPhoto prefers non-portrait featured photo, then featured portrait, then newest", () => {
+  assert.equal(pickFeaturedPhoto([]), undefined)
+  assert.equal(pickFeaturedPhoto(EDITORIAL_PHOTOS)?.slug, "older-craft")
+
+  const onlyPortraitFeatured = EDITORIAL_PHOTOS.filter((p) => p.slug !== "older-craft")
+  assert.equal(pickFeaturedPhoto(onlyPortraitFeatured)?.slug, "portrait-featured")
+
+  const noFeatured = EDITORIAL_PHOTOS.filter((p) => !p.featured)
+  assert.equal(pickFeaturedPhoto(noFeatured)?.slug, "newest-travel")
+})
+
+test("pickPortraitPhoto prefers featured portrait, then portrait, then featured fallback", () => {
+  assert.equal(pickPortraitPhoto([]), undefined)
+  assert.equal(pickPortraitPhoto(EDITORIAL_PHOTOS)?.slug, "portrait-featured")
+
+  const unfeaturedPortrait: readonly PhotoItem[] = [
+    ...EDITORIAL_PHOTOS.filter((p) => p.slug !== "portrait-featured"),
+    {
+      slug: "regular-portrait",
+      title: "Regular Portrait",
+      imageUrl: "/p.jpg",
+      alt: "Portrait",
+      date: "Feb 2026",
+      dateIso: "2026-02-01T00:00:00.000Z",
+      dateMs: Date.UTC(2026, 1, 1),
+      category: "portrait",
+      tags: [],
+    },
+  ]
+  assert.equal(pickPortraitPhoto(unfeaturedPortrait)?.slug, "regular-portrait")
+
+  const noPortraits = EDITORIAL_PHOTOS.filter((p) => p.category !== "portrait")
+  assert.equal(pickPortraitPhoto(noPortraits)?.slug, "older-craft")
+})
+
+test("buildTravelThumbnails merges non-draft trips and travel-category photos sorted newest-first", () => {
+  const thumbnails = buildTravelThumbnails(
+    [
+      {
+        slug: "zurich",
+        title: "Autumn Tramways",
+        city: "Zurich",
+        country: "Switzerland",
+        stampCode: "ZRH",
+        date: "Oct 2026",
+        dateMs: Date.UTC(2026, 9, 10),
+        summary: "Walked along the Limmat.",
+        coverImage: "/images/uploads/zurich.jpg",
+        coverImageAlt: "Limmat river in autumn",
+      },
+      {
+        slug: "draft-trip",
+        title: "Draft Trip",
+        city: "Nowhere",
+        country: "None",
+        stampCode: "XXX",
+        date: "Nov 2026",
+        dateMs: Date.UTC(2026, 10, 10),
+        summary: "Hidden",
+        draft: true,
+      },
+    ],
+    EDITORIAL_PHOTOS,
+  )
+
+  assert.equal(thumbnails.length, 2)
+  assert.equal(thumbnails[0]?.destination, "travel")
+  assert.equal(thumbnails[0]?.href, "/travel/zurich/")
+  assert.equal(thumbnails[0]?.imageSrc, "/images/uploads/zurich.jpg")
+  assert.equal(thumbnails[0]?.imageAlt, "Limmat river in autumn")
+  assert.equal(thumbnails[0]?.stampCode, "ZRH")
+
+  assert.equal(thumbnails[1]?.destination, "gallery")
+  assert.equal(thumbnails[1]?.href, "/photos/california/#photo-newest-travel")
+  assert.equal(thumbnails[1]?.imageSrc, "/images/uploads/harbor.jpg")
+  assert.equal(thumbnails[1]?.subtitle, "San Francisco")
+  assert.equal(thumbnails[1]?.summary, "Early ferry crossing.")
 })

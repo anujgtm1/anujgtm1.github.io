@@ -1,30 +1,35 @@
 ---
-import { getCollection, getEntry } from "astro:content"
+import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
 import HomeBookshelf from "@components/HomeBookshelf"
 import { SITE, SOCIALS } from "@consts"
-import { buildBookHref, deriveYearRead, sortBooks } from "@lib/bookshelf"
+import { deriveYearRead, sortBooks } from "@lib/bookshelf"
+import { VISITED_COUNTRY_IDS } from "@data/visitedCountries"
+import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "@data/worldCountries"
 import { formatCoordinates } from "@lib/atlas"
-import { formatDate, formatShortDate, readingTime } from "@lib/utils"
+import { buildRecentJournalEntries } from "@lib/journal"
+import { computeParkSurveySummary } from "@lib/parks"
+import { pickFeaturedPhoto } from "@lib/photos"
+import { formatShortDate } from "@lib/utils"
+import { buildNaturalEarthGraticule, projectNaturalEarth } from "@lib/worldProjection"
+import type { PhotoItem, RecentJournalKind } from "@types"
 
-const [rawPosts, rawProjects, rawBooks, rawTrips, nowEntry] = await Promise.all([
+const [rawPosts, rawProjects, rawBooks, rawTrips, rawPhotos] = await Promise.all([
   getCollection("blog"),
   getCollection("projects"),
   getCollection("books"),
   getCollection("travel"),
-  getEntry("now", "current"),
+  getCollection("photos"),
 ])
 
 const posts = rawPosts
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 4)
 
 const projects = rawProjects
   .filter((project) => !project.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-  .slice(0, 3)
 
 const books = sortBooks(
   rawBooks
@@ -48,288 +53,596 @@ const books = sortBooks(
     })),
 )
 
-const currentlyReadingBook = books.find((book) => book.status === "reading") ?? books[0]
-const featuredSpines = books.slice(0, 8)
+const shelfSpines = books.slice(0, 6)
 
 const trips = rawTrips
   .filter((trip) => !trip.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
 
-const latestTrip = trips[0]
-const previewTrips = trips.slice(0, 4)
+const photos: readonly PhotoItem[] = rawPhotos
+  .filter((photo) => !photo.data.draft)
+  .map((photo) => ({
+    slug: photo.slug,
+    title: photo.data.title,
+    imageUrl: photo.data.imageUrl,
+    thumbnailUrl: photo.data.thumbnailUrl,
+    alt: photo.data.alt,
+    caption: photo.data.caption,
+    date: formatShortDate(photo.data.date),
+    dateIso: photo.data.date.toISOString(),
+    dateMs: photo.data.date.getTime(),
+    location: photo.data.location,
+    album: photo.data.album,
+    category: photo.data.category,
+    camera: photo.data.camera,
+    aspectRatio: photo.data.aspectRatio,
+    featured: photo.data.featured,
+    tags: photo.data.tags,
+    linkedHref: photo.data.linkedHref,
+    linkedLabel: photo.data.linkedLabel,
+    draft: photo.data.draft,
+  }))
 
-const showDayJobCard = !currentlyReadingBook && !latestTrip
-const fieldDeskCount =
-  (currentlyReadingBook ? 1 : 0) +
-  (latestTrip ? 1 : 0) +
-  (showDayJobCard ? 1 : 0) +
-  2
-const fieldDeskGridClass =
-  fieldDeskCount >= 4
-    ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-4"
-    : fieldDeskCount === 3
-      ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
-      : "grid-cols-1 sm:grid-cols-2 lg:grid-cols-2"
+const featuredPhoto = pickFeaturedPhoto(photos)
+
+const recentEntries = buildRecentJournalEntries(
+  {
+    blog: posts.map((post) => ({
+      slug: post.slug,
+      title: post.data.title,
+      date: post.data.date,
+      heroImage: post.data.heroImage,
+      heroImageAlt: post.data.heroImageAlt,
+      draft: post.data.draft,
+    })),
+    projects: projects.map((project) => ({
+      slug: project.slug,
+      title: project.data.title,
+      date: project.data.date,
+      draft: project.data.draft,
+    })),
+    travel: trips.map((trip) => ({
+      slug: trip.slug,
+      title: trip.data.title,
+      date: trip.data.date,
+      coverImage: trip.data.coverImage,
+      coverImageAlt: trip.data.coverImageAlt,
+      draft: trip.data.draft,
+    })),
+    books: rawBooks
+      .filter((book) => !book.data.draft)
+      .map((book) => ({
+        slug: book.slug,
+        title: book.data.title,
+        status: book.data.status,
+        dateRead: book.data.dateRead,
+        yearRead: book.data.yearRead,
+        coverUrl: book.data.coverUrl,
+        draft: book.data.draft,
+      })),
+  },
+  4,
+)
+
+const JOURNAL_KIND_LABEL: Readonly<Record<RecentJournalKind, string>> = {
+  blog: "BLOG",
+  project: "PROJECT",
+  travel: "TRAVEL",
+  book: "BOOK",
+}
+
+const JOURNAL_KIND_COLOR: Readonly<Record<RecentJournalKind, string>> = {
+  blog: "text-accent",
+  project: "text-atlas",
+  travel: "text-atlas",
+  book: "text-accent",
+}
+
+const worldGraticule = buildNaturalEarthGraticule()
+const visitedCountrySet = new Set<string>(VISITED_COUNTRY_IDS)
+const parkSummary = computeParkSurveySummary()
+
+const mapPins = trips.slice(0, 6).map((trip) => ({
+  label: trip.data.city,
+  country: trip.data.country,
+  code: trip.data.stampCode,
+  coordinatesLabel: formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng }),
+  point: projectNaturalEarth({ lat: trip.data.lat, lng: trip.data.lng }),
+  href: `/travel/${trip.slug}/`,
+}))
 ---
 
 <PageLayout title={SITE.TITLE} description={SITE.DESCRIPTION}>
-  <!-- Editorial Masthead -->
-  <section class="pt-12 pb-12 sm:pt-20 sm:pb-16 border-b border-border">
+  <!-- Section 1: Split Swiss Hero -->
+  <section class="border-b border-border">
     <Container size="lg">
-      <div class="max-w-3xl space-y-6">
-        <p class="editorial-kicker">
-          Software Engineer · Reader · Traveler
-        </p>
+      <div class="grid grid-cols-1 lg:grid-cols-12 lg:divide-x divide-border">
+        <!-- Left Column (6/12): Title + Bio + Recent Across the Journal -->
+        <div class="lg:col-span-6 py-10 lg:py-12 lg:pr-10 flex flex-col justify-between gap-10">
+          <div class="space-y-5">
+            <p class="editorial-kicker">INDEX · VOL. 2026</p>
+            <h1 class="editorial-display text-ink">
+              A quiet archive of software, books, and journeys.
+            </h1>
+            <p class="text-base text-ink-muted leading-relaxed max-w-xl">
+              <strong class="font-semibold text-ink">Anuj Gautam</strong> — software engineer on Google's data center infrastructure deployment team, PhD in usable security (UTK), avid reader, and builder of small offline tools.
+            </p>
+          </div>
 
-        <h1 class="editorial-display text-ink">
-          Field notes on resilient systems, good books, and places worth remembering.
-        </h1>
+          <section aria-labelledby="swiss-recent-heading">
+            <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pb-2.5">
+              <h2
+                id="swiss-recent-heading"
+                class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted"
+              >
+                Recent Across the Journal
+              </h2>
+              <div class="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
+                <a
+                  href="/blog"
+                  class="whitespace-nowrap shrink-0 underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+                >
+                  Blog →
+                </a>
+                <a
+                  href="/search"
+                  class="whitespace-nowrap shrink-0 underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+                >
+                  Archive →
+                </a>
+              </div>
+            </div>
 
-        <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-          I'm <strong class="font-semibold text-ink">Anuj Gautam</strong> — a software engineer working on data center infrastructure deployment at Google, with a PhD in usable security from the University of Tennessee. Outside the day job, I build small opinionated tools, scribble short notes on books, and collect passport stamps.
-        </p>
+            {
+              recentEntries.length > 0 ? (
+                <ul class="border-t border-border divide-y divide-border">
+                  {recentEntries.map((item) => (
+                    <li>
+                      <a
+                        href={item.href}
+                        class="group flex items-center justify-between gap-4 py-3.5 hover:bg-surface/45 -mx-2 px-2 transition-colors"
+                      >
+                        <div class="min-w-0 flex-1 space-y-1">
+                          <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-[10px] uppercase tracking-[0.14em]">
+                            <span class={`font-medium ${JOURNAL_KIND_COLOR[item.kind]}`}>
+                              {JOURNAL_KIND_LABEL[item.kind]}
+                            </span>
+                            <span aria-hidden="true" class="text-ink-muted/60">·</span>
+                            <span class="text-ink-muted">{item.dateLabel}</span>
+                          </div>
 
-        <div class="flex flex-wrap items-center gap-3 pt-2">
-          <a
-            href="/blog"
-            class="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2.5 text-sm font-medium text-bg hover:bg-accent transition-colors"
-          >
-            <span>Read the blog</span>
-            <span aria-hidden="true">→</span>
-          </a>
-          <a
-            href="/books"
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
-          >
-            <span>Bookshelf</span>
-          </a>
+                          <p class="font-serif text-lg font-medium text-ink leading-snug group-hover:text-accent transition-colors">
+                            {item.title}
+                          </p>
+                        </div>
+
+                        {item.thumbnailSrc ? (
+                          <div class="w-16 sm:w-20 aspect-[4/3] shrink-0 overflow-hidden rounded-none border border-border bg-surface">
+                            <img
+                              src={item.thumbnailSrc}
+                              alt={item.thumbnailAlt ?? item.title}
+                              width="160"
+                              height="120"
+                              decoding="async"
+                              class="editorial-photo h-full w-full object-cover"
+                            />
+                          </div>
+                        ) : (
+                          <span
+                            aria-hidden="true"
+                            class="shrink-0 font-mono text-xs text-ink-muted group-hover:text-accent transition-colors"
+                          >
+                            →
+                          </span>
+                        )}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <div class="border-t border-border py-6 text-sm text-ink-muted">
+                  First dispatches on the desk — essays, books, and field logs will appear here as they are published.
+                </div>
+              )
+            }
+          </section>
+        </div>
+
+        <!-- Right Column (6/12): Two Vertical Stacked Layers -->
+        <div class="lg:col-span-6 py-10 lg:py-12 lg:pl-10 flex flex-col gap-0">
+          <!-- Layer 1 (Top): Photo Gallery Portal -->
+          <figure>
+            <a href="/photos" class="group block w-full text-start">
+              <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                {
+                  featuredPhoto ? (
+                    <img
+                      src={featuredPhoto.imageUrl}
+                      alt={featuredPhoto.alt}
+                      fetchpriority="high"
+                      decoding="async"
+                      class="editorial-photo aspect-[16/10] w-full object-cover"
+                    />
+                  ) : (
+                    <svg
+                      viewBox="0 0 800 500"
+                      class="block aspect-[16/10] w-full select-none"
+                      role="img"
+                      aria-label="35mm archival viewfinder contact plate — ready for first frames"
+                    >
+                      <defs>
+                        <pattern id="swiss-viewfinder-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                          <path
+                            d="M 40 0 L 0 0 0 40"
+                            fill="none"
+                            stroke="var(--border)"
+                            stroke-width="0.65"
+                            opacity="0.7"
+                          />
+                        </pattern>
+                      </defs>
+
+                      <rect width="800" height="500" fill="var(--surface)" />
+                      <rect width="800" height="500" fill="url(#swiss-viewfinder-grid)" />
+
+                      {/* Subtle 35mm sprocket edge ticks */}
+                      <g fill="var(--border)" opacity="0.55">
+                        <rect x="44" y="14" width="22" height="10" />
+                        <rect x="124" y="14" width="22" height="10" />
+                        <rect x="204" y="14" width="22" height="10" />
+                        <rect x="284" y="14" width="22" height="10" />
+                        <rect x="364" y="14" width="22" height="10" />
+                        <rect x="444" y="14" width="22" height="10" />
+                        <rect x="524" y="14" width="22" height="10" />
+                        <rect x="604" y="14" width="22" height="10" />
+                        <rect x="684" y="14" width="22" height="10" />
+                        <rect x="734" y="14" width="22" height="10" />
+
+                        <rect x="44" y="476" width="22" height="10" />
+                        <rect x="124" y="476" width="22" height="10" />
+                        <rect x="204" y="476" width="22" height="10" />
+                        <rect x="284" y="476" width="22" height="10" />
+                        <rect x="364" y="476" width="22" height="10" />
+                        <rect x="444" y="476" width="22" height="10" />
+                        <rect x="524" y="476" width="22" height="10" />
+                        <rect x="604" y="476" width="22" height="10" />
+                        <rect x="684" y="476" width="22" height="10" />
+                        <rect x="734" y="476" width="22" height="10" />
+                      </g>
+
+                      {/* Inner 35mm negative matte frame */}
+                      <rect
+                        x="48"
+                        y="46"
+                        width="704"
+                        height="408"
+                        fill="var(--surface-elevated)"
+                        fill-opacity="0.55"
+                        stroke="var(--border)"
+                        stroke-width="1"
+                      />
+
+                      {/* Rule-of-thirds hairlines */}
+                      <g stroke="var(--border)" stroke-width="0.75" stroke-dasharray="4 6" opacity="0.85">
+                        <line x1="282.6" y1="46" x2="282.6" y2="454" />
+                        <line x1="517.3" y1="46" x2="517.3" y2="454" />
+                        <line x1="48" y1="182" x2="752" y2="182" />
+                        <line x1="48" y1="318" x2="752" y2="318" />
+                      </g>
+
+                      {/* 35mm Viewfinder Corner Crop Marks */}
+                      <g stroke="var(--ink)" stroke-width="1.6" fill="none" opacity="0.75">
+                        <path d="M 76 100 L 76 74 L 102 74" />
+                        <path d="M 698 74 L 724 74 L 724 100" />
+                        <path d="M 76 400 L 76 426 L 102 426" />
+                        <path d="M 698 426 L 724 426 L 724 400" />
+                      </g>
+
+                      {/* Central Rangefinder Focus Reticle */}
+                      <g transform="translate(400, 232)">
+                        <circle
+                          cx="0"
+                          cy="0"
+                          r="68"
+                          fill="none"
+                          stroke="var(--border)"
+                          stroke-width="1"
+                        />
+                        <circle
+                          cx="0"
+                          cy="0"
+                          r="38"
+                          fill="none"
+                          stroke="var(--accent)"
+                          stroke-width="1.15"
+                          stroke-dasharray="3 3"
+                          opacity="0.85"
+                        />
+                        <line x1="-88" y1="0" x2="-46" y2="0" stroke="var(--ink-muted)" stroke-width="0.9" />
+                        <line x1="46" y1="0" x2="88" y2="0" stroke="var(--ink-muted)" stroke-width="0.9" />
+                        <line x1="0" y1="-88" x2="0" y2="-46" stroke="var(--ink-muted)" stroke-width="0.9" />
+                        <line x1="0" y1="46" x2="0" y2="88" stroke="var(--ink-muted)" stroke-width="0.9" />
+                        <line x1="-10" y1="0" x2="10" y2="0" stroke="var(--accent)" stroke-width="1.2" />
+                        <line x1="0" y1="-10" x2="0" y2="10" stroke="var(--accent)" stroke-width="1.2" />
+                      </g>
+
+                      {/* Viewfinder metadata readout */}
+                      <text
+                        x="94"
+                        y="102"
+                        fill="var(--ink-muted)"
+                        font-family="JetBrains Mono, monospace"
+                        font-size="10.5"
+                        letter-spacing="1.6"
+                      >
+                        FRAME 00 · 35MM
+                      </text>
+                      <text
+                        x="706"
+                        y="102"
+                        text-anchor="end"
+                        fill="var(--atlas)"
+                        font-family="JetBrains Mono, monospace"
+                        font-size="10.5"
+                        letter-spacing="1.6"
+                      >
+                        ISO 400 · f/5.6
+                      </text>
+
+                      <text
+                        x="400"
+                        y="390"
+                        text-anchor="middle"
+                        fill="var(--ink-muted)"
+                        font-family="JetBrains Mono, monospace"
+                        font-size="11"
+                        letter-spacing="2"
+                      >
+                        35MM PLATE ARCHIVE · READY FOR FIRST FRAMES
+                      </text>
+                    </svg>
+                  )
+                }
+              </span>
+              <figcaption class="mt-2.5 flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em]">
+                <span class="text-ink-muted">
+                  {featuredPhoto ? `PL. I · ${featuredPhoto.title}` : "PL. I · THROUGH THE LENS"}
+                </span>
+                <span class="text-accent group-hover:underline underline-offset-4">
+                  Open photo gallery →
+                </span>
+              </figcaption>
+            </a>
+          </figure>
+
+          <!-- Layer 2 (Bottom): Interactive Tactile Bookshelf with Preview Modal -->
+          <HomeBookshelf client:load books={shelfSpines} totalBooks={books.length} />
+        </div>
+      </div>
+    </Container>
+  </section>
+
+  <!-- Section 2: Full-Width Travel Atlas Band -->
+  <section class="border-b border-border bg-surface/35" aria-labelledby="home-atlas-heading">
+    <Container size="lg">
+      <div class="py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
+        <!-- Left (8/12): Static Natural Earth 110m World Map (0 KB JS) -->
+        <div class="lg:col-span-8">
           <a
             href="/travel"
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+            aria-label="Explore the full interactive Travel Atlas"
+            class="group block relative aspect-[1000/520] w-full overflow-hidden rounded-none border border-border bg-surface hover:border-atlas transition-colors"
           >
-            <span>Travel Atlas</span>
-          </a>
-          <a
-            href="/photos"
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
-          >
-            <span>Photos</span>
-          </a>
-          <a
-            href="/projects"
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
-          >
-            <span>Projects</span>
-          </a>
-        </div>
-      </div>
-    </Container>
-  </section>
+            <svg
+              viewBox={`0 0 ${WORLD_NE_VIEWBOX.width} ${WORLD_NE_VIEWBOX.height}`}
+              class="block h-full w-full"
+              role="img"
+              aria-label="Natural Earth world map displaying Anuj Gautam's visited countries and travel coordinates"
+            >
+              <path
+                d={worldGraticule.outlinePath}
+                fill="var(--surface)"
+                stroke="var(--border)"
+                stroke-width="1"
+              />
 
-  <!-- Live "Currently / Field Desk" Strip -->
-  <section class="py-10 sm:py-12 border-b border-border bg-surface/45" aria-labelledby="field-desk-heading">
-    <Container size="lg">
-      <div class="flex items-baseline justify-between gap-4 mb-5">
-        <h2 id="field-desk-heading" class="editorial-kicker">
-          Currently · Field Desk
-        </h2>
-        <a
-          href="/now"
-          class="whitespace-nowrap shrink-0 text-xs font-mono uppercase tracking-wider text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-        >
-          Full /now ledger →
-        </a>
-      </div>
+              <g fill="none" stroke="var(--border)" stroke-width="0.6" opacity="0.55">
+                {worldGraticule.parallels.map((line) => (
+                  <path
+                    d={line.d}
+                    stroke-dasharray={line.isPrimary ? "4 4" : undefined}
+                  />
+                ))}
+                {worldGraticule.meridians.map((line) => (
+                  <path d={line.d} />
+                ))}
+              </g>
 
-      <div class={`grid ${fieldDeskGridClass} gap-4`}>
-        {showDayJobCard && (
-          <a
-            href="/work"
-            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
-          >
-            <span class="text-xs font-mono uppercase tracking-widest text-atlas">
-              Day Job
-            </span>
-            <div class="space-y-1">
-              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
-                Google · Software Engineer
-              </p>
-              <p class="text-xs text-ink-muted">
-                Data center infrastructure deployment software
-              </p>
-            </div>
-          </a>
-        )}
+              <g>
+                {WORLD_COUNTRIES.map((country) => {
+                  const isVisited = visitedCountrySet.has(country.id)
+                  return (
+                    <path
+                      d={country.d}
+                      fill={isVisited ? "var(--atlas-soft)" : "var(--surface-elevated)"}
+                      fill-opacity={isVisited ? 0.92 : 0.85}
+                      stroke={isVisited ? "var(--atlas)" : "var(--border)"}
+                      stroke-width={isVisited ? 0.95 : 0.55}
+                    />
+                  )
+                })}
+              </g>
 
-        {currentlyReadingBook && (
-          <a
-            href={buildBookHref(currentlyReadingBook.slug)}
-            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
-          >
-            <span class="text-xs font-mono uppercase tracking-widest text-accent">
-              Currently Reading
-            </span>
-            <div class="space-y-1">
-              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
-                {currentlyReadingBook.title}
-              </p>
-              <p class="text-xs text-ink-muted">{currentlyReadingBook.author}</p>
-            </div>
-          </a>
-        )}
+              {mapPins.length > 1 && (
+                <polyline
+                  fill="none"
+                  stroke="var(--accent)"
+                  stroke-width="1.4"
+                  stroke-dasharray="4 5"
+                  stroke-opacity="0.55"
+                  points={mapPins.map((pin) => `${pin.point.x},${pin.point.y}`).join(" ")}
+                />
+              )}
 
-        {latestTrip && (
-          <a
-            href={`/travel/${latestTrip.slug}/`}
-            class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
-          >
-            <div class="flex items-center justify-between gap-2">
-              <span class="text-xs font-mono uppercase tracking-widest text-atlas">
-                Latest Stamp
-              </span>
-              <span class="rounded bg-atlas-soft px-2 py-0.5 font-mono text-[11px] font-semibold text-atlas">
-                {latestTrip.data.stampCode}
-              </span>
-            </div>
-            <div class="space-y-1">
-              <p class="font-serif text-lg font-medium text-ink group-hover:text-accent transition-colors">
-                {latestTrip.data.city}, {latestTrip.data.country}
-              </p>
-              <p class="text-xs font-mono text-ink-muted">
-                {formatShortDate(latestTrip.data.date)}
-              </p>
-            </div>
-          </a>
-        )}
-
-        <a
-          href="/projects"
-          class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
-        >
-          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted">
-            Currently Building
-          </span>
-          <div class="space-y-1">
-            <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors leading-snug">
-              {nowEntry?.data.currentlyBuilding ?? "Personal CRM & Bookbinder Studio"}
-            </p>
-          </div>
-        </a>
-
-        <a
-          href="/now"
-          class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
-        >
-          <span class="text-xs font-mono uppercase tracking-widest text-ink-muted">
-            Updated {nowEntry ? formatShortDate(nowEntry.data.updatedAt) : "Recently"}
-          </span>
-          <div class="space-y-1">
-            <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors leading-snug">
-              {nowEntry?.data.listeningOrThinking ?? "Short, honest notes on books and systems."}
-            </p>
-          </div>
-        </a>
-      </div>
-    </Container>
-  </section>
-
-  <!-- Selected Writing -->
-  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="writing-heading">
-    <Container size="lg">
-      <div class="flex items-baseline justify-between gap-4 mb-8">
-        <div class="space-y-1">
-          <p class="editorial-kicker">Dispatches &amp; Notes</p>
-          <h2 id="writing-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-            Selected Writing
-          </h2>
-        </div>
-        <a
-          href="/blog"
-          class="text-sm font-medium text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-        >
-          All writing →
-        </a>
-      </div>
-
-      {
-        posts.length > 0 ? (
-          <ul class="divide-y divide-border border-y border-border">
-            {
-              posts.map((post) => (
-                <li>
-                  <a
-                    href={`/blog/${post.slug}/`}
-                    class="group py-6 flex flex-col md:flex-row md:items-baseline justify-between gap-3 md:gap-8 hover:bg-surface/40 px-2 -mx-2 rounded-lg transition-colors"
+              {mapPins.map((pin) => (
+                <g>
+                  <circle cx={pin.point.x} cy={pin.point.y} r="11" fill="var(--accent)" opacity="0.18" />
+                  <circle
+                    cx={pin.point.x}
+                    cy={pin.point.y}
+                    r="4.5"
+                    fill="var(--accent)"
+                    stroke="var(--bg)"
+                    stroke-width="1.6"
+                  />
+                  <text
+                    x={pin.point.x + 10}
+                    y={pin.point.y - 10}
+                    text-anchor="start"
+                    fill="var(--ink)"
+                    font-family="JetBrains Mono, monospace"
+                    font-size="11.5"
+                    font-weight="600"
+                    letter-spacing="0.4"
                   >
-                    <div class="space-y-1.5 max-w-2xl">
-                      <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink group-hover:text-accent transition-colors">
-                        {post.data.title}
-                      </h3>
-                      <p class="text-sm text-ink-muted leading-relaxed">
-                        {post.data.summary}
-                      </p>
-                      <div class="flex flex-wrap gap-1.5 pt-1">
-                        {post.data.tags.map((tag) => (
-                          <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
-                            {tag}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    <div class="flex md:flex-col md:items-end gap-2 shrink-0 text-xs font-mono text-ink-muted">
-                      <time datetime={post.data.date.toISOString()}>
-                        {formatDate(post.data.date)}
-                      </time>
-                      <span>{readingTime(post.body)}</span>
-                    </div>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        ) : (
-          <div class="rounded-xl border border-dashed border-border bg-surface/55 p-8 sm:p-10 space-y-2">
-            <p class="editorial-kicker text-accent">Notes Desk</p>
-            <p class="font-serif text-xl sm:text-2xl font-medium text-ink">
-              First dispatches on the desk — short notes on books, software, and places coming soon.
+                    {pin.label}
+                  </text>
+                </g>
+              ))}
+            </svg>
+
+            <span class="pointer-events-none absolute bottom-3 left-3 rounded-none border border-border bg-bg/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted backdrop-blur-sm">
+              {trips.length > 0
+                ? `${trips.length} STAMPED DESTINATIONS · ${parkSummary.visitedParks}/${parkSummary.totalParks} U.S. PARKS`
+                : `NATURAL EARTH I · ${parkSummary.lower48StatesVisited}/${parkSummary.lower48StatesTotal} LOWER STATES · ${parkSummary.visitedParks}/${parkSummary.totalParks} PARKS`}
+            </span>
+          </a>
+        </div>
+
+        <!-- Right (4/12): Atlas Index & Coordinates -->
+        <div class="lg:col-span-4 space-y-5">
+          <div class="space-y-2">
+            <p class="editorial-kicker text-atlas">TRAVEL ATLAS</p>
+            <h2 id="home-atlas-heading" class="font-serif text-3xl sm:text-[2rem] font-medium text-ink leading-tight">
+              Places &amp; Field Coordinates
+            </h2>
+            <p class="text-sm text-ink-muted leading-relaxed">
+              Passport stamps, quiet walking notes, and coordinates from places worth returning to.
             </p>
           </div>
-        )
-      }
+
+          {
+            mapPins.length > 0 ? (
+              <ul class="border-t border-border divide-y divide-border">
+                {mapPins.slice(0, 4).map((pin) => (
+                  <li>
+                    <a
+                      href={pin.href}
+                      class="group flex items-baseline justify-between gap-3 py-2.5 text-sm hover:text-accent transition-colors"
+                    >
+                      <span class="flex items-baseline gap-2.5 min-w-0">
+                        <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
+                          {pin.code}
+                        </span>
+                        <span class="font-serif text-base text-ink group-hover:text-accent transition-colors truncate">
+                          {pin.label}
+                        </span>
+                      </span>
+                      <span class="font-mono text-[11px] text-ink-muted shrink-0">
+                        {pin.coordinatesLabel}
+                      </span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <ul class="border-t border-b border-border divide-y divide-border">
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
+                      USA
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      Lower 48 States
+                    </span>
+                  </span>
+                  <span class="font-mono text-xs text-ink-muted shrink-0 tabular-nums">
+                    {`${parkSummary.lower48StatesVisited} / ${parkSummary.lower48StatesTotal}`}
+                  </span>
+                </li>
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-accent shrink-0">
+                      NPS
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      National Parks
+                    </span>
+                  </span>
+                  <span class="font-mono text-xs text-ink-muted shrink-0 tabular-nums">
+                    {`${parkSummary.visitedParks} / ${parkSummary.totalParks}`}
+                  </span>
+                </li>
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
+                      WLD
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      International Logs
+                    </span>
+                  </span>
+                  <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted shrink-0">
+                    Ready for Stamps
+                  </span>
+                </li>
+              </ul>
+            )
+          }
+
+          <div class="pt-1">
+            <a
+              href="/travel"
+              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+            >
+              <span>Explore Travel Atlas</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          </div>
+        </div>
+      </div>
     </Container>
   </section>
 
-  <!-- Engineering Projects (Numbered Dossiers) -->
-  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="projects-heading">
+  <!-- Section 3: Compact 3-Column Workshop / Selected Projects Strip -->
+  <section class="border-b border-border py-12" aria-labelledby="workshop-heading">
     <Container size="lg">
-      <div class="flex items-baseline justify-between gap-4 mb-8">
+      <div class="flex flex-wrap items-baseline justify-between gap-4 pb-6">
         <div class="space-y-1">
-          <p class="editorial-kicker">Workshop</p>
-          <h2 id="projects-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-            Engineering Projects
-          </h2>
+          <p class="editorial-kicker">WORKSHOP · SELECTED PROJECTS</p>
+          <h2 id="workshop-heading" class="sr-only">Selected Engineering Projects</h2>
         </div>
         <a
           href="/projects"
-          class="text-sm font-medium text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+          class="whitespace-nowrap shrink-0 font-mono text-xs uppercase tracking-[0.12em] text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
         >
-          All dossiers →
+          View all dossiers →
         </a>
       </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+      <ol class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border border-t border-border">
         {
-          projects.map((project, idx) => (
-            <article class="editorial-card flex flex-col justify-between gap-5 rounded-xl border border-border bg-surface-elevated p-6 hover:border-accent">
-              <div class="space-y-3">
-                <div class="flex items-center justify-between gap-2 text-xs font-mono">
-                  <span class="text-ink-muted">0{idx + 1}</span>
-                  <span class="rounded bg-atlas-soft px-2 py-0.5 uppercase tracking-wider text-atlas font-medium">
-                    {project.data.status}
+          projects.slice(0, 3).map((project, idx) => (
+            <li class="py-6 md:py-7 md:px-7 md:first:pl-0 md:last:pr-0 flex flex-col justify-between gap-4">
+              <div class="space-y-2.5">
+                <div class="flex items-baseline justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.12em]">
+                  <span class="text-ink-muted tabular-nums">
+                    {String(idx + 1).padStart(2, "0")}
                   </span>
+                  <span class="text-atlas">{project.data.status}</span>
                 </div>
 
-                <h3 class="font-serif text-2xl font-medium text-ink">
+                <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink leading-snug">
                   <a
                     href={`/projects/${project.slug}/`}
                     class="hover:text-accent transition-colors"
@@ -338,27 +651,19 @@ const fieldDeskGridClass =
                   </a>
                 </h3>
 
-                <p class="text-sm text-ink-muted leading-relaxed">
+                <p class="text-sm text-ink-muted leading-relaxed line-clamp-2">
                   {project.data.summary}
                 </p>
-
-                <div class="flex flex-wrap gap-1.5 pt-1">
-                  {project.data.tags.slice(0, 4).map((tag) => (
-                    <span class="rounded border border-border bg-surface px-2 py-0.5 text-[11px] font-mono text-ink-muted">
-                      {tag}
-                    </span>
-                  ))}
-                </div>
               </div>
 
-              <div class="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-4 text-xs font-mono">
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 font-mono text-[11px] uppercase tracking-[0.12em]">
                 <a
                   href={`/projects/${project.slug}/`}
-                  class="font-medium text-ink hover:text-accent transition-colors"
+                  class="text-ink underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
                 >
-                  Read dossier →
+                  Dossier →
                 </a>
-                {project.data.demoUrl ? (
+                {project.data.demoUrl && (
                   <a
                     href={project.data.demoUrl}
                     target="_blank"
@@ -367,134 +672,60 @@ const fieldDeskGridClass =
                   >
                     Live ↗
                   </a>
-                ) : project.data.repoUrl ? (
+                )}
+                {project.data.repoUrl && (
                   <a
                     href={project.data.repoUrl}
                     target="_blank"
                     rel="noopener noreferrer"
-                    class="text-atlas hover:text-accent transition-colors"
+                    class="text-ink-muted hover:text-accent transition-colors"
                   >
                     GitHub ↗
                   </a>
-                ) : null}
+                )}
               </div>
-            </article>
+            </li>
           ))
         }
-      </div>
+      </ol>
     </Container>
   </section>
 
-  <!-- From the Bookshelf & Atlas -->
-  <section class="py-14 sm:py-16 border-b border-border" aria-labelledby="shelf-atlas-heading">
+  <!-- Section 4: Swiss Colophon & Correspondence Band -->
+  <section class="py-12" aria-labelledby="colophon-heading">
     <Container size="lg">
-      <div class="mb-8 space-y-1">
-        <p class="editorial-kicker">Interactive Curiosities</p>
-        <h2 id="shelf-atlas-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-          From the Bookshelf &amp; Atlas
-        </h2>
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <!-- Mini Bookshelf Teaser -->
-        <HomeBookshelf client:load books={featuredSpines} totalBooks={books.length} />
-
-        <!-- Mini Passport Stamps Teaser -->
-        <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6">
-          <div class="flex items-baseline justify-between gap-3">
-            <div class="space-y-1">
-              <h3 class="font-serif text-xl font-medium text-ink">Travel Atlas</h3>
-              <p class="text-sm text-ink-muted">Stamped coordinates &amp; field logs.</p>
-            </div>
-            <a
-              href="/travel"
-              class="text-xs font-mono uppercase tracking-wider text-atlas hover:underline underline-offset-4 shrink-0"
-            >
-              Open map →
-            </a>
-          </div>
-
-          {
-            previewTrips.length > 0 ? (
-              <div class="grid grid-cols-2 gap-3">
-                {
-                  previewTrips.map((trip) => (
-                    <a
-                      href={`/travel/${trip.slug}/`}
-                      class="editorial-card group rounded-lg border border-border bg-surface/65 p-3.5 space-y-1.5 hover:border-accent"
-                    >
-                      <div class="flex items-center justify-between gap-2">
-                        <span class="rounded bg-accent-soft px-2 py-0.5 font-mono text-[11px] font-semibold tracking-wider text-accent">
-                          {trip.data.stampCode}
-                        </span>
-                        <span class="font-mono text-[11px] text-ink-muted">
-                          {formatShortDate(trip.data.date)}
-                        </span>
-                      </div>
-                      <p class="font-serif text-base font-medium text-ink group-hover:text-accent transition-colors">
-                        {trip.data.city}
-                      </p>
-                      <p class="font-mono text-[10px] text-ink-muted truncate">
-                        {formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng })}
-                      </p>
-                    </a>
-                  ))
-                }
-              </div>
-            ) : (
-              <div class="rounded-lg border border-dashed border-border bg-surface/60 p-5 space-y-2">
-                <p class="text-xs font-mono uppercase tracking-widest text-atlas">
-                  Ready for Stamps
-                </p>
-                <p class="font-serif text-base font-medium text-ink">
-                  Stamped coordinates &amp; trip notes coming soon.
-                </p>
-                <p class="text-xs text-ink-muted leading-relaxed">
-                  The archival world projection is live on the Travel Atlas page, ready for the first field logs.
-                </p>
-              </div>
-            )
-          }
-        </div>
-      </div>
-    </Container>
-  </section>
-
-  <!-- Connect Strip -->
-  <section class="py-12 sm:py-14" aria-labelledby="connect-heading">
-    <Container size="lg">
-      <div class="rounded-xl border border-border bg-surface/70 p-6 sm:p-8 flex flex-col md:flex-row md:items-center md:justify-between gap-6">
-        <div class="space-y-1.5 max-w-xl">
-          <p class="editorial-kicker">Correspondence</p>
-          <h2 id="connect-heading" class="font-serif text-2xl font-medium text-ink">
-            Always glad to trade book recommendations, travel tips, or systems notes.
-          </h2>
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-baseline">
+        <div class="md:col-span-6 space-y-1.5">
+          <h2 id="colophon-heading" class="editorial-kicker">Colophon &amp; Correspondence</h2>
+          <p class="text-sm text-ink-muted leading-relaxed">
+            Set in Newsreader, Plus Jakarta Sans, and JetBrains Mono. Always glad to trade book recommendations, travel notes, or systems ideas.
+          </p>
         </div>
 
-        <div class="flex flex-wrap items-center gap-2.5">
+        <div class="md:col-span-6 flex flex-wrap md:justify-end items-center gap-x-6 gap-y-2 text-sm">
           {
             SOCIALS.map((social) => (
               <a
                 href={social.HREF}
                 target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
                 rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+                class="font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
               >
-                <svg class="size-4 fill-current" aria-hidden="true">
-                  <use href={`/social.svg#${social.ICON}`}></use>
-                </svg>
-                <span>{social.NAME}</span>
+                {social.NAME}
               </a>
             ))
           }
           <a
             href="/rss.xml"
-            class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-3.5 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+            class="font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
           >
-            <svg class="size-4 stroke-current" aria-hidden="true">
-              <use href="/ui.svg#rss"></use>
-            </svg>
-            <span>RSS</span>
+            RSS
+          </a>
+          <a
+            href="/about"
+            class="font-medium text-accent underline decoration-accent/40 underline-offset-[6px] hover:decoration-accent transition-colors"
+          >
+            About me →
           </a>
         </div>
       </div>

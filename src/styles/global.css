@@ -485,6 +485,11 @@ dialog::backdrop {
   }
 }
 
+dialog.swiss-lightbox:modal {
+  border-radius: 0;
+  inline-size: min(94dvw, 64rem);
+  max-block-size: min(92dvh, 58rem);
+}
 /* Editorial Reading Progress Bar (scroll-driven animation + fallback) */
 .reading-progress {
   position: fixed;
@@ -531,6 +536,21 @@ dialog::backdrop {
 
 .album-stack-sheet {
   transition: border-color 180ms ease;
+}
+
+.editorial-photo-frame {
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px -24px rgb(19 18 16 / 0.32);
+}
+
+.editorial-plate {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.group:hover .editorial-plate,
+.editorial-plate:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -606,6 +626,28 @@ dialog::backdrop {
   .group:focus-visible .album-stack-sheet {
     transform: translateY(-2px) rotate(-0.8deg);
   }
+
+  .editorial-photo {
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .group:hover .editorial-photo,
+  .editorial-photo:hover {
+    transform: scale(1.028);
+  }
+
+  .editorial-plate {
+    transition:
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 260ms ease,
+      border-color 180ms ease;
+  }
+
+  .group:hover .editorial-plate,
+  .editorial-plate:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 38px -24px rgb(19 18 16 / 0.36);
+  }
 }
 
 /* Code block copy button */
@@ -634,4 +676,210 @@ dialog::backdrop {
   block-size: 1.1rem;
   color: #F2ECE1;
   opacity: 0.8;
+}
+
+/* National Parks Map & WPA Poster Emblems (dual-theme light-dark() + fallbacks, 6-ink oklab palette) */
+.park-map-pin,
+.park-emblem {
+  --park-pigment: var(--park-light, var(--atlas-light));
+  --park-accent: var(--park-accent-light, var(--accent-light));
+  --park-tertiary: var(--park-tertiary-light, var(--atlas-light));
+}
+
+.park-emblem {
+  --emblem-ink: var(--park-pigment);
+  --emblem-mid: color-mix(in oklab, var(--park-pigment) 64%, var(--surface));
+  --emblem-far: color-mix(in oklab, var(--park-pigment) 34%, var(--surface-elevated));
+  --emblem-accent: var(--park-accent);
+  --emblem-accent-soft: color-mix(in oklab, var(--park-accent) 44%, var(--emblem-paper));
+  --emblem-tertiary: var(--park-tertiary);
+  --emblem-tertiary-soft: color-mix(in oklab, var(--park-tertiary) 52%, var(--emblem-paper));
+  --emblem-frame: var(--surface-elevated);
+  --emblem-border: color-mix(in oklab, var(--park-pigment) 40%, var(--border));
+
+  --emblem-deep-light: color-mix(in oklab, var(--park-pigment) 54%, #181512);
+  --emblem-deep-dark: color-mix(in oklab, var(--park-pigment) 26%, #0E0D0B);
+  --emblem-paper-light: #FBF8F1;
+  --emblem-paper-dark: #EFE8DA;
+
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 20%, #FBF8F1);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 20%, #171614);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-accent) 16%, #FBF8F1);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-accent) 14%, #24211D);
+
+  --emblem-deep: var(--emblem-deep-light);
+  --emblem-paper: var(--emblem-paper-light);
+  --emblem-sky-top: var(--emblem-sky-top-light);
+  --emblem-sky-bottom: var(--emblem-sky-bottom-light);
+  --emblem-sky: var(--emblem-sky-top);
+  --emblem-sun: var(--emblem-accent);
+}
+
+.park-emblem--sky-dawn {
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 18%, #F6F1E7);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 20%, #17161B);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-accent) 30%, #FBF6EC);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-accent) 30%, #271E19);
+}
+
+.park-emblem--sky-noon {
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 26%, #F4F2EC);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 24%, #15191F);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-pigment) 10%, #FBF8F1);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-pigment) 30%, #242628);
+}
+
+.park-emblem--sky-dusk {
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 34%, #EDE6DC);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 24%, #15141C);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-accent) 38%, #FBF4EA);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-accent) 36%, #281B18);
+}
+
+.park-emblem--sky-night {
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 20%, #101721);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 16%, #0B1017);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-pigment) 34%, #1D2936);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-pigment) 28%, #18232E);
+  --emblem-deep-light: color-mix(in oklab, var(--park-pigment) 20%, #0B0F14);
+  --emblem-deep-dark: color-mix(in oklab, var(--park-pigment) 16%, #080B0F);
+  --emblem-far: color-mix(in oklab, var(--park-pigment) 40%, #1B2430);
+  --emblem-mid: color-mix(in oklab, var(--park-pigment) 64%, #141C26);
+  --emblem-accent-soft: color-mix(in oklab, var(--park-accent) 52%, var(--emblem-paper));
+}
+
+.park-emblem--sky-mist {
+  --emblem-sky-top-light: color-mix(in oklab, var(--park-pigment) 18%, #F2F0E7);
+  --emblem-sky-top-dark: color-mix(in oklab, var(--park-pigment) 22%, #151B18);
+  --emblem-sky-bottom-light: color-mix(in oklab, var(--park-accent) 22%, #F9F5EB);
+  --emblem-sky-bottom-dark: color-mix(in oklab, var(--park-accent) 22%, #242620);
+}
+
+@media (prefers-color-scheme: dark) {
+  .park-map-pin,
+  .park-emblem {
+    --park-pigment: var(--park-dark, var(--atlas-dark));
+    --park-accent: var(--park-accent-dark, var(--accent-dark));
+    --park-tertiary: var(--park-tertiary-dark, var(--atlas-dark));
+  }
+
+  .park-emblem {
+    --emblem-deep: var(--emblem-deep-dark);
+    --emblem-paper: var(--emblem-paper-dark);
+    --emblem-sky-top: var(--emblem-sky-top-dark);
+    --emblem-sky-bottom: var(--emblem-sky-bottom-dark);
+  }
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-map-pin,
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem {
+  --park-pigment: var(--park-dark, var(--atlas-dark));
+  --park-accent: var(--park-accent-dark, var(--accent-dark));
+  --park-tertiary: var(--park-tertiary-dark, var(--atlas-dark));
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem {
+  --emblem-deep: var(--emblem-deep-dark);
+  --emblem-paper: var(--emblem-paper-dark);
+  --emblem-sky-top: var(--emblem-sky-top-dark);
+  --emblem-sky-bottom: var(--emblem-sky-bottom-dark);
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-map-pin,
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
+  --park-pigment: var(--park-light, var(--atlas-light));
+  --park-accent: var(--park-accent-light, var(--accent-light));
+  --park-tertiary: var(--park-tertiary-light, var(--atlas-light));
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
+  --emblem-deep: var(--emblem-deep-light);
+  --emblem-paper: var(--emblem-paper-light);
+  --emblem-sky-top: var(--emblem-sky-top-light);
+  --emblem-sky-bottom: var(--emblem-sky-bottom-light);
+}
+
+@supports (color: light-dark(white, black)) {
+  .park-map-pin,
+  .park-emblem {
+    --park-pigment: light-dark(
+      var(--park-light, var(--atlas-light)),
+      var(--park-dark, var(--atlas-dark))
+    );
+    --park-accent: light-dark(
+      var(--park-accent-light, var(--accent-light)),
+      var(--park-accent-dark, var(--accent-dark))
+    );
+    --park-tertiary: light-dark(
+      var(--park-tertiary-light, var(--atlas-light)),
+      var(--park-tertiary-dark, var(--atlas-dark))
+    );
+  }
+
+  .park-emblem {
+    --emblem-deep: light-dark(var(--emblem-deep-light), var(--emblem-deep-dark));
+    --emblem-paper: light-dark(var(--emblem-paper-light), var(--emblem-paper-dark));
+    --emblem-sky-top: light-dark(var(--emblem-sky-top-light), var(--emblem-sky-top-dark));
+    --emblem-sky-bottom: light-dark(var(--emblem-sky-bottom-light), var(--emblem-sky-bottom-dark));
+  }
+}
+
+.park-emblem--unvisited {
+  --emblem-border: var(--border);
+  filter: grayscale(1);
+  opacity: 0.58;
+}
+
+@media (forced-colors: active) {
+  .park-emblem,
+  :root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem,
+  :root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
+    forced-color-adjust: none;
+    --emblem-frame: Canvas;
+    --emblem-border: CanvasText;
+    --emblem-sky-top: Canvas;
+    --emblem-sky-bottom: Canvas;
+    --emblem-sky: Canvas;
+    --emblem-far: GrayText;
+    --emblem-mid: GrayText;
+    --emblem-ink: CanvasText;
+    --emblem-deep: CanvasText;
+    --emblem-accent: Highlight;
+    --emblem-accent-soft: Highlight;
+    --emblem-tertiary: Highlight;
+    --emblem-tertiary-soft: Highlight;
+    --emblem-paper: Canvas;
+  }
+
+  .park-emblem--unvisited {
+    filter: none;
+    opacity: 0.78;
+  }
+}
+
+.park-map-pin {
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+
+@media (pointer: coarse) {
+  .park-map-pin {
+    min-inline-size: 30px;
+    min-block-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .park-poster-tile {
+    transition:
+      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .park-poster-tile:hover,
+  .park-poster-tile:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -14px rgb(19 18 16 / 0.32);
+  }
 }

@@ -5,8 +5,8 @@ import {
   BOOK_STATUS_META,
   SPINE_PALETTES,
   buildBookHref,
-  computeSpineMetrics,
   formatRating,
+  formatSpineTitle,
   getAuthorInitials,
 } from "@lib/bookshelf"
 
@@ -65,59 +65,141 @@ export default function HomeBookshelf(props: Props) {
   })
 
   return (
-    <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6 h-full">
-      <div class="flex items-baseline justify-between gap-3">
-        <div class="space-y-1">
-          <h3 class="font-serif text-xl font-medium text-ink">Bookshelf</h3>
-          <p class="text-sm text-ink-muted">Quick marginalia &amp; favorites on the desk.</p>
-        </div>
+    <div
+      class="mt-8 pt-8 border-t border-border flex flex-col gap-4"
+      aria-labelledby="hero-bookshelf-heading"
+    >
+      <div class="flex items-baseline justify-between gap-4">
+        <h2 id="hero-bookshelf-heading" class="editorial-kicker text-accent">
+          BOOKSHELF
+        </h2>
         <a
           href="/books"
-          class="text-xs font-mono uppercase tracking-wider text-accent hover:underline underline-offset-4 shrink-0"
+          class="whitespace-nowrap shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
         >
-          {props.totalBooks > 0 ? `All ${props.totalBooks} →` : "Visit shelf →"}
+          {props.totalBooks > 0 ? `All ${props.totalBooks} books →` : "All books →"}
         </a>
       </div>
 
       <Show
         when={props.books.length > 0}
         fallback={
-          <div class="rounded-lg border border-dashed border-border bg-surface/60 p-5 space-y-2">
-            <p class="text-xs font-mono uppercase tracking-widest text-accent">
-              Stocking the Shelf
-            </p>
-            <p class="font-serif text-base font-medium text-ink">
-              2024–2026 reading covers &amp; quick marginalia on the way.
-            </p>
-            <p class="text-xs text-ink-muted leading-relaxed">
-              Recent reads, favorites, and short margin notes will appear here as volumes are shelved.
-            </p>
-          </div>
+          <a href="/books" class="group block space-y-4 focus-visible:outline-2">
+            <div class="border border-border bg-surface/55 px-4 pt-5 pb-3 group-hover:border-accent/60 transition-colors">
+              <svg
+                viewBox="0 0 560 112"
+                class="block w-full h-auto select-none"
+                role="img"
+                aria-label="Minimalist archival bookshelf with brass bookends awaiting volumes"
+              >
+                <g stroke="var(--border)" stroke-width="0.75" opacity="0.65">
+                  <line x1="112" y1="24" x2="112" y2="84" stroke-dasharray="3 4" />
+                  <line x1="224" y1="24" x2="224" y2="84" stroke-dasharray="3 4" />
+                  <line x1="336" y1="24" x2="336" y2="84" stroke-dasharray="3 4" />
+                  <line x1="448" y1="24" x2="448" y2="84" stroke-dasharray="3 4" />
+                </g>
+
+                <path
+                  d="M 28 24 L 36 24 L 36 86 L 74 86 L 74 90 L 28 90 Z"
+                  fill="var(--accent)"
+                  opacity="0.78"
+                />
+                <rect
+                  x="42"
+                  y="32"
+                  width="18"
+                  height="54"
+                  fill="none"
+                  stroke="var(--border)"
+                  stroke-width="1"
+                  stroke-dasharray="3 2"
+                />
+
+                <path
+                  d="M 532 24 L 524 24 L 524 86 L 486 86 L 486 90 L 532 90 Z"
+                  fill="var(--accent)"
+                  opacity="0.78"
+                />
+                <rect
+                  x="500"
+                  y="38"
+                  width="18"
+                  height="48"
+                  fill="none"
+                  stroke="var(--border)"
+                  stroke-width="1"
+                  stroke-dasharray="3 2"
+                />
+
+                <text
+                  x="280"
+                  y="59"
+                  text-anchor="middle"
+                  fill="var(--ink-muted)"
+                  font-family="JetBrains Mono, monospace"
+                  font-size="10.5"
+                  letter-spacing="1.8"
+                >
+                  SHELF 01 · READY FOR VOLUMES
+                </text>
+
+                <rect
+                  x="12"
+                  y="90"
+                  width="536"
+                  height="9"
+                  fill="var(--surface-elevated)"
+                  stroke="var(--border)"
+                  stroke-width="1"
+                />
+                <line
+                  x1="12"
+                  y1="90"
+                  x2="548"
+                  y2="90"
+                  stroke="var(--accent)"
+                  stroke-width="1.2"
+                  opacity="0.5"
+                />
+                <rect
+                  x="26"
+                  y="99"
+                  width="508"
+                  height="4"
+                  fill="var(--border)"
+                  opacity="0.7"
+                />
+              </svg>
+            </div>
+
+            <div class="flex flex-wrap items-baseline justify-between gap-2 text-xs text-ink-muted">
+              <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-ink group-hover:text-accent transition-colors">
+                Stocking the Shelf
+              </span>
+              <span class="text-xs text-ink-muted">
+                Reading covers &amp; quick marginalia coming soon.
+              </span>
+            </div>
+          </a>
         }
       >
-        <div>
-          <div class="flex items-end justify-start gap-2 overflow-x-auto pt-4 pb-0 px-2">
+        <div class="space-y-0">
+          <div class="flex items-end justify-start sm:justify-between gap-2 overflow-x-auto pt-3 pb-0 px-1">
             <For each={props.books}>
               {(book) => {
                 const palette = SPINE_PALETTES[book.spineTheme]
-                const metrics = computeSpineMetrics(book.pages, book.title)
-                const widthPx = Math.max(40, Math.round(metrics.widthPx * 0.82))
-                const heightPx = Math.max(152, Math.round(metrics.heightPx * 0.72))
-
                 return (
                   <button
                     type="button"
+                    title={book.title}
                     onClick={() => openPreview(book)}
                     aria-label={`Preview ${book.title} by ${book.author}`}
-                    class="book-spine-btn relative shrink-0 flex flex-col items-center justify-between rounded-t border px-1.5 py-2.5 text-center select-none cursor-pointer"
+                    class="book-spine-btn relative shrink-0 flex-1 max-w-[60px] min-w-[42px] flex flex-col items-center justify-between rounded-none border px-1.5 py-3 shadow-sm cursor-pointer select-none"
                     style={{
                       "background-color": palette.bg,
                       color: palette.text,
                       "border-color": palette.border,
-                      "min-inline-size": `${widthPx}px`,
-                      "min-block-size": `${heightPx}px`,
-                      "box-shadow":
-                        "inset 3px 0 5px rgb(255 255 255 / 0.14), inset -3px 0 6px rgb(0 0 0 / 0.26)",
+                      "block-size": "188px",
                     }}
                   >
                     <Show when={book.status === "reading"}>
@@ -133,33 +215,34 @@ export default function HomeBookshelf(props: Props) {
 
                     <span
                       aria-hidden="true"
-                      class="w-full h-0.5 rounded-full opacity-75"
+                      class="w-full h-0.5 shrink-0 opacity-80"
                       style={{ "background-color": palette.band }}
                     />
 
                     <span
-                      class="my-2 font-serif text-xs font-medium tracking-tight leading-snug"
+                      class="my-1.5 font-serif text-xs font-medium tracking-tight leading-none"
                       style={{
                         "writing-mode": "vertical-rl",
                         "text-orientation": "mixed",
-                        "max-block-size": `${heightPx - 52}px`,
+                        "white-space": "nowrap",
                         overflow: "hidden",
                         "text-overflow": "ellipsis",
+                        "max-block-size": "116px",
                       }}
                     >
-                      {book.title}
+                      {formatSpineTitle(book.title, 188)}
                     </span>
 
-                    <div class="flex flex-col items-center gap-1 w-full">
+                    <div class="flex flex-col items-center gap-1 w-full shrink-0">
                       <span
-                        class="font-mono text-[9px] uppercase tracking-wider opacity-80"
+                        class="font-mono text-[8.5px] uppercase tracking-wider opacity-80"
                         style={{ "writing-mode": "horizontal-tb" }}
                       >
                         {getAuthorInitials(book.author)}
                       </span>
                       <span
                         aria-hidden="true"
-                        class="w-full h-0.5 rounded-full opacity-70"
+                        class="w-full h-0.5 opacity-70"
                         style={{ "background-color": palette.band }}
                       />
                     </div>
@@ -169,18 +252,15 @@ export default function HomeBookshelf(props: Props) {
             </For>
           </div>
 
-          <div
-            aria-hidden="true"
-            class="h-2.5 w-full rounded-sm border-t border-b-4 border-border shadow-sm"
-            style={{
-              background:
-                "linear-gradient(180deg, var(--surface-elevated) 0%, var(--surface) 62%, var(--border) 100%)",
-            }}
-          />
+          <div aria-hidden="true" class="space-y-0">
+            <div class="h-2.5 w-full border-t border-accent/45 border-x border-border bg-surface-elevated shadow-[0_8px_16px_-10px_rgba(19,18,16,0.45)]" />
+            <div class="h-1 w-[97%] mx-auto bg-border/80" />
+          </div>
+        </div>
 
-          <p class="pt-1.5 text-[11px] font-mono uppercase tracking-widest text-ink-muted">
-            Click any spine to preview
-          </p>
+        <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
+          <span>{`${props.totalBooks} VOLUMES SHELVED · QUICK MARGINALIA`}</span>
+          <span>CLICK ANY SPINE TO PREVIEW</span>
         </div>
       </Show>
 
@@ -249,10 +329,7 @@ export default function HomeBookshelf(props: Props) {
                         id="home-book-dialog-title"
                         class="font-serif text-2xl sm:text-3xl font-medium text-ink"
                       >
-                        <a
-                          href={bookHref()}
-                          class="hover:text-accent transition-colors"
-                        >
+                        <a href={bookHref()} class="hover:text-accent transition-colors">
                           {book().title}
                         </a>
                       </h1>

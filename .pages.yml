@@ -33,6 +33,14 @@ content:
         type: string
         list: true
         default: []
+      - name: heroImage
+        label: Hero Image (optional)
+        type: image
+        required: false
+      - name: heroImageAlt
+        label: Hero Image Alt Text (optional)
+        type: string
+        required: false
       - name: draft
         label: Draft
         type: boolean
@@ -177,6 +185,14 @@ content:
         label: Highlights
         type: string
         list: true
+      - name: coverImage
+        label: Cover Image (optional)
+        type: image
+        required: false
+      - name: coverImageAlt
+        label: Cover Image Alt Text (optional)
+        type: string
+        required: false
       - name: draft
         label: Draft
         type: boolean
@@ -191,7 +207,7 @@ content:
     path: src/content/photos
     filename: "{year}-{month}-{day}-{primary}.md"
     view:
-      fields: [title, album, location, date, draft]
+      fields: [title, album, category, location, date, featured, draft]
       primary: title
       sort: [date, title]
       default:
@@ -230,6 +246,13 @@ content:
         label: Album / Series (optional)
         type: string
         required: false
+      - name: category
+        label: Category
+        type: select
+        required: false
+        default: travel
+        options:
+          values: [travel, craft, everyday, portrait]
       - name: camera
         label: Camera / Lens (optional)
         type: string
@@ -241,7 +264,7 @@ content:
         options:
           values: [landscape, portrait, square, wide]
       - name: featured
-        label: Featured
+        label: Featured Plate
         type: boolean
         default: false
       - name: tags
@@ -250,6 +273,14 @@ content:
         list: true
         required: false
         default: []
+      - name: linkedHref
+        label: Linked Entry URL (optional)
+        type: string
+        required: false
+      - name: linkedLabel
+        label: Linked Entry Label (optional)
+        type: string
+        required: false
       - name: draft
         label: Draft
         type: boolean

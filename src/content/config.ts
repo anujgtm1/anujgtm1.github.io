@@ -18,6 +18,8 @@ const blog = defineCollection({
     summary: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 })
@@ -73,6 +75,8 @@ const travel = defineCollection({
     lng: z.number().min(-180).max(180),
     summary: z.string(),
     highlights: z.array(z.string()),
+    coverImage: z.string().optional(),
+    coverImageAlt: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 })
@@ -116,10 +120,13 @@ const photos = defineCollection({
     date: z.coerce.date(),
     location: z.string().optional(),
     album: z.string().optional(),
+    category: z.enum(["travel", "craft", "everyday", "portrait"]).default("travel"),
     camera: z.string().optional(),
     aspectRatio: z.enum(["landscape", "portrait", "square", "wide"]).optional(),
     featured: z.boolean().optional(),
     tags: z.array(z.string()).default([]),
+    linkedHref: z.string().optional(),
+    linkedLabel: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 })

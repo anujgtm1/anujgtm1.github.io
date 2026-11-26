@@ -24,7 +24,7 @@ This repository builds Anuj Gautam's personal editorial field journal, interacti
 - **Atomic Commits:** Keep commits small, focused, and independently green using Conventional Commits (`feat(...)`, `fix(...)`, `chore(...)`, `test(...)`, `docs(...)`).
 - **Dependencies:** Do not add new npm dependencies without explicit approval from Anuj.
 - **Type & Lint Hygiene:** Zero `@ts-ignore`, `@ts-expect-error`, `eslint-disable`, `any`, or non-null `!` assertions.
-- **Leaf Types Boundary:** Keep `src/types/` strictly dependency-free (no Astro or SolidJS imports so unit tests can import domain types directly in Node). Ambient SolidJS JSX extensions (such as `<dialog closedby>`) belong in `src/solid-jsx.d.ts`.
+- **Leaf Types Boundary:** Keep `src/types/` strictly dependency-free (no Astro or SolidJS imports so unit tests can import domain types directly in Node). Ambient SolidJS JSX extensions (such as `<dialog closedby>`) belong in `src/solid-jsx.d.ts`, and ambient Astro HTML JSX extensions belong in `src/env.d.ts`.
 - **Verification Before Merge/Push:** Always run `npm run build && npm run test:unit && npm run test:e2e` and confirm zero errors/warnings and 100% passing tests.
 
 ---
@@ -35,10 +35,13 @@ This repository builds Anuj Gautam's personal editorial field journal, interacti
 | --- | --- |
 | **Theme, Colors & Typography** | `src/styles/global.css` (CSS variables, archival light/dark palettes, typography classes, animations), `tailwind.config.mjs` (font families, semantic color tokens, prose styling) |
 | **Site Metadata, Nav & Socials** | `src/consts.ts` (`SITE`, page titles/descriptions, `LINKS`, `SOCIALS`), `src/components/Header.astro`, `src/components/Footer.astro` |
-| **Homepage & Field Desk** | `src/pages/index.astro` |
-| **Bookshelf** | `src/pages/books/index.astro`, `src/components/Bookshelf.tsx`, `src/components/HomeBookshelf.tsx`, `src/components/BookcaseLayers.tsx`, `src/components/BookCoverPlate.tsx`, `src/lib/bookshelf.ts`, `tests/unit/bookshelf.test.ts` |
-| **Travel Atlas** | `src/pages/travel/index.astro`, `src/pages/travel/[...slug].astro`, `src/components/TravelAtlas.tsx`, `src/lib/atlas.ts`, `tests/unit/atlas.test.ts` |
+| **Homepage & Swiss Journal** | `src/pages/index.astro`, `src/components/HomeBookshelf.tsx`, `src/lib/journal.ts`, `tests/unit/journal.test.ts` |
+| **Blog** | `src/pages/blog/index.astro`, `src/pages/blog/[...slug].astro` |
 | **Photo Gallery** | `src/pages/photos/index.astro`, `src/pages/photos/[album].astro`, `src/components/PhotoAlbums.tsx`, `src/components/PhotoGallery.tsx`, `src/lib/photos.ts`, `tests/unit/photos.test.ts` |
+| **Bookshelf** | `src/pages/books/index.astro`, `src/components/Bookshelf.tsx`, `src/components/BookCoverPlate.tsx`, `src/lib/bookshelf.ts`, `tests/unit/bookshelf.test.ts` |
+| **Travel Atlas** | `src/pages/travel/index.astro`, `src/pages/travel/[...slug].astro`, `src/components/UnifiedTravelAtlas.tsx`, `src/components/ParkEmblem.tsx`, `src/data/nationalParks.ts`, `src/data/parkJournal.ts`, `src/data/visitedCountries.ts`, `src/lib/parks.ts`, `src/lib/worldProjection.ts`, `src/lib/atlas.ts`, `tests/unit/parks.test.ts`, `tests/unit/atlas.test.ts` |
+| **Projects & Blueprint Plates** | `src/pages/projects/index.astro`, `src/pages/projects/[...slug].astro`, `src/components/ProjectVisualPlate.astro` |
+| **About, Work & Now** | `src/pages/about/index.astro`, `src/pages/work/index.astro`, `src/pages/now/index.astro` |
 | **Unified Search** | `src/pages/search/index.astro`, `src/components/Search.tsx`, `src/lib/search.ts`, `tests/unit/search.test.ts` |
 | **RSS Feed** | `src/pages/rss.xml.ts`, `src/lib/rss.ts`, `tests/unit/rss.test.ts` |
 | **Goodreads Importer** | `scripts/import-goodreads.mjs`, `src/lib/goodreads.ts`, `tests/unit/goodreads.test.ts` |
@@ -52,10 +55,10 @@ This repository builds Anuj Gautam's personal editorial field journal, interacti
 
 The site defines **7 Astro Content Collections** in `src/content/config.ts`:
 
-1. **`blog`** (`src/content/blog/`) — Essays & short notes (`title`, `summary`, `date`, `tags`, optional `draft`)
+1. **`blog`** (`src/content/blog/`) — Essays & short notes (`title`, `summary`, `date`, `tags`, optional `heroImage`, `heroImageAlt`, `draft`)
 2. **`books`** (`src/content/books/`) — Bookshelf & marginalia (`title`, `author`, `status`, `summary`, optional `rating`, `dateRead`, `yearRead`, `pages`, `isbn`, `coverUrl`, `tags`, `spineTheme`, `quote`, `draft`)
-3. **`travel`** (`src/content/travel/`) — Travel Atlas passport stamps & field notes (`title`, `city`, `country`, `region`, `stampCode`, `date`, `lat`, `lng`, `summary`, `highlights`, optional `draft`)
-4. **`photos`** (`src/content/photos/`) — Photo Gallery frames & albums (`title`, `imageUrl`, `alt`, `date`, optional `thumbnailUrl`, `caption`, `location`, `album`, `camera`, `aspectRatio`, `featured`, `tags`, `draft`)
+3. **`travel`** (`src/content/travel/`) — Travel Atlas passport stamps & field notes (`title`, `city`, `country`, `region`, `stampCode`, `date`, `lat`, `lng`, `summary`, `highlights`, optional `coverImage`, `coverImageAlt`, `draft`)
+4. **`photos`** (`src/content/photos/`) — Photo Gallery frames & albums (`title`, `imageUrl`, `alt`, `date`, `category`, optional `thumbnailUrl`, `caption`, `location`, `album`, `camera`, `aspectRatio`, `featured`, `tags`, `linkedHref`, `linkedLabel`, `draft`)
 5. **`projects`** (`src/content/projects/`) — Engineering dossiers (`title`, `summary`, `date`, `status`, `tags`, optional `role`, `repoUrl`, `demoUrl`, `featured`, `draft`)
 6. **`work`** (`src/content/work/`) — Career & academic timeline (`company`, `role`, `dateStart`, `dateEnd`, optional `location`)
 7. **`now`** (`src/content/now/current.md`) — Living `/now` snapshot (`updatedAt`, `location`, `currentlyBuilding`, `listeningOrThinking`, optional `currentlyReading`, `nextTrip`)

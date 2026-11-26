@@ -1,14 +1,17 @@
-import { For, Show, createMemo, createSignal, onCleanup, onMount } from "solid-js"
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 import type { BookItem, BookStatus } from "@types"
 import BookCoverPlate from "@components/BookCoverPlate"
-import BookcaseLayers from "@components/BookcaseLayers"
 import {
   BOOK_STATUS_META,
   SPINE_PALETTES,
+  computeSpineMetrics,
   filterBooks,
   formatRating,
+  formatSpineTitle,
+  getAuthorInitials,
   getAvailableYears,
   groupBooksByYear,
+  packBooksIntoShelves,
   sortBooks,
 } from "@lib/bookshelf"
 
@@ -18,7 +21,7 @@ type Props = {
 
 type StatusFilter = BookStatus | "all"
 type YearFilter = number | "all"
-type ViewMode = "covers" | "catalog"
+type ViewMode = "covers" | "shelf" | "catalog"
 
 const FILTER_OPTIONS: readonly { readonly value: StatusFilter; readonly label: string }[] = [
   { value: "all", label: "All" },
@@ -33,6 +36,8 @@ export default function Bookshelf(props: Props) {
   const [query, setQuery] = createSignal("")
   const [viewMode, setViewMode] = createSignal<ViewMode>("covers")
   const [selectedBook, setSelectedBook] = createSignal<BookItem | null>(null)
+  const [shelfInnerWidth, setShelfInnerWidth] = createSignal(880)
+  const [shelfContainerEl, setShelfContainerEl] = createSignal<HTMLDivElement | null>(null)
 
   let dialogRef: HTMLDialogElement | undefined
 
@@ -121,6 +126,40 @@ export default function Bookshelf(props: Props) {
     }
   })
 
+  createEffect(() => {
+    if (viewMode() !== "shelf") {
+      return
+    }
+    const container = shelfContainerEl()
+    if (!container || typeof ResizeObserver === "undefined") {
+      return
+    }
+
+    const updateWidth = (rawWidth: number) => {
+      if (rawWidth > 0) {
+        setShelfInnerWidth(Math.max(200, Math.floor(rawWidth - 32)))
+      }
+    }
+
+    updateWidth(container.getBoundingClientRect().width)
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) {
+        updateWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(container)
+
+    onCleanup(() => {
+      observer.disconnect()
+    })
+  })
+
+  const shelfSections = createMemo(() =>
+    packBooksIntoShelves(visibleBooks(), shelfInnerWidth(), 8),
+  )
+
   return (
     <div class="space-y-8">
       <Show
@@ -164,7 +203,7 @@ export default function Bookshelf(props: Props) {
               </For>
             </div>
 
-            {/* Search + View Mode Toggle (Covers | Catalog) */}
+            {/* Search + 3-way View Mode Toggle */}
             <div class="flex flex-col sm:flex-row sm:items-center gap-3">
               <label class="relative w-full sm:w-56">
                 <span class="sr-only">Search books by title, author, or tag</span>
@@ -193,6 +232,18 @@ export default function Bookshelf(props: Props) {
                   }`}
                 >
                   Covers
+                </button>
+                <button
+                  type="button"
+                  aria-pressed={viewMode() === "shelf"}
+                  onClick={() => setViewMode("shelf")}
+                  class={`rounded px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                    viewMode() === "shelf"
+                      ? "bg-ink text-bg font-medium"
+                      : "text-ink-muted hover:text-ink"
+                  }`}
+                >
+                  Shelf
                 </button>
                 <button
                   type="button"
@@ -266,14 +317,6 @@ export default function Bookshelf(props: Props) {
             </div>
           }
         >
-          {/* Top Multi-Layer Standing Bookcase */}
-          <BookcaseLayers
-            books={visibleBooks()}
-            selectedSlug={selectedBook()?.slug ?? null}
-            onSelectBook={openBookModal}
-            layout="top"
-          />
-
           {/* COVERS VIEW (Default): Year-by-year visual book cover wall */}
           <Show when={viewMode() === "covers"}>
             <div class="space-y-12">
@@ -324,6 +367,107 @@ export default function Bookshelf(props: Props) {
                       </For>
                     </div>
                   </section>
+                )}
+              </For>
+            </div>
+          </Show>
+
+          {/* SHELF VIEW: Standing archival book spines packed dynamically across shelves */}
+          <Show when={viewMode() === "shelf"}>
+            <div ref={(el) => setShelfContainerEl(el)} class="space-y-10">
+              <For each={shelfSections()}>
+                {(section) => (
+                  <div class="space-y-0">
+                    <div class="flex items-end justify-start gap-2 overflow-x-auto px-4 pt-6 pb-0">
+                      <For each={section.books}>
+                        {(book) => {
+                          const palette = SPINE_PALETTES[book.spineTheme]
+                          const metrics = computeSpineMetrics(book.pages, book.title)
+                          return (
+                            <button
+                              type="button"
+                              id={`book-${book.slug}`}
+                              title={book.title}
+                              onClick={() => openBookModal(book)}
+                              aria-label={`${book.title} by ${book.author} (${BOOK_STATUS_META[book.status].label}) — open quick notes`}
+                              class="book-spine-btn relative flex flex-col items-center justify-between rounded-t-md border px-1.5 py-2.5 text-center select-none cursor-pointer"
+                              style={{
+                                "background-color": palette.bg,
+                                color: palette.text,
+                                "border-color": palette.border,
+                                flex: `0 0 ${metrics.widthPx}px`,
+                                "block-size": `${metrics.heightPx}px`,
+                                "box-shadow":
+                                  "inset 4px 0 6px rgb(255 255 255 / 0.14), inset -4px 0 8px rgb(0 0 0 / 0.28)",
+                              }}
+                            >
+                              <Show when={book.status === "reading"}>
+                                <span
+                                  aria-hidden="true"
+                                  class="absolute -top-3 right-2.5 h-7 w-2.5 rounded-t-sm shadow-sm"
+                                  style={{
+                                    "background-color": "#DF7B5E",
+                                    "clip-path": "polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%)",
+                                  }}
+                                />
+                              </Show>
+
+                              <span
+                                aria-hidden="true"
+                                class="w-full h-1 shrink-0 rounded-full opacity-75"
+                                style={{ "background-color": palette.band }}
+                              />
+
+                              <span
+                                class="my-1.5 font-serif text-[13px] font-medium tracking-tight leading-none"
+                                style={{
+                                  "writing-mode": "vertical-rl",
+                                  "text-orientation": "mixed",
+                                  "white-space": "nowrap",
+                                  overflow: "hidden",
+                                  "text-overflow": "ellipsis",
+                                  "min-block-size": "0",
+                                  "max-block-size": `${metrics.heightPx - 76}px`,
+                                  "min-inline-size": "0",
+                                  "max-inline-size": `${metrics.heightPx - 76}px`,
+                                }}
+                              >
+                                {formatSpineTitle(book.title, metrics.heightPx)}
+                              </span>
+
+                              <div class="flex flex-col items-center gap-1.5 w-full shrink-0">
+                                <span
+                                  class="max-w-full overflow-hidden font-mono text-[9px] uppercase tracking-wider opacity-85"
+                                  style={{ "writing-mode": "horizontal-tb" }}
+                                >
+                                  {getAuthorInitials(book.author)}
+                                </span>
+                                <span
+                                  aria-hidden="true"
+                                  class="w-full h-0.5 rounded-full opacity-65"
+                                  style={{ "background-color": palette.band }}
+                                />
+                              </div>
+                            </button>
+                          )
+                        }}
+                      </For>
+                    </div>
+
+                    <div
+                      aria-hidden="true"
+                      class="h-3.5 w-full rounded-sm border-t border-b-4 border-border bg-surface shadow-sm"
+                    />
+                    <div class="pt-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono uppercase tracking-widest text-ink-muted px-1">
+                      <span class={section.kind === "reading" ? "text-accent font-medium" : ""}>
+                        {section.label}
+                      </span>
+                      <span>
+                        {section.books.length}{" "}
+                        {section.books.length === 1 ? "volume" : "volumes"} · Click any spine for notes
+                      </span>
+                    </div>
+                  </div>
                 )}
               </For>
             </div>
