@@ -726,7 +726,9 @@ dialog.swiss-lightbox:modal {
 }
 
 @media (forced-colors: active) {
-  .park-emblem {
+  .park-emblem,
+  :root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem,
+  :root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
     forced-color-adjust: none;
     --emblem-frame: Canvas;
     --emblem-border: CanvasText;

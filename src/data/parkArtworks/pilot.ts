@@ -142,159 +142,145 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "BLCA",
-    subject: "Sheer Painted Wall V-chasm, pale pegmatite dragon veins & Gunnison River",
+    subject: "Steep horizontal-rimmed Black Canyon gorge, Painted Wall pegmatite dikes & Gunnison River",
     accentLight: "#B85C6E",
     accentDark: "#E899A8",
     skyMood: "noon",
     nodes: [
-      // Plane 1: Tight high-noon zenith sun & piercing canyon sunbeam
-      { kind: "circle", cx: 92, cy: 31, r: 17, fill: "accent-soft", opacity: 0.36 },
-      { kind: "circle", cx: 92, cy: 31, r: 9.5, fill: "paper", opacity: 0.94 },
-      { kind: "polygon", points: "83,34 101,34 114,226 68,226", fill: "accent-soft", opacity: 0.22 },
-      { kind: "polygon", points: "88,36 96,36 102,226 80,226", fill: "paper", opacity: 0.24 },
+      // Plane 1: Open high-altitude Colorado sky, crisp noon sun & delicate clouds (y=11..68)
+      { kind: "circle", cx: 116, cy: 36, r: 19, fill: "accent-soft", opacity: 0.34 },
+      { kind: "circle", cx: 116, cy: 36, r: 10, fill: "paper", opacity: 0.96 },
+      { kind: "path", d: "M20 28 Q42 23 68 28 Q50 32 20 28 Z", fill: "paper", opacity: 0.68 },
+      { kind: "path", d: "M128 48 Q146 44 164 48 Q148 51 128 48 Z", fill: "paper", opacity: 0.56 },
+      // Distant plateau horizon visible through the central canyon V-notch
+      { kind: "path", d: "M58 70 L76 64 L106 65 L124 70 L124 106 L58 106 Z", fill: "far", opacity: 0.45 },
 
-      // Plane 2: Distant receding inner chasm walls inside the narrow V-throat
-      { kind: "path", d: "M64 62 L84 96 L88 186 L64 190 Z", fill: "far", opacity: 0.85 },
-      { kind: "path", d: "M120 58 L98 94 L94 186 L120 190 Z", fill: "mid", opacity: 0.8 },
-
-      // Plane 3: Hero towering near-vertical V-chasm walls (Painted Wall)
-      // Left sheer Precambrian gneiss monolith
+      // Plane 2: Layer 1 — Horizontal high-plateau canyon rims & far receding sunlit gorge spurs
       {
         kind: "path",
-        d: "M12 12 L52 12 L62 42 L68 78 L75 118 L79 162 L83 204 L74 228 L12 228 Z",
-        fill: "deep",
+        d: "M11 68 L64 68 L74 74 L84 120 L91 162 L52 166 L11 102 Z",
+        fill: "far",
       },
-      // Left inner craggy facet catching noon bounce light
       {
         kind: "path",
-        d: "M46 12 L52 12 L62 42 L68 78 L75 118 L79 162 L83 204 L72 202 L66 154 L58 106 L52 60 Z",
+        d: "M169 66 L116 66 L106 74 L96 120 L89 162 L134 166 L169 100 Z",
+        fill: "far",
+      },
+      // Crisp sunlit horizontal mesa rim ledges separating sky from plunging canyon walls
+      { kind: "line", x1: 11, y1: 68, x2: 64, y2: 68, stroke: "paper", strokeWidth: 2.2, opacity: 0.88 },
+      { kind: "line", x1: 116, y1: 66, x2: 169, y2: 66, stroke: "paper", strokeWidth: 2.2, opacity: 0.88 },
+
+      // Plane 3: Layer 2 — Mid interlocking canyon walls & towering Painted Wall cliff face
+      // Left mid interlocking gneiss spur
+      {
+        kind: "path",
+        d: "M11 76 L54 76 L66 86 L76 122 L84 168 L74 192 L11 192 Z",
         fill: "ink",
-        opacity: 0.72,
       },
-      // Right sheer Painted Wall face
-      {
-        kind: "path",
-        d: "M168 12 L134 12 L124 46 L116 86 L109 130 L103 176 L99 206 L108 228 L168 228 Z",
-        fill: "deep",
-      },
-      // Right angular sculpted rock rib
-      {
-        kind: "path",
-        d: "M142 12 L134 12 L124 46 L116 86 L109 130 L103 176 L114 180 L122 132 L130 88 L138 48 Z",
-        fill: "ink",
-        opacity: 0.78,
-      },
+      { kind: "path", d: "M11 76 L54 76 L62 82 L11 82 Z", fill: "far", opacity: 0.68 },
+      { kind: "line", x1: 56, y1: 84, x2: 72, y2: 158, stroke: "deep", strokeWidth: 1.2, opacity: 0.48 },
+      { kind: "path", d: "M26 106 Q44 114 58 126 Q66 132 74 140", stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.52 },
 
-      // Iconic pale jagged pegmatite "dragon veins" crisscrossing both sheer gneiss faces
-      // Right Painted Wall primary dragon vein
+      // Right mid Painted Wall sheer cliff monolith (2,250 ft Precambrian gneiss)
       {
         kind: "path",
-        d: "M166 56 L146 68 L152 80 L126 98 L134 112 L110 132 L119 144 L104 166",
-        stroke: "accent-soft",
-        strokeWidth: 3.4,
-        strokeLinecap: "round",
-        strokeLinejoin: "miter",
-        opacity: 0.92,
+        d: "M169 74 L128 74 L116 82 L106 118 L97 166 L104 192 L169 192 Z",
+        fill: "mid",
       },
+      // Sunlit upper plateau shoulder bevel on Painted Wall
+      { kind: "path", d: "M128 74 L169 74 L169 81 L122 81 L116 82 Z", fill: "paper", opacity: 0.46 },
+      // Shadowed inner gorge facet of Painted Wall
       {
         kind: "path",
-        d: "M166 56 L146 68 L152 80 L126 98 L134 112 L110 132 L119 144 L104 166",
+        d: "M116 82 L106 118 L97 166 L114 168 L124 124 L135 86 Z",
+        fill: "ink",
+        opacity: 0.84,
+      },
+      // Natural angled geological pegmatite veins crisscrossing the Painted Wall face
+      {
+        kind: "path",
+        d: "M124 90 Q138 98 148 112 T166 134",
         stroke: "paper",
-        strokeWidth: 1.5,
+        strokeWidth: 1.8,
         strokeLinecap: "round",
-        strokeLinejoin: "miter",
-        opacity: 0.92,
-      },
-      // Right secondary intersecting pegmatite dike
-      {
-        kind: "path",
-        d: "M118 82 L140 94 L132 106 L160 124 L148 140 L166 156",
-        stroke: "accent",
-        strokeWidth: 2.2,
-        strokeLinecap: "round",
-        opacity: 0.85,
+        opacity: 0.84,
       },
       {
         kind: "path",
-        d: "M164 116 L138 136 L144 150 L116 174 L124 188 L106 204",
+        d: "M113 114 Q128 119 140 128 Q151 135 166 142",
         stroke: "accent-soft",
-        strokeWidth: 2,
+        strokeWidth: 1.6,
         strokeLinecap: "round",
-        opacity: 0.78,
-      },
-      // Left gneiss cliff jagged pegmatite veins
-      {
-        kind: "path",
-        d: "M16 74 L38 88 L32 102 L58 120 L50 136 L74 156",
-        stroke: "accent-soft",
-        strokeWidth: 3,
-        strokeLinecap: "round",
-        opacity: 0.88,
+        opacity: 0.86,
       },
       {
         kind: "path",
-        d: "M16 74 L38 88 L32 102 L58 120 L50 136 L74 156",
+        d: "M107 138 Q121 143 134 153 Q145 159 160 164",
         stroke: "paper",
         strokeWidth: 1.3,
         strokeLinecap: "round",
-        opacity: 0.88,
-      },
-      {
-        kind: "path",
-        d: "M64 88 L42 104 L48 118 L22 138 L30 152 L14 166",
-        stroke: "accent",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        opacity: 0.82,
-      },
-      {
-        kind: "path",
-        d: "M20 176 L46 166 L54 180 L76 174",
-        stroke: "accent-soft",
-        strokeWidth: 1.8,
-        strokeLinecap: "round",
         opacity: 0.72,
       },
-
-      // Vertical shadow cleft lines emphasizing sheer 2,250-foot depth
-      { kind: "line", x1: 60, y1: 38, x2: 72, y2: 184, stroke: "deep", strokeWidth: 1.6, opacity: 0.65 },
-      { kind: "line", x1: 126, y1: 42, x2: 112, y2: 188, stroke: "deep", strokeWidth: 1.6, opacity: 0.65 },
-
-      // Plane 4: Tiny churning whitewater Gunnison River rapids at the chasm bottom
-      { kind: "path", d: "M76 184 L104 184 L112 228 L68 228 Z", fill: "mid" },
       {
         kind: "path",
-        d: "M90 184 C86 192 96 198 88 206 C80 214 96 220 90 228",
-        stroke: "paper",
-        strokeWidth: 3.4,
+        d: "M138 84 L152 94 L164 106",
+        stroke: "accent-soft",
+        strokeWidth: 1.2,
         strokeLinecap: "round",
-        opacity: 0.94,
+        opacity: 0.74,
       },
+
+      // Plane 4: Deep shadowed V-gorge throat & winding whitewater Gunnison River (y=158..229)
+      { kind: "path", d: "M66 158 L114 158 L128 229 L52 229 Z", fill: "deep" },
+      // Winding river channel emerging from the narrow black gorge shadow
       {
         kind: "path",
-        d: "M84 196 Q90 193 96 196 M81 212 Q90 208 99 212 M78 222 Q90 218 102 222",
-        stroke: "paper",
-        strokeWidth: 1.6,
-        strokeLinecap: "round",
+        d: "M88 158 C86 168 95 175 87 186 C78 198 102 208 96 229 L76 229 C82 210 68 198 77 186 C83 176 81 167 86 158 Z",
+        fill: "far",
         opacity: 0.82,
       },
-      { kind: "ellipse", cx: 81, cy: 205, rx: 4.5, ry: 2.8, fill: "deep" },
-      { kind: "ellipse", cx: 100, cy: 216, rx: 5, ry: 3, fill: "deep" },
-
-      // Plane 5: Gnarled cliffside juniper clinging to the upper-left canyon rim
       {
         kind: "path",
-        d: "M46 34 C54 32 60 28 66 23 M54 31 C60 35 66 36 72 34",
-        stroke: "deep",
-        strokeWidth: 2.6,
+        d: "M88 160 C86 170 93 176 85 187 C77 198 96 208 87 229",
+        stroke: "paper",
+        strokeWidth: 2.8,
         strokeLinecap: "round",
+        opacity: 0.96,
       },
-      { kind: "ellipse", cx: 67, cy: 22, rx: 8.5, ry: 3.6, fill: "deep" },
-      { kind: "ellipse", cx: 73, cy: 33, rx: 7, ry: 3, fill: "deep" },
-      { kind: "ellipse", cx: 56, cy: 26, rx: 7.5, ry: 3.2, fill: "deep" },
-      // Foreground bottom rim crags
-      { kind: "polygon", points: "12,202 62,216 74,228 12,228", fill: "deep" },
-      { kind: "polygon", points: "168,200 120,214 106,228 168,228", fill: "deep" },
+      {
+        kind: "path",
+        d: "M81 193 Q87 190 93 193 M79 208 Q88 205 97 209 M77 220 Q87 216 97 220",
+        stroke: "paper",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+        opacity: 0.86,
+      },
+
+      // Plane 5: Layer 3 — Steep dark foreground opposing canyon walls framing the gorge
+      {
+        kind: "path",
+        d: "M11 96 L34 100 L48 128 L62 172 L70 212 L62 229 L11 229 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M11 124 L34 134 L44 170 L11 164 Z",
+        fill: "ink",
+        opacity: 0.36,
+      },
+      { kind: "path", d: "M11 96 L34 100 L48 128", stroke: "mid", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.72 },
+      {
+        kind: "path",
+        d: "M169 100 L146 104 L132 134 L118 176 L110 212 L116 229 L169 229 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M169 128 L144 138 L134 172 L169 166 Z",
+        fill: "ink",
+        opacity: 0.38,
+      },
+      { kind: "path", d: "M169 100 L146 104 L132 134", stroke: "accent-soft", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.68 },
     ],
   },
 
