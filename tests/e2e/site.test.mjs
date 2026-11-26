@@ -191,6 +191,26 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   assert.ok(body.includes("PHOTO GALLERY"))
   assert.ok(body.includes("No stamps logged yet"))
   assert.ok(body.includes("https://travel.anujgtm.com"))
+
+  // Verify upgraded 3:4 WPA poster stylesheet and client island bundle are emitted cleanly
+  const cssMatch = body.match(/href="(\/_astro\/[^"]+\.css)"/)
+  assert.ok(cssMatch?.[1], "Travel page should link built Astro CSS stylesheet")
+  const cssRes = await fetchText(cssMatch[1])
+  assert.equal(cssRes.status, 200)
+  assert.ok(cssRes.body.includes("park-emblem--sky-night"), "Built CSS should include sky-mood classes")
+  assert.ok(cssRes.body.includes("color-mix(in oklab"), "Built CSS should use oklab 6-ink color mixing")
+
+  const islandMatch = body.match(/component-url="(\/_astro\/UnifiedTravelAtlas\.[^"]+\.js)"/)
+  assert.ok(islandMatch?.[1], "Travel page should hydrate UnifiedTravelAtlas island")
+  const islandRes = await fetchText(islandMatch[1])
+  assert.equal(islandRes.status, 200)
+  assert.ok(islandRes.body.includes("0 0 180 240"), "UnifiedTravelAtlas bundle should emit 3:4 WPA poster viewBox")
+  for (const pilotCode of ["GRCA", "BLCA", "NERI", "MORA", "HAVO", "CONG", "WICA", "VOYA"]) {
+    assert.ok(
+      islandRes.body.includes(pilotCode),
+      `UnifiedTravelAtlas bundle should include pilot artwork "${pilotCode}"`,
+    )
+  }
 })
 
 test("projects, blueprint plates, dossiers, about, work, and /now showcase Anuj's real engineering history and builds", async () => {

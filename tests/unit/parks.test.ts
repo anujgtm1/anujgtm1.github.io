@@ -1,8 +1,14 @@
 import assert from "node:assert/strict"
 import test from "node:test"
 import { NATIONAL_PARKS } from "../../src/data/nationalParks.ts"
+import {
+  PARK_ARTWORKS,
+  PILOT_PARK_ARTWORKS,
+  getParkArtwork,
+} from "../../src/data/parkArtworks/index.ts"
 import { US_ALBERS_VIEWBOX, US_STATES } from "../../src/data/usStates.ts"
 import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "../../src/data/worldCountries.ts"
+import type { ParkArtworkInk, ParkArtworkSkyMood } from "../../src/types/parks.ts"
 import {
   USA_ISO_ID,
   buildNaturalEarthGraticule,
@@ -155,4 +161,74 @@ test("Natural Earth I world countries, graticule, and projected park coordinates
   const visitedOnly = filterWorldCountries(WORLD_COUNTRIES, new Set([USA_ISO_ID]), "visited", "")
   assert.equal(visitedOnly.length, 1)
   assert.equal(visitedOnly[0]?.id, USA_ISO_ID)
+})
+
+test("Phase 1 pilot WPA park artworks cover all 8 pilot parks with unique layered geometry and valid palettes", () => {
+  const expectedPilotCodes = [
+    "BLCA",
+    "CONG",
+    "GRCA",
+    "HAVO",
+    "MORA",
+    "NERI",
+    "VOYA",
+    "WICA",
+  ]
+  const parkCodeSet = new Set(NATIONAL_PARKS.map((p) => p.code))
+  const validInks = new Set<ParkArtworkInk>([
+    "sky-top",
+    "sky-bottom",
+    "far",
+    "mid",
+    "ink",
+    "deep",
+    "accent",
+    "accent-soft",
+    "paper",
+    "none",
+  ])
+  const validSkyMoods = new Set<ParkArtworkSkyMood>(["dawn", "noon", "dusk", "night", "mist"])
+  const hexColorRe = /^#[0-9A-Fa-f]{6}$/
+
+  assert.equal(PILOT_PARK_ARTWORKS.length, 8)
+  const actualCodes = Object.keys(PARK_ARTWORKS).sort()
+  assert.deepEqual(actualCodes, expectedPilotCodes)
+
+  const geometrySignatures = new Set<string>()
+
+  for (const code of expectedPilotCodes) {
+    assert.ok(parkCodeSet.has(code), `${code} must match a valid NATIONAL_PARKS code`)
+    const spec = getParkArtwork(code)
+    assert.ok(spec, `getParkArtwork(${code}) must return artwork spec`)
+    assert.equal(spec.code, code)
+    assert.ok(spec.subject.trim().length >= 12, `${code} must declare a descriptive subject`)
+    assert.match(spec.accentLight, hexColorRe, `${code} accentLight must be a 6-digit hex pigment`)
+    assert.match(spec.accentDark, hexColorRe, `${code} accentDark must be a 6-digit hex pigment`)
+    assert.ok(validSkyMoods.has(spec.skyMood), `${code} has invalid skyMood: ${spec.skyMood}`)
+    assert.ok(
+      spec.nodes.length >= 12,
+      `${code} must have richly layered geometry (>= 12 nodes), got ${spec.nodes.length}`,
+    )
+
+    for (const node of spec.nodes) {
+      if (node.fill !== undefined) {
+        assert.ok(validInks.has(node.fill), `${code} node has invalid fill ink "${node.fill}"`)
+      }
+      if (node.stroke !== undefined) {
+        assert.ok(validInks.has(node.stroke), `${code} node has invalid stroke ink "${node.stroke}"`)
+      }
+      if (node.opacity !== undefined) {
+        assert.ok(node.opacity > 0 && node.opacity <= 1, `${code} node opacity out of range`)
+      }
+    }
+
+    const signature = JSON.stringify(spec.nodes)
+    assert.ok(
+      !geometrySignatures.has(signature),
+      `${code} artwork geometry must be 100% unique`,
+    )
+    geometrySignatures.add(signature)
+  }
+
+  assert.equal(getParkArtwork("UNKNOWN_CODE"), undefined)
 })
