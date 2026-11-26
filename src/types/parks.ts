@@ -94,6 +94,8 @@ export type ParkArtworkInk =
   | "deep"
   | "accent"
   | "accent-soft"
+  | "tertiary"
+  | "tertiary-soft"
   | "paper"
   | "none"
 
@@ -152,6 +154,8 @@ export type ParkArtworkSpec = {
   readonly subject: string
   readonly accentLight: string
   readonly accentDark: string
+  readonly tertiaryLight?: string
+  readonly tertiaryDark?: string
   readonly skyMood: ParkArtworkSkyMood
   readonly nodes: readonly ParkArtworkNode[]
 }

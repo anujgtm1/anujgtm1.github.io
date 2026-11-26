@@ -181,6 +181,8 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
     "deep",
     "accent",
     "accent-soft",
+    "tertiary",
+    "tertiary-soft",
     "paper",
     "none",
   ])
@@ -208,6 +210,11 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
     assert.ok(spec.subject.trim().length >= 12, `${code} must declare a descriptive subject`)
     assert.match(spec.accentLight, hexColorRe, `${code} accentLight must be a 6-digit hex pigment`)
     assert.match(spec.accentDark, hexColorRe, `${code} accentDark must be a 6-digit hex pigment`)
+    if (spec.tertiaryLight !== undefined || spec.tertiaryDark !== undefined) {
+      assert.ok(spec.tertiaryLight && spec.tertiaryDark, `${code} must define both tertiaryLight and tertiaryDark`)
+      assert.match(spec.tertiaryLight, hexColorRe, `${code} tertiaryLight must be a 6-digit hex pigment`)
+      assert.match(spec.tertiaryDark, hexColorRe, `${code} tertiaryDark must be a 6-digit hex pigment`)
+    }
     assert.ok(validSkyMoods.has(spec.skyMood), `${code} has invalid skyMood: ${spec.skyMood}`)
     assert.ok(
       spec.nodes.length >= 18,

@@ -588,6 +588,7 @@ dialog.swiss-lightbox:modal {
 .park-emblem {
   --park-pigment: var(--park-light, var(--atlas-light));
   --park-accent: var(--park-accent-light, var(--accent-light));
+  --park-tertiary: var(--park-tertiary-light, var(--atlas-light));
 }
 
 .park-emblem {
@@ -596,6 +597,8 @@ dialog.swiss-lightbox:modal {
   --emblem-far: color-mix(in oklab, var(--park-pigment) 34%, var(--surface-elevated));
   --emblem-accent: var(--park-accent);
   --emblem-accent-soft: color-mix(in oklab, var(--park-accent) 44%, var(--emblem-paper));
+  --emblem-tertiary: var(--park-tertiary);
+  --emblem-tertiary-soft: color-mix(in oklab, var(--park-tertiary) 52%, var(--emblem-paper));
   --emblem-frame: var(--surface-elevated);
   --emblem-border: color-mix(in oklab, var(--park-pigment) 40%, var(--border));
 
@@ -662,6 +665,7 @@ dialog.swiss-lightbox:modal {
   .park-emblem {
     --park-pigment: var(--park-dark, var(--atlas-dark));
     --park-accent: var(--park-accent-dark, var(--accent-dark));
+    --park-tertiary: var(--park-tertiary-dark, var(--atlas-dark));
   }
 
   .park-emblem {
@@ -676,6 +680,7 @@ dialog.swiss-lightbox:modal {
 :root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem {
   --park-pigment: var(--park-dark, var(--atlas-dark));
   --park-accent: var(--park-accent-dark, var(--accent-dark));
+  --park-tertiary: var(--park-tertiary-dark, var(--atlas-dark));
 }
 
 :root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem {
@@ -689,6 +694,7 @@ dialog.swiss-lightbox:modal {
 :root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
   --park-pigment: var(--park-light, var(--atlas-light));
   --park-accent: var(--park-accent-light, var(--accent-light));
+  --park-tertiary: var(--park-tertiary-light, var(--atlas-light));
 }
 
 :root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
@@ -708,6 +714,10 @@ dialog.swiss-lightbox:modal {
     --park-accent: light-dark(
       var(--park-accent-light, var(--accent-light)),
       var(--park-accent-dark, var(--accent-dark))
+    );
+    --park-tertiary: light-dark(
+      var(--park-tertiary-light, var(--atlas-light)),
+      var(--park-tertiary-dark, var(--atlas-dark))
     );
   }
 
@@ -741,6 +751,8 @@ dialog.swiss-lightbox:modal {
     --emblem-deep: CanvasText;
     --emblem-accent: Highlight;
     --emblem-accent-soft: Highlight;
+    --emblem-tertiary: Highlight;
+    --emblem-tertiary-soft: Highlight;
     --emblem-paper: Canvas;
   }
 

@@ -18,6 +18,8 @@ const INK_VAR_MAP: Readonly<Record<ParkArtworkInk, string>> = {
   deep: "var(--emblem-deep)",
   accent: "var(--emblem-accent)",
   "accent-soft": "var(--emblem-accent-soft)",
+  tertiary: "var(--emblem-tertiary)",
+  "tertiary-soft": "var(--emblem-tertiary-soft)",
   paper: "var(--emblem-paper)",
   none: "none",
 }
@@ -136,6 +138,8 @@ export default function ParkEmblem(props: Props) {
       "--park-dark": props.park.pigmentDark,
       "--park-accent-light": spec.accentLight,
       "--park-accent-dark": spec.accentDark,
+      ...(spec.tertiaryLight ? { "--park-tertiary-light": spec.tertiaryLight } : {}),
+      ...(spec.tertiaryDark ? { "--park-tertiary-dark": spec.tertiaryDark } : {}),
     }
   }
 
