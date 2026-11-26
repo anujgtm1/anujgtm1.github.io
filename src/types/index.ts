@@ -31,4 +31,5 @@ export type {
   ParkSurveySummary,
   ProjectedPark,
   UsStateGeometry,
+  WorldCountryGeometry,
 } from "./parks.ts"

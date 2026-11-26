@@ -2,6 +2,9 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import { NATIONAL_PARKS } from "../../src/data/nationalParks.ts"
 import { US_ALBERS_VIEWBOX, US_STATES } from "../../src/data/usStates.ts"
+import { US_STATES_WORLD } from "../../src/data/usStatesWorld.ts"
+import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "../../src/data/worldCountries.ts"
+import { projectNaturalEarth } from "../../src/lib/worldProjection.ts"
 import {
   computeParkSurveySummary,
   computeVisitedLower48Route,
@@ -125,4 +128,27 @@ test("filterAndSortParks filters by visit status and query and orders determinis
   assert.equal(visitedFirst[0]?.visited, true)
   assert.equal(visitedFirst[49]?.visited, true)
   assert.equal(visitedFirst[50]?.visited, false)
+})
+
+test("Natural Earth I world countries and US states align with projected park coordinates", () => {
+  assert.ok(WORLD_COUNTRIES.length >= 170)
+  assert.equal(US_STATES_WORLD.length, 50)
+  assert.ok(WORLD_COUNTRIES.some((c) => c.id === "840"), "Must contain United States (840)")
+
+  const worldStateByAbbr = new Map(US_STATES_WORLD.map((s) => [s.abbr, s]))
+  for (const park of NATIONAL_PARKS) {
+    const pt = projectNaturalEarth(park.coordinates)
+    assert.ok(
+      pt.x >= 0 && pt.x <= WORLD_NE_VIEWBOX.width && pt.y >= 0 && pt.y <= WORLD_NE_VIEWBOX.height,
+      `${park.name} Natural Earth point (${pt.x},${pt.y}) out of bounds`,
+    )
+    if (park.inset === "lower48") {
+      const st = worldStateByAbbr.get(park.states[0])
+      assert.ok(st)
+      assert.ok(
+        Math.hypot(pt.x - st.centroidX, pt.y - st.centroidY) < 35,
+        `${park.name} Natural Earth point drifted from ${st.abbr} centroid`,
+      )
+    }
+  }
 })

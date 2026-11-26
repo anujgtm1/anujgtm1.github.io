@@ -89,6 +89,14 @@ export type UsStateGeometry = {
   readonly d: string
 }
 
+export type WorldCountryGeometry = {
+  readonly id: string
+  readonly name: string
+  readonly centroidX: number
+  readonly centroidY: number
+  readonly d: string
+}
+
 export type ProjectedPark = NationalPark & {
   readonly mapPoint: MapPoint
   readonly humboldtPoint: MapPoint
