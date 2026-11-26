@@ -277,15 +277,15 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "CANY",
-    subject: "Island in the Sky vast stepped flat-topped plateau terraces & sweeping Green River gooseneck",
+    subject: "Island in the Sky vast flat-topped mesa tablelands, stepped White Rim benches & distant river thread",
     accentLight: "#C96A2C",
     accentDark: "#EF9E60",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Wide open desert sky (y=11..62), low sun & flat desert cloud strata
-      { kind: "circle", cx: 128, cy: 42, r: 28, fill: "accent-soft", opacity: 0.36 },
-      { kind: "circle", cx: 128, cy: 42, r: 17, fill: "accent-soft", opacity: 0.52 },
-      { kind: "circle", cx: 128, cy: 42, r: 9.5, fill: "paper", opacity: 0.94 },
+      // Plane 1: Wide open desert sky (y=11..62), low sun & flat horizontal desert cloud strata
+      { kind: "circle", cx: 128, cy: 40, r: 28, fill: "accent-soft", opacity: 0.36 },
+      { kind: "circle", cx: 128, cy: 40, r: 17, fill: "accent-soft", opacity: 0.52 },
+      { kind: "circle", cx: 128, cy: 40, r: 9.5, fill: "paper", opacity: 0.94 },
       { kind: "path", d: "M18 26 L78 26 Q66 30 34 30 Z", fill: "paper", opacity: 0.58 },
       { kind: "path", d: "M58 38 L108 38 Q94 41 68 41 Z", fill: "paper", opacity: 0.44 },
       { kind: "path", d: "M138 24 L166 24 Q158 27 142 27 Z", fill: "paper", opacity: 0.48 },
@@ -293,125 +293,119 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       // Plane 2: Vast flat-topped horizontal tableland horizon across the entire width
       {
         kind: "path",
-        d: "M11 62 L52 62 L56 66 L112 66 L116 61 L169 61 L169 94 L11 94 Z",
+        d: "M11 62 L54 62 L58 67 L114 67 L118 61 L169 61 L169 94 L11 94 Z",
         fill: "far",
       },
-      { kind: "line", x1: 11, y1: 62, x2: 52, y2: 62, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
-      { kind: "line", x1: 116, y1: 61, x2: 169, y2: 61, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
-      { kind: "line", x1: 56, y1: 66, x2: 112, y2: 66, stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.58 },
+      { kind: "line", x1: 11, y1: 62, x2: 54, y2: 62, stroke: "paper", strokeWidth: 1.5, opacity: 0.7 },
+      { kind: "line", x1: 118, y1: 61, x2: 169, y2: 61, stroke: "paper", strokeWidth: 1.5, opacity: 0.7 },
+      { kind: "line", x1: 58, y1: 67, x2: 114, y2: 67, stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.58 },
 
-      // Plane 3: Level 1 — Upper Island in the Sky flat plateau benches & vertical cliff drop-offs
+      // Plane 3: Level 1 — Upper Island in the Sky flat plateau benches & sheer cliff escarpments
       {
         kind: "path",
-        d: "M11 76 L62 76 L66 88 L120 88 L124 75 L169 75 L169 114 L11 114 Z",
+        d: "M11 76 L64 76 L68 89 L120 89 L124 75 L169 75 L169 116 L11 116 Z",
         fill: "mid",
       },
-      { kind: "line", x1: 11, y1: 76, x2: 62, y2: 76, stroke: "accent-soft", strokeWidth: 2, opacity: 0.78 },
-      { kind: "line", x1: 124, y1: 75, x2: 169, y2: 75, stroke: "accent-soft", strokeWidth: 2, opacity: 0.78 },
-      { kind: "line", x1: 66, y1: 88, x2: 120, y2: 88, stroke: "paper", strokeWidth: 1.4, opacity: 0.56 },
+      { kind: "line", x1: 11, y1: 76, x2: 64, y2: 76, stroke: "accent-soft", strokeWidth: 2, opacity: 0.8 },
+      { kind: "line", x1: 124, y1: 75, x2: 169, y2: 75, stroke: "accent-soft", strokeWidth: 2, opacity: 0.8 },
+      { kind: "line", x1: 68, y1: 89, x2: 120, y2: 89, stroke: "paper", strokeWidth: 1.3, opacity: 0.54 },
 
-      // Level 2 — Iconic stepped White Rim flat geological bench stepping down on left & right
+      // Level 2 — Monumental stepped flat-topped Wingate & White Rim mesa benches
       {
         kind: "path",
-        d: "M11 98 L46 98 L50 112 L78 112 L82 120 L114 120 L118 106 L142 106 L146 96 L169 96 L169 144 L11 144 Z",
+        d: "M11 98 L48 98 L52 112 L84 112 L88 100 L118 100 L122 112 L144 112 L148 96 L169 96 L169 144 L11 144 Z",
         fill: "ink",
       },
-      // Sunlit pale White Rim sandstone cap horizontal terrace lines
-      { kind: "line", x1: 11, y1: 98, x2: 46, y2: 98, stroke: "paper", strokeWidth: 2.2, opacity: 0.84 },
-      { kind: "line", x1: 50, y1: 112, x2: 78, y2: 112, stroke: "paper", strokeWidth: 1.8, opacity: 0.76 },
-      { kind: "line", x1: 118, y1: 106, x2: 142, y2: 106, stroke: "paper", strokeWidth: 1.8, opacity: 0.76 },
-      { kind: "line", x1: 146, y1: 96, x2: 169, y2: 96, stroke: "paper", strokeWidth: 2.2, opacity: 0.84 },
-      // Warm sunlit cliff-wall wash on right-facing sandstone escarpments
+      // Sunlit warm eastern cliff faces on the central & right flat-topped mesas
       {
         kind: "path",
-        d: "M118 106 L142 106 L146 96 L169 96 L169 124 L114 124 Z",
+        d: "M104 100 L118 100 L122 112 L122 132 L104 132 Z",
         fill: "accent",
-        opacity: 0.44,
+        opacity: 0.46,
       },
+      {
+        kind: "path",
+        d: "M148 96 L169 96 L169 132 L144 132 L144 112 Z",
+        fill: "accent",
+        opacity: 0.48,
+      },
+      // Crisp pale White Rim horizontal sandstone caprock edges
+      { kind: "line", x1: 11, y1: 98, x2: 48, y2: 98, stroke: "paper", strokeWidth: 2.1, opacity: 0.82 },
+      { kind: "line", x1: 52, y1: 112, x2: 84, y2: 112, stroke: "accent-soft", strokeWidth: 1.7, opacity: 0.78 },
+      { kind: "line", x1: 88, y1: 100, x2: 118, y2: 100, stroke: "paper", strokeWidth: 2, opacity: 0.82 },
+      { kind: "line", x1: 122, y1: 112, x2: 144, y2: 112, stroke: "accent-soft", strokeWidth: 1.7, opacity: 0.78 },
+      { kind: "line", x1: 148, y1: 96, x2: 169, y2: 96, stroke: "paper", strokeWidth: 2.1, opacity: 0.82 },
 
-      // Level 3 — Lower flat canyon floor shelf & sheer inner gorge rim
+      // Plane 4: Expansive horizontal White Rim lower canyon plateau benches
       {
         kind: "path",
-        d: "M11 124 L68 124 L74 134 L126 134 L132 124 L169 124 L169 229 L11 229 Z",
-        fill: "ink",
-      },
-      {
-        kind: "path",
-        d: "M11 136 L169 136 L169 229 L11 229 Z",
+        d: "M11 128 L66 128 L72 138 L128 138 L134 126 L169 126 L169 204 L11 204 Z",
         fill: "mid",
-        opacity: 0.42,
       },
-      { kind: "line", x1: 11, y1: 124, x2: 68, y2: 124, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.74 },
-      { kind: "line", x1: 132, y1: 124, x2: 169, y2: 124, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.74 },
-
-      // Plane 4: Subtle sculpted gooseneck river-canyon trench carved deep into the flat sandstone floor
-      // Warm rim-lit outer canyon wall lip tracing the sinuous gooseneck cut
+      { kind: "line", x1: 11, y1: 128, x2: 66, y2: 128, stroke: "accent-soft", strokeWidth: 1.8, opacity: 0.76 },
+      { kind: "line", x1: 134, y1: 126, x2: 169, y2: 126, stroke: "accent-soft", strokeWidth: 1.8, opacity: 0.76 },
+      // Broad lower sunlit flat desert bench floor
       {
         kind: "path",
-        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
-        stroke: "accent",
-        strokeWidth: 18,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        opacity: 0.44,
+        d: "M11 144 L169 144 L169 208 L11 208 Z",
+        fill: "ink",
+        opacity: 0.72,
       },
-      // Deep shadowed inner gorge walls carving the gooseneck canyon trench
+      // Layered horizontal White Rim shelf steps framing left & right of the distant canyon basin
       {
         kind: "path",
-        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
+        d: "M11 152 L58 152 L64 162 L11 162 Z",
+        fill: "mid",
+      },
+      { kind: "line", x1: 11, y1: 152, x2: 58, y2: 152, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
+      {
+        kind: "path",
+        d: "M124 148 L169 148 L169 162 L118 162 Z",
+        fill: "mid",
+      },
+      { kind: "line", x1: 124, y1: 148, x2: 169, y2: 148, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
+      // Thin, delicate, quiet far (soft muted light-gray/sand) meandering river thread far down on the lower bench
+      {
+        kind: "path",
+        d: "M96 139 C104 143 108 148 98 153 C86 159 64 162 68 170 C72 178 110 177 118 186 C122 192 106 196 92 201",
         stroke: "deep",
-        strokeWidth: 14,
+        strokeWidth: 4.4,
         strokeLinecap: "round",
         strokeLinejoin: "round",
+        opacity: 0.34,
       },
-      // Subtle recessed inner canyon floor channel (no bright whitish river ribbon)
       {
         kind: "path",
-        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
-        stroke: "ink",
-        strokeWidth: 5.5,
+        d: "M96 139 C104 143 108 148 98 153 C86 159 64 162 68 170 C72 178 110 177 118 186 C122 192 106 196 92 201",
+        stroke: "far",
+        strokeWidth: 2.3,
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        opacity: 0.88,
+        opacity: 0.84,
       },
-      // Quiet, thin recessed river trace tucked deep in the shadowed gorge bottom
+      // Calm lower horizontal sandstone bench flanking the foreground overlook
       {
         kind: "path",
-        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
-        stroke: "mid",
-        strokeWidth: 2,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-        opacity: 0.62,
-      },
-      // Sculpted flat-topped gooseneck peninsula headland enclosed inside the river canyon bend
-      {
-        kind: "path",
-        d: "M58 156 L112 152 L124 162 L72 167 Z",
-        fill: "mid",
-      },
-      { kind: "line", x1: 60, y1: 156, x2: 112, y2: 152, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
-      // Subtle sunlit flat horizontal terrace rim above the foreground bend
-      {
-        kind: "path",
-        d: "M14 186 L68 186 L76 196 L14 198 Z",
+        d: "M11 174 L56 174 L64 186 L11 186 Z",
         fill: "ink",
       },
-      { kind: "line", x1: 14, y1: 186, x2: 68, y2: 186, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.68 },
+      { kind: "line", x1: 11, y1: 174, x2: 56, y2: 174, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.7 },
+      {
+        kind: "path",
+        d: "M128 172 L169 172 L169 188 L120 188 Z",
+        fill: "ink",
+      },
+      { kind: "line", x1: 128, y1: 172, x2: 169, y2: 172, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.7 },
 
-      // Plane 5: Grounded dark flat overlook rim framing the bottom corners
+      // Plane 5: Grounded wide flat Island in the Sky overlook rim across the bottom (y=196..229)
       {
         kind: "path",
-        d: "M11 206 L58 206 L64 218 L54 229 L11 229 Z",
+        d: "M11 198 L68 198 L76 208 L112 208 L120 196 L169 196 L169 229 L11 229 Z",
         fill: "deep",
       },
-      { kind: "line", x1: 11, y1: 206, x2: 58, y2: 206, stroke: "accent", strokeWidth: 1.8, opacity: 0.76 },
-      {
-        kind: "path",
-        d: "M128 214 L169 208 L169 229 L114 229 Z",
-        fill: "deep",
-      },
-      { kind: "line", x1: 128, y1: 214, x2: 169, y2: 208, stroke: "accent", strokeWidth: 1.8, opacity: 0.72 },
+      { kind: "line", x1: 11, y1: 198, x2: 68, y2: 198, stroke: "accent", strokeWidth: 1.8, opacity: 0.78 },
+      { kind: "line", x1: 120, y1: 196, x2: 169, y2: 196, stroke: "accent", strokeWidth: 1.8, opacity: 0.78 },
+      { kind: "line", x1: 76, y1: 208, x2: 112, y2: 208, stroke: "accent-soft", strokeWidth: 1.3, opacity: 0.56 },
     ],
   },
 
@@ -527,7 +521,7 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "ZION",
-    subject: "Angels Landing lookout down soaring Navajo sandstone Zion Canyon walls & winding Virgin River",
+    subject: "Angels Landing lookout down sun-baked buff and vermilion Navajo sandstone Zion Canyon walls & Virgin River",
     accentLight: "#D16938",
     accentDark: "#F29D70",
     skyMood: "dusk",
@@ -550,9 +544,11 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         d: "M132 76 L104 86 L96 134 L134 134 Z",
         fill: "far",
       },
-      // Pale cream Navajo sandstone upper rims on distant canyon walls
-      { kind: "polygon", points: "48,80 76,86 78,96 48,92", fill: "paper", opacity: 0.72 },
-      { kind: "polygon", points: "132,76 104,86 102,96 132,90", fill: "paper", opacity: 0.76 },
+      // Sunlit warm buff-sandstone upper rims on distant canyon walls (no white snow caps)
+      { kind: "polygon", points: "48,80 76,86 78,98 48,94", fill: "accent-soft", opacity: 0.72 },
+      { kind: "polygon", points: "132,76 104,86 102,98 132,92", fill: "accent-soft", opacity: 0.76 },
+      { kind: "line", x1: 48, y1: 94, x2: 78, y2: 98, stroke: "accent", strokeWidth: 1.2, opacity: 0.56 },
+      { kind: "line", x1: 102, y1: 98, x2: 132, y2: 92, stroke: "accent", strokeWidth: 1.2, opacity: 0.56 },
 
       // Narrow deep Zion Canyon valley floor descending beneath the soaring walls
       {
@@ -568,29 +564,32 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         opacity: 0.46,
       },
 
-      // Plane 3: Soaring sheer alternating left & right Zion Canyon walls
+      // Plane 3: Soaring sheer alternating left & right sun-baked Navajo sandstone Zion Canyon walls
       // Mid-far right soaring Navajo wall (Great White Throne / East Rim)
       {
         kind: "path",
         d: "M169 36 L132 46 L116 74 L106 112 L100 156 L169 162 Z",
         fill: "mid",
       },
-      // Pale cream Navajo sandstone upper cliff cap transitioning into vermilion below
+      // Warm sunlit golden-tan / buff Navajo sandstone upper strata transitioning into vermilion below
       {
         kind: "path",
         d: "M169 36 L132 46 L116 74 L112 90 L169 82 Z",
-        fill: "paper",
-        opacity: 0.88,
+        fill: "accent-soft",
+        opacity: 0.84,
       },
-      // Warm terracotta sunlit lower wall face
+      // Horizontal warm sandstone bedding bands across upper right cliff face
+      { kind: "line", x1: 127, y1: 56, x2: 169, y2: 49, stroke: "accent", strokeWidth: 1.5, opacity: 0.54 },
+      { kind: "line", x1: 118, y1: 72, x2: 169, y2: 65, stroke: "far", strokeWidth: 1.8, opacity: 0.72 },
+      // Warm terracotta/vermilion sunlit lower wall face
       {
         kind: "path",
         d: "M112 90 L169 82 L169 156 L100 156 L106 112 Z",
         fill: "accent",
-        opacity: 0.56,
+        opacity: 0.62,
       },
-      { kind: "line", x1: 132, y1: 46, x2: 122, y2: 134, stroke: "paper", strokeWidth: 1.2, opacity: 0.56 },
-      { kind: "line", x1: 148, y1: 44, x2: 142, y2: 138, stroke: "ink", strokeWidth: 1.1, opacity: 0.38 },
+      { kind: "line", x1: 132, y1: 46, x2: 122, y2: 134, stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.52 },
+      { kind: "line", x1: 148, y1: 44, x2: 142, y2: 138, stroke: "ink", strokeWidth: 1.1, opacity: 0.4 },
 
       // Mid-left soaring sheer wall (West Rim / Cathedral buttress)
       {
@@ -598,23 +597,32 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         d: "M11 28 L44 38 L64 68 L74 108 L82 164 L11 174 Z",
         fill: "ink",
       },
-      // Pale cream Navajo sandstone upper cliffs on the left canyon wall
+      // Sun-baked buff & golden-tan Navajo sandstone upper cliff strata on left wall
       {
         kind: "path",
         d: "M11 28 L44 38 L64 68 L68 84 L11 76 Z",
-        fill: "paper",
-        opacity: 0.84,
+        fill: "far",
+        opacity: 0.9,
       },
+      {
+        kind: "path",
+        d: "M11 28 L44 38 L58 59 L11 53 Z",
+        fill: "accent-soft",
+        opacity: 0.66,
+      },
+      // Warm sandstone bedding bands bridging upper buff cliff into deep vermilion lower wall
+      { kind: "line", x1: 11, y1: 52, x2: 56, y2: 58, stroke: "accent", strokeWidth: 1.6, opacity: 0.6 },
+      { kind: "line", x1: 11, y1: 68, x2: 64, y2: 75, stroke: "accent", strokeWidth: 1.5, opacity: 0.56 },
       // Deep vermilion/terracotta shadow wash on lower left wall
       {
         kind: "path",
         d: "M11 76 L68 84 L74 108 L82 164 L11 174 Z",
         fill: "deep",
-        opacity: 0.34,
+        opacity: 0.36,
       },
       { kind: "line", x1: 44, y1: 38, x2: 56, y2: 148, stroke: "deep", strokeWidth: 1.3, opacity: 0.5 },
       { kind: "line", x1: 28, y1: 36, x2: 36, y2: 148, stroke: "mid", strokeWidth: 1.1, opacity: 0.44 },
-      { kind: "line", x1: 12, y1: 82, x2: 68, y2: 88, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.62 },
+      { kind: "line", x1: 11, y1: 82, x2: 68, y2: 88, stroke: "accent-soft", strokeWidth: 1.5, opacity: 0.66 },
 
       // Closer right interlocking canyon wall promontory sweeping inward
       {
@@ -626,10 +634,10 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         kind: "path",
         d: "M138 92 L124 124 L118 164 L132 164 L144 96 Z",
         fill: "accent",
-        opacity: 0.62,
+        opacity: 0.64,
       },
-      { kind: "line", x1: 138, y1: 92, x2: 169, y2: 78, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
-      { kind: "line", x1: 124, y1: 124, x2: 168, y2: 114, stroke: "accent-soft", strokeWidth: 1.3, opacity: 0.56 },
+      { kind: "line", x1: 138, y1: 92, x2: 169, y2: 78, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.8 },
+      { kind: "line", x1: 124, y1: 124, x2: 169, y2: 114, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.6 },
 
       // Plane 4: Bright sinuous Virgin River winding gracefully down the narrow canyon floor (y=124..229)
       {
@@ -663,24 +671,24 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         d: "M11 144 L44 152 L74 166 L82 174 L68 188 L76 208 L92 229 L11 229 Z",
         fill: "deep",
       },
-      // Sunlit narrow sandstone crest spine of Angels Landing fin
+      // Sunlit narrow warm sandstone crest spine of Angels Landing fin
       {
         kind: "path",
         d: "M11 144 L44 152 L74 166 L82 174 L60 172 L36 160 L11 154 Z",
         fill: "accent",
-        opacity: 0.72,
+        opacity: 0.76,
       },
       {
         kind: "path",
         d: "M11 144 L44 152 L74 166 L82 174",
-        stroke: "paper",
+        stroke: "accent-soft",
         strokeWidth: 1.8,
         strokeLinecap: "round",
-        opacity: 0.86,
+        opacity: 0.88,
       },
       // Sculpted Navajo sandstone cross-bedding ledges along the lookout fin
-      { kind: "path", d: "M14 176 L58 184 L68 188", stroke: "ink", strokeWidth: 1.5, opacity: 0.65 },
-      { kind: "path", d: "M14 198 L62 206 L74 210", stroke: "accent-soft", strokeWidth: 1.3, opacity: 0.52 },
+      { kind: "path", d: "M11 176 L58 184 L68 188", stroke: "ink", strokeWidth: 1.5, opacity: 0.65 },
+      { kind: "path", d: "M11 198 L62 206 L74 210", stroke: "accent-soft", strokeWidth: 1.3, opacity: 0.56 },
       // Subtle dark right-corner canyon rim anchor
       { kind: "path", d: "M144 202 L169 190 L169 229 L136 229 Z", fill: "deep" },
     ],

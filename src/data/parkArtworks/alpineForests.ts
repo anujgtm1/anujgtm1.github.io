@@ -433,119 +433,173 @@ export const ALPINE_FORESTS_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "ROMO",
-    subject: "Longs Peak flat-topped Diamond east face & alpine tundra over Dream Lake",
-    accentLight: "#C77A44",
-    accentDark: "#EEA976",
+    subject: "Snow-capped jagged Continental Divide peaks (Longs, Hallett & Taylor) reflected in an alpine cirque lake",
+    accentLight: "#D6825C",
+    accentDark: "#F2AE8E",
+    tertiaryLight: "#3B8C9E",
+    tertiaryDark: "#79CCE0",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Colorado Front Range dawn sky, sunrise glow & summit banner cloud
-      { kind: "circle", cx: 142, cy: 36, r: 22, fill: "accent-soft", opacity: 0.34 },
-      { kind: "circle", cx: 142, cy: 36, r: 11, fill: "accent", opacity: 0.86 },
-      { kind: "path", d: "M96 42 Q122 36 154 41 Q136 45 104 45 Z", fill: "paper", opacity: 0.68 },
-      { kind: "path", d: "M18 32 Q42 27 66 32 Q46 35 18 32 Z", fill: "paper", opacity: 0.52 },
+      // Plane 1: Crisp high-altitude Colorado dawn sky, soft sunrise glow & alpine clouds
+      { kind: "circle", cx: 146, cy: 32, r: 21, fill: "accent-soft", opacity: 0.36 },
+      { kind: "circle", cx: 146, cy: 32, r: 10, fill: "accent", opacity: 0.86 },
+      { kind: "circle", cx: 146, cy: 32, r: 5.2, fill: "paper", opacity: 0.9 },
+      { kind: "path", d: "M16 28 Q42 22 72 28 Q48 32 16 28 Z", fill: "paper", opacity: 0.68 },
+      { kind: "path", d: "M84 22 Q108 17 132 22 Q110 25 84 22 Z", fill: "paper", opacity: 0.54 },
+      { kind: "path", d: "M122 45 Q144 41 166 45 Q146 48 122 45 Z", fill: "paper", opacity: 0.52 },
 
-      // Plane 2: Flanking Continental Divide shoulders — Mount Meeker (left) & Lady Washington (right)
+      // Plane 2: Distant serrated Continental Divide horizon range with high snow ridges
       {
         kind: "path",
-        d: "M11 94 L32 72 L48 78 L66 96 L116 94 L140 76 L156 84 L169 96 L169 138 L11 138 Z",
+        d: "M11 106 L26 84 L42 94 L56 72 L72 86 L94 68 L110 84 L134 72 L152 86 L169 78 L169 140 L11 140 Z",
         fill: "far",
       },
+      { kind: "polygon", points: "56,72 48,86 56,83 62,88 65,80", fill: "paper", opacity: 0.78 },
+      { kind: "polygon", points: "94,68 85,84 94,80 101,86 104,78", fill: "paper", opacity: 0.84 },
+      { kind: "polygon", points: "134,72 126,86 135,83 142,88", fill: "paper", opacity: 0.76 },
 
-      // Plane 3: Hero Landmark — Unmistakable Square Flat-Topped Longs Peak & Sheer "Diamond" East Face
-      // Massive blocky granite summit silhouette with flat plateau top (74,44 -> 106,44)
+      // Plane 3: Hero Landmark — Sweeping Multi-Peak Skyline of 4 Jagged Snow-Capped Rocky Mountain Summits
+      // Dark slate-blue alpine granite flanks spanning edge to edge (Taylor 34,62 • Hallett 72,46 • Longs 116,36 • Otis 155,58)
       {
         kind: "path",
-        d: "M24 136 L48 106 L64 88 L70 50 L74 44 L106 44 L110 50 L118 84 L138 106 L162 136 Z",
+        d: "M11 94 L22 76 L34 62 L44 76 L52 90 L62 66 L72 46 L84 68 L94 84 L105 58 L116 36 L127 56 L133 52 L142 80 L155 58 L169 84 L169 144 L11 144 Z",
         fill: "ink",
       },
-      // Sunlit eastern shoulder bevels (Chasm View & Broadway ledge)
+      // Deep shadowed granite buttresses carving dramatic alpine relief across all four peaks
+      { kind: "polygon", points: "34,62 22,76 11,94 11,134 34,132 32,88", fill: "deep", opacity: 0.62 },
+      { kind: "polygon", points: "72,46 62,66 52,90 48,134 72,134 68,86", fill: "deep", opacity: 0.66 },
+      { kind: "polygon", points: "116,36 105,58 94,84 90,134 116,134 112,84", fill: "deep", opacity: 0.7 },
+      { kind: "polygon", points: "155,58 142,80 138,134 156,134 154,88", fill: "deep", opacity: 0.6 },
+
+      // Bold, crisp, sculptural bright white snow caps crowning EVERY serrated Rocky Mountain peak
+      // Peak 1 (Taylor Peak) snow cap
       {
         kind: "path",
-        d: "M106 44 L110 50 L118 84 L138 106 L156 134 L112 134 L108 90 Z",
-        fill: "mid",
-      },
-      // The iconic sheer vertical "Diamond" granite wall glowing in golden dawn light
-      {
-        kind: "polygon",
-        points: "76,48 104,48 109,88 92,102 74,86",
-        fill: "accent",
-        opacity: 0.88,
-      },
-      // Luminous dawn catch-light along the upper sheer Diamond wall & flat summit rim
-      {
-        kind: "polygon",
-        points: "76,48 104,48 106,66 91,74 75,64",
-        fill: "accent-soft",
-        opacity: 0.68,
-      },
-      { kind: "line", x1: 74, y1: 44.5, x2: 106, y2: 44.5, stroke: "paper", strokeWidth: 1.8, strokeLinecap: "round", opacity: 0.9 },
-      // Deep shadowed western dihedral & Pagoda shoulder facet
-      {
-        kind: "path",
-        d: "M70 50 L76 48 L74 86 L62 126 L36 134 L64 88 Z",
-        fill: "deep",
-        opacity: 0.62,
-      },
-      // Crisp vertical granite fracture lines across the Diamond east face
-      { kind: "line", x1: 86, y1: 50, x2: 85, y2: 94, stroke: "ink", strokeWidth: 1.1, opacity: 0.56 },
-      { kind: "line", x1: 97, y1: 50, x2: 98, y2: 96, stroke: "paper", strokeWidth: 1.1, opacity: 0.58 },
-      // Mills Glacier / Chasm Cirque snowfield banking diagonally beneath the Diamond
-      {
-        kind: "path",
-        d: "M64 106 L92 102 L114 96 L124 126 L98 120 L78 130 L58 122 Z",
+        d: "M34 62 L21 82 L29 79 L34 90 L41 79 L47 84 L44 76 Z",
         fill: "paper",
-        opacity: 0.9,
+        opacity: 0.96,
       },
-      { kind: "path", d: "M30 82 L44 92 L36 98 L22 92 Z", fill: "paper", opacity: 0.72 },
-
-      // Plane 4: Sweeping alpine tundra bench & glassy subalpine Dream Lake
+      // Peak 2 (Hallett Peak) soaring sculptural snow cap & sunlit eastern snow ridge
       {
         kind: "path",
-        d: "M11 128 Q48 120 90 128 Q132 120 169 128 L169 156 L11 156 Z",
-        fill: "mid",
+        d: "M72 46 L57 78 L66 73 L71 90 L79 74 L87 82 L84 68 Z",
+        fill: "paper",
+        opacity: 0.98,
       },
       {
         kind: "path",
-        d: "M11 136 Q52 130 90 138 Q128 130 169 136 L169 154 L11 154 Z",
-        fill: "ink",
-        opacity: 0.78,
+        d: "M72 46 L57 78 L66 73 L71 64 Z",
+        fill: "tertiary-soft",
+        opacity: 0.56,
       },
-      // Glassy subalpine Dream Lake basin
-      { kind: "rect", x: 11, y: 152, width: 158, height: 77, fill: "mid" },
-      { kind: "rect", x: 11, y: 152, width: 158, height: 24, fill: "far", opacity: 0.44 },
-      // Inverted reflection of Longs Peak's square crown & glowing Diamond face
+      // Peak 3 (Longs Peak & Divide Crest) grand snow crown & shaded glacial couloir
       {
         kind: "path",
-        d: "M54 154 L126 154 L110 198 L104 206 L76 206 L70 198 Z",
-        fill: "ink",
+        d: "M116 36 L99 74 L109 69 L114 90 L123 70 L132 79 L137 68 L133 52 L127 56 Z",
+        fill: "paper",
+        opacity: 0.98,
+      },
+      {
+        kind: "path",
+        d: "M116 36 L99 74 L109 69 L114 58 Z",
+        fill: "tertiary-soft",
         opacity: 0.54,
       },
+      // Warm dawn alpenglow grazing the sunlit eastern snow arête of Longs Peak
       {
-        kind: "polygon",
-        points: "76,170 104,170 102,202 78,202",
+        kind: "path",
+        d: "M116 36 L127 56 L133 52 L137 68 L128 66 L120 52 Z",
         fill: "accent-soft",
-        opacity: 0.52,
+        opacity: 0.42,
       },
-      { kind: "path", d: "M68 158 L112 158 L104 170 L76 170 Z", fill: "paper", opacity: 0.56 },
-      // Tranquil horizontal lake ripples
-      { kind: "line", x1: 38, y1: 164, x2: 142, y2: 164, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.6 },
-      { kind: "line", x1: 50, y1: 178, x2: 130, y2: 178, stroke: "mid", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.68 },
-      { kind: "line", x1: 58, y1: 192, x2: 122, y2: 192, stroke: "paper", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.62 },
-      { kind: "line", x1: 68, y1: 206, x2: 112, y2: 206, stroke: "mid", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.64 },
+      // Peak 4 (Otis / Notchtop Peak) snow cap
+      {
+        kind: "path",
+        d: "M155 58 L143 82 L152 78 L158 90 L165 80 L169 84 L169 78 Z",
+        fill: "paper",
+        opacity: 0.95,
+      },
+      // Hanging alpine snowfields & glacial cirque couloirs tucked into the high saddles
+      {
+        kind: "path",
+        d: "M84 82 L94 84 L102 96 L96 112 L84 104 L76 112 L74 96 Z",
+        fill: "paper",
+        opacity: 0.86,
+      },
+      {
+        kind: "path",
+        d: "M46 90 L52 90 L60 104 L50 112 L42 104 Z",
+        fill: "paper",
+        opacity: 0.78,
+      },
+      {
+        kind: "path",
+        d: "M134 80 L142 80 L148 98 L138 106 L130 96 Z",
+        fill: "paper",
+        opacity: 0.8,
+      },
+      // Crisp glacier-cut granite arête lines & sunlit snowy crest highlights
+      {
+        kind: "path",
+        d: "M34 62 L44 76 M72 46 L84 68 M116 36 L127 56 M155 58 L167 80",
+        stroke: "paper",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+        opacity: 0.88,
+      },
+      {
+        kind: "path",
+        d: "M66 94 L60 124 M110 96 L104 126 M126 88 L132 124",
+        stroke: "deep",
+        strokeWidth: 1.2,
+        strokeLinecap: "round",
+        opacity: 0.55,
+      },
 
-      // Plane 5: Engelmann spruce spires & glaciated granite shoreline boulders framing Dream Lake
-      { kind: "polygon", points: "22,110 13,152 18,152 11,192 33,192 26,152 31,152", fill: "deep" },
-      { kind: "polygon", points: "38,128 30,164 35,164 28,202 48,202 42,164 46,164", fill: "deep" },
-      { kind: "polygon", points: "52,144 45,176 59,176", fill: "deep" },
-      { kind: "polygon", points: "158,112 149,154 154,154 147,194 169,194 162,154 167,154", fill: "deep" },
-      { kind: "polygon", points: "142,130 134,166 138,166 132,202 152,202 146,166 150,166", fill: "deep" },
-      { kind: "polygon", points: "128,146 121,176 135,176", fill: "deep" },
-      // Foreground granite boulder shore
+      // Plane 4: Subalpine moraine treeline & calm turquoise-silver alpine cirque lake reflecting snowy peaks
+      {
+        kind: "path",
+        d: "M11 134 L19 124 L27 134 L36 126 L45 135 L56 128 L66 136 L80 130 L94 137 L108 130 L122 136 L134 128 L144 135 L154 125 L163 134 L169 128 L169 144 L11 144 Z",
+        fill: "deep",
+      },
+      // Calm turquoise-silver glacial cirque lake basin
+      { kind: "rect", x: 11, y: 143, width: 158, height: 86, fill: "tertiary" },
+      { kind: "rect", x: 11, y: 143, width: 158, height: 28, fill: "tertiary-soft", opacity: 0.56 },
+      { kind: "rect", x: 11, y: 196, width: 158, height: 33, fill: "ink", opacity: 0.38 },
+      // Inverted multi-peak granite skyline reflection across the cirque lake
+      {
+        kind: "path",
+        d: "M11 144 L169 144 L155 186 L142 170 L116 212 L94 176 L72 204 L52 174 L34 188 L11 164 Z",
+        fill: "ink",
+        opacity: 0.44,
+      },
+      // Inverted bright white snow-cap reflections shimmering down the turquoise water
+      {
+        kind: "path",
+        d: "M24 172 L44 172 L34 188 Z M58 176 L86 176 L72 204 Z M100 176 L132 176 L116 212 Z M145 170 L165 170 L155 186 Z",
+        fill: "paper",
+        opacity: 0.66,
+      },
+      // Crisp horizontal glassy alpine lake ripples
+      { kind: "line", x1: 28, y1: 154, x2: 152, y2: 154, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.6 },
+      { kind: "line", x1: 40, y1: 168, x2: 140, y2: 168, stroke: "tertiary-soft", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.66 },
+      { kind: "line", x1: 48, y1: 184, x2: 136, y2: 184, stroke: "paper", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.62 },
+      { kind: "line", x1: 58, y1: 198, x2: 128, y2: 198, stroke: "tertiary-soft", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.6 },
+      { kind: "line", x1: 68, y1: 212, x2: 118, y2: 212, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.56 },
+
+      // Plane 5: Dark Engelmann spruce & subalpine fir evergreens framing the rocky cirque lakeshore
+      { kind: "polygon", points: "21,108 12,150 17,150 11,192 32,192 25,150 30,150", fill: "deep" },
+      { kind: "polygon", points: "37,128 29,164 34,164 27,202 47,202 41,164 45,164", fill: "deep" },
+      { kind: "polygon", points: "51,148 44,180 58,180", fill: "deep" },
+      { kind: "polygon", points: "159,110 150,152 155,152 148,194 169,194 163,152 168,152", fill: "deep" },
+      { kind: "polygon", points: "143,130 135,166 139,166 133,202 153,202 147,166 151,166", fill: "deep" },
+      { kind: "polygon", points: "129,148 122,180 136,180", fill: "deep" },
+      // Foreground glaciated granite boulder shoreline
       { kind: "path", d: "M11 200 Q36 206 58 229 L11 229 Z", fill: "deep" },
       { kind: "path", d: "M169 202 Q144 206 122 229 L169 229 Z", fill: "deep" },
-      { kind: "ellipse", cx: 52, cy: 222, rx: 14, ry: 7.5, fill: "ink" },
-      { kind: "path", d: "M42 218 Q52 214 62 218", stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.58 },
-      { kind: "ellipse", cx: 132, cy: 223, rx: 12, ry: 6.5, fill: "ink" },
+      { kind: "ellipse", cx: 50, cy: 222, rx: 14, ry: 7.2, fill: "ink" },
+      { kind: "path", d: "M40 218 Q50 214 60 218", stroke: "paper", strokeWidth: 1.2, opacity: 0.6 },
+      { kind: "ellipse", cx: 134, cy: 223, rx: 12, ry: 6.5, fill: "ink" },
     ],
   },
 
@@ -1042,7 +1096,7 @@ export const ALPINE_FORESTS_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "REDW",
-    subject: "Cathedral Coastal Redwood grove in diagonal morning fog sunbeams & sword ferns",
+    subject: "Cathedral Coast Redwoods with iconic gracefully sagging boughs, coastal fog sunbeams & sword ferns",
     accentLight: "#6E9958",
     accentDark: "#A8D490",
     skyMood: "mist",
@@ -1053,40 +1107,152 @@ export const ALPINE_FORESTS_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       { kind: "polygon", points: "62,11 88,11 169,184 148,202", fill: "accent-soft", opacity: 0.26 },
       { kind: "polygon", points: "11,28 24,11 94,218 64,218", fill: "accent-soft", opacity: 0.2 },
 
-      // Plane 2: Receding background cathedral of slender vertical Coast Redwoods veiled in fog
+      // Plane 2: Receding background cathedral of slender vertical Coast Redwoods & fog-veiled sagging boughs
       { kind: "rect", x: 35, y: 11, width: 5, height: 194, fill: "far", opacity: 0.68 },
       { kind: "rect", x: 64, y: 11, width: 6, height: 196, fill: "far", opacity: 0.72 },
-      { kind: "rect", x: 82, y: 11, width: 4.5, height: 194, fill: "far", opacity: 0.56 },
-      { kind: "rect", x: 108, y: 11, width: 5.5, height: 196, fill: "far", opacity: 0.66 },
-      { kind: "rect", x: 132, y: 11, width: 5, height: 194, fill: "far", opacity: 0.62 },
-      // Soft coastal marine fog veils drifting horizontally through the lower cathedral grove
-      { kind: "ellipse", cx: 90, cy: 146, rx: 78, ry: 18, fill: "paper", opacity: 0.42 },
-      { kind: "ellipse", cx: 96, cy: 174, rx: 72, ry: 14, fill: "paper", opacity: 0.36 },
-
-      // Plane 3: Hero Midground & Foreground Cluster of Impossibly Tall, Slender Vertical Coast Redwoods
-      // Midground tall slender pair
-      { kind: "path", d: "M46 11 L54 11 L55 198 Q56 206 59 212 L42 212 Q45 204 45.5 196 Z", fill: "mid" },
-      { kind: "line", x1: 54, y1: 11, x2: 55, y2: 202, stroke: "paper", strokeWidth: 1.2, opacity: 0.64 },
-      { kind: "path", d: "M94 11 L104 11 L106 202 Q108 212 111 218 L90 218 Q92 210 93 200 Z", fill: "ink" },
-      { kind: "line", x1: 94.5, y1: 11, x2: 93.5, y2: 204, stroke: "accent-soft", strokeWidth: 1.5, opacity: 0.74 },
-      { kind: "path", d: "M116 11 L123 11 L124 198 Q126 208 128 214 L113 214 Q115 206 115.5 198 Z", fill: "ink", opacity: 0.9 },
-      { kind: "line", x1: 116.5, y1: 11, x2: 116, y2: 200, stroke: "paper", strokeWidth: 1.1, opacity: 0.52 },
-      // Foreground framing slender cathedral pillars (left & right)
-      { kind: "path", d: "M13 11 L27 11 L29 204 Q32 218 36 229 L11 229 L11 11 Z", fill: "deep" },
-      { kind: "line", x1: 26.5, y1: 11, x2: 28.5, y2: 206, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.7 },
-      { kind: "path", d: "M70 11 L79 11 L80 208 Q82 218 85 226 L66 226 Q68 216 69 206 Z", fill: "deep" },
-      { kind: "line", x1: 78.5, y1: 11, x2: 79.5, y2: 210, stroke: "accent", strokeWidth: 1.3, opacity: 0.68 },
-      { kind: "path", d: "M148 11 L169 11 L169 229 L140 229 Q145 216 146.5 202 Z", fill: "deep" },
-      { kind: "line", x1: 148.5, y1: 11, x2: 147, y2: 204, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.72 },
-
-      // Feathery high redwood canopy boughs draping softly across top edge with sunbeam gaps
+      { kind: "rect", x: 84, y: 11, width: 4.5, height: 194, fill: "far", opacity: 0.56 },
+      { kind: "rect", x: 110, y: 11, width: 5.5, height: 196, fill: "far", opacity: 0.66 },
+      { kind: "rect", x: 134, y: 11, width: 5, height: 194, fill: "far", opacity: 0.62 },
+      // Soft misty distant sagging redwood boughs drooping across the upper background trunks
       {
         kind: "path",
-        d: "M11 11 L169 11 L169 34 Q146 44 128 30 Q112 40 94 28 Q78 36 62 24 Q42 18 28 32 L11 28 Z",
-        fill: "ink",
-        opacity: 0.74,
+        d: "M38 36 C49 48 60 52 72 47 C62 56 49 55 38 45 Z M112 34 C99 47 87 51 74 46 C86 56 100 55 112 44 Z",
+        fill: "far",
+        opacity: 0.76,
       },
-      // Re-emphasize luminous foreground sunbeam shaft slicing across the mid trunks
+      {
+        kind: "path",
+        d: "M66 64 C78 76 92 80 105 74 C93 84 78 83 66 73 Z M134 62 C121 74 109 78 96 73 C108 82 122 81 134 71 Z",
+        fill: "far",
+        opacity: 0.68,
+      },
+      // Soft coastal marine fog veils drifting horizontally through the lower cathedral grove
+      { kind: "ellipse", cx: 90, cy: 148, rx: 78, ry: 18, fill: "paper", opacity: 0.42 },
+      { kind: "ellipse", cx: 96, cy: 176, rx: 72, ry: 14, fill: "paper", opacity: 0.36 },
+
+      // Plane 3: Hero Midground & Foreground Cluster of Tall Slender Coast Redwoods + Iconic Sagging Boughs
+      // Midground tall slender trunks
+      { kind: "path", d: "M46 11 L54 11 L55 198 Q56 206 59 212 L42 212 Q45 204 45.5 196 Z", fill: "mid" },
+      { kind: "line", x1: 54, y1: 11, x2: 55, y2: 202, stroke: "paper", strokeWidth: 1.2, opacity: 0.64 },
+      { kind: "path", d: "M96 11 L105 11 L107 202 Q109 212 112 218 L91 218 Q94 210 95 200 Z", fill: "ink" },
+      { kind: "line", x1: 96.5, y1: 11, x2: 95.5, y2: 204, stroke: "accent-soft", strokeWidth: 1.5, opacity: 0.74 },
+      { kind: "path", d: "M119 11 L126 11 L127 198 Q129 208 131 214 L116 214 Q118 206 118.5 198 Z", fill: "ink", opacity: 0.9 },
+      { kind: "line", x1: 119.5, y1: 11, x2: 119, y2: 200, stroke: "paper", strokeWidth: 1.1, opacity: 0.52 },
+
+      // Midground gracefully sagging Coast Redwood boughs curving downward from center & mid-left trunks
+      {
+        kind: "path",
+        d: "M97 38 C83 52 70 59 54 55 C62 63 72 64 81 61 C88 63 93 58 97 51 Z",
+        fill: "ink",
+      },
+      {
+        kind: "path",
+        d: "M104 48 C117 61 131 67 146 62 C138 71 127 72 118 69 C112 70 107 66 104 59 Z",
+        fill: "ink",
+      },
+      {
+        kind: "path",
+        d: "M96 80 C82 93 69 99 54 94 C62 103 73 104 82 100 C89 101 93 97 96 90 Z",
+        fill: "ink",
+        opacity: 0.92,
+      },
+      {
+        kind: "path",
+        d: "M104 94 C116 106 128 111 142 106 C134 114 124 115 116 112 C110 113 107 109 104 103 Z",
+        fill: "mid",
+        opacity: 0.94,
+      },
+      {
+        kind: "path",
+        d: "M53 50 C63 61 74 66 86 62 C78 70 67 71 53 60 Z",
+        fill: "mid",
+        opacity: 0.88,
+      },
+      // Sunlit feathery foliage highlights along upper curves of the sagging midground boughs
+      {
+        kind: "path",
+        d: "M96 40 C83 52 71 58 56 55 M104 50 C116 61 129 66 144 62 M95 82 C82 93 70 98 56 94",
+        stroke: "accent-soft",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+        opacity: 0.72,
+      },
+
+      // Foreground framing slender cathedral pillars (left, center-left & right)
+      { kind: "path", d: "M13 11 L27 11 L29 204 Q32 218 36 229 L11 229 L11 11 Z", fill: "deep" },
+      { kind: "line", x1: 26.5, y1: 11, x2: 28.5, y2: 206, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.7 },
+      { kind: "path", d: "M70 11 L78 11 L79 208 Q81 218 84 226 L66 226 Q68 216 69 206 Z", fill: "deep" },
+      { kind: "line", x1: 77.5, y1: 11, x2: 78.5, y2: 210, stroke: "accent", strokeWidth: 1.3, opacity: 0.68 },
+      { kind: "path", d: "M149 11 L169 11 L169 229 L140 229 Q145 216 147.5 202 Z", fill: "deep" },
+      { kind: "line", x1: 149.5, y1: 11, x2: 148, y2: 204, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.72 },
+
+      // HERO BOTANICAL SIGNATURE: Layered, gracefully drooping / sagging foreground Coast Redwood boughs
+      // Left foreground trunk sagging boughs (3 sweeping tiers curving out and dipping downward)
+      {
+        kind: "path",
+        d: "M26 22 C41 38 56 46 74 40 C66 51 54 53 45 48 C38 53 31 50 26 42 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M26 58 C41 74 54 82 70 77 C63 87 52 89 44 84 C37 88 31 85 26 77 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M27 98 C39 112 51 119 64 114 C57 123 48 124 41 120 C35 123 30 120 27 113 Z",
+        fill: "deep",
+      },
+      // Center-left hero trunk paired downward-sweeping redwood plumes
+      {
+        kind: "path",
+        d: "M71 34 C58 47 47 52 34 48 C42 56 52 57 60 53 C65 55 69 51 71 45 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M77 66 C90 79 102 85 116 80 C108 89 97 90 89 86 C83 88 80 84 77 77 Z",
+        fill: "deep",
+      },
+      // Right foreground trunk sagging boughs (4 graceful tiers cascading inward)
+      {
+        kind: "path",
+        d: "M150 18 C134 35 118 44 100 38 C109 49 121 51 131 46 C138 50 145 47 150 38 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M150 54 C135 71 120 79 103 74 C112 84 123 86 132 82 C139 85 145 82 150 74 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M149 94 C136 109 123 116 109 111 C117 120 127 121 135 117 C141 120 146 117 149 110 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M149 130 C138 142 128 147 117 143 C124 150 133 151 140 148 C144 150 147 147 149 141 Z",
+        fill: "deep",
+        opacity: 0.94,
+      },
+      // Sun-kissed feathery needle rims & drooping bough spine highlights where fog light strikes the branches
+      {
+        kind: "path",
+        d: "M27 24 C42 39 56 46 72 41 M27 60 C41 75 54 81 68 77 M78 68 C90 80 102 84 114 80 M149 20 C134 36 119 43 102 38 M149 56 C135 71 121 78 105 74 M148 96 C136 110 124 115 111 111",
+        stroke: "accent",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
+        opacity: 0.78,
+      },
+      // Feathery high redwood canopy edge across top border
+      {
+        kind: "path",
+        d: "M11 11 L169 11 L169 26 Q146 34 126 22 Q108 30 92 20 Q74 28 58 18 Q40 15 26 24 L11 22 Z",
+        fill: "ink",
+        opacity: 0.72,
+      },
+      // Re-emphasize luminous foreground sunbeam shaft slicing across the sagging boughs & trunks
       { kind: "polygon", points: "40,11 58,11 138,214 114,214", fill: "paper", opacity: 0.16 },
 
       // Plane 4 & 5: Shaded Fern Canyon forest floor & lush arching Western sword-fern fronds

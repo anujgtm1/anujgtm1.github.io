@@ -331,87 +331,131 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "CUVA",
-    subject: "Brandywine Falls' 65-foot stepped Berea sandstone bridal-veil cascade & autumn woodland gorge",
-    accentLight: "#C77438",
-    accentDark: "#EDA46C",
+    subject: "Iconic barn-red Everett Covered Bridge spanning Furnace Run Creek amid Ohio autumn valley woods",
+    accentLight: "#C44E32",
+    accentDark: "#EE8669",
+    tertiaryLight: "#C98D3B",
+    tertiaryDark: "#EBB86E",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Golden Appalachian dawn sky peeking over the wooded gorge crest
-      { kind: "circle", cx: 90, cy: 32, r: 22, fill: "accent-soft", opacity: 0.42 },
-      { kind: "circle", cx: 90, cy: 32, r: 11, fill: "paper", opacity: 0.92 },
-      { kind: "path", d: "M22 26 Q46 20 70 27 Q48 30 22 26 Z", fill: "paper", opacity: 0.56 },
-      { kind: "path", d: "M112 24 Q138 19 162 26 Q140 29 112 24 Z", fill: "paper", opacity: 0.54 },
+      // Plane 1: Warm Ohio autumn dawn sky, rising sun & soft valley cloud wisps
+      { kind: "circle", cx: 58, cy: 48, r: 28, fill: "tertiary-soft", opacity: 0.42 },
+      { kind: "circle", cx: 58, cy: 48, r: 16, fill: "accent-soft", opacity: 0.46 },
+      { kind: "circle", cx: 58, cy: 48, r: 9.5, fill: "paper", opacity: 0.94 },
+      { kind: "path", d: "M16 26 Q42 20 70 26 Q48 30 16 26 Z", fill: "paper", opacity: 0.58 },
+      { kind: "path", d: "M104 32 Q134 26 164 33 Q138 37 104 32 Z", fill: "paper", opacity: 0.54 },
 
-      // Plane 2: Rounded Appalachian deciduous forest canopies crowning the gorge rim
+      // Plane 2: Lush rolling Cuyahoga River Valley deciduous hardwood hills & autumn foliage
       {
         kind: "path",
-        d: "M11 58 Q26 40 44 50 Q62 36 82 52 Q98 38 118 50 Q138 36 156 48 Q164 44 169 52 L169 84 L11 84 Z",
+        d: "M11 86 Q34 64 62 74 Q94 60 124 72 Q148 62 169 78 L169 128 L11 128 Z",
         fill: "far",
       },
       {
         kind: "path",
-        d: "M11 66 Q24 50 40 60 Q54 48 70 64 L70 86 L11 86 Z",
+        d: "M11 94 Q28 74 48 84 Q68 72 90 86 Q114 70 138 82 Q156 72 169 86 L169 144 L11 144 Z",
         fill: "mid",
       },
+      // Rounded Ohio autumn maple & oak canopy puffs framing behind the covered bridge
+      { kind: "ellipse", cx: 24, cy: 96, rx: 18, ry: 12, fill: "tertiary", opacity: 0.72 },
+      { kind: "ellipse", cx: 92, cy: 84, rx: 22, ry: 11, fill: "tertiary", opacity: 0.62 },
+      { kind: "ellipse", cx: 128, cy: 84, rx: 20, ry: 12, fill: "accent", opacity: 0.48 },
+      { kind: "ellipse", cx: 156, cy: 92, rx: 18, ry: 13, fill: "tertiary", opacity: 0.72 },
+      { kind: "path", d: "M11 106 Q26 96 40 108 L40 148 L11 148 Z", fill: "ink" },
+      { kind: "path", d: "M169 102 Q152 94 138 108 L138 148 L169 148 Z", fill: "ink" },
+
+      // Plane 3: Furnace Run Creek bed flowing beneath the bridge span & stacked sandstone abutments
+      { kind: "rect", x: 11, y: 146, width: 158, height: 83, fill: "mid" },
+      { kind: "path", d: "M11 182 Q64 174 114 182 Q144 186 169 180 L169 229 L11 229 Z", fill: "ink" },
+      // Heavy stacked sandstone abutments anchoring both banks of Furnace Run Creek
+      { kind: "polygon", points: "11,142 64,143 58,168 11,168", fill: "tertiary" },
+      { kind: "polygon", points: "126,139 169,138 169,166 132,166", fill: "tertiary" },
       {
         kind: "path",
-        d: "M169 64 Q152 48 136 58 Q122 48 108 64 L108 86 L169 86 Z",
-        fill: "mid",
-      },
-      // Warm autumn maple & oak foliage puffs framing the crest
-      { kind: "ellipse", cx: 36, cy: 62, rx: 16, ry: 9, fill: "accent", opacity: 0.52 },
-      { kind: "ellipse", cx: 142, cy: 60, rx: 18, ry: 9, fill: "accent", opacity: 0.52 },
-      { kind: "ellipse", cx: 60, cy: 68, rx: 12, ry: 7, fill: "accent-soft", opacity: 0.48 },
-
-      // Plane 3: Hero broad stepped Berea sandstone & Bedford shale cliff amphitheater
-      // Tier 1 — Upper Berea sandstone caprock shelf
-      { kind: "path", d: "M11 76 L72 76 L72 84 L108 84 L108 76 L169 76 L169 102 L11 102 Z", fill: "ink" },
-      { kind: "line", x1: 11, y1: 77, x2: 72, y2: 77, stroke: "accent-soft", strokeWidth: 2.2, opacity: 0.82 },
-      { kind: "line", x1: 108, y1: 77, x2: 169, y2: 77, stroke: "accent-soft", strokeWidth: 2.2, opacity: 0.82 },
-      // Tier 2, 3 & 4 — Broad recessed horizontal dark shale & sandstone amphitheater steps
-      { kind: "rect", x: 11, y: 100, width: 158, height: 26, fill: "deep" },
-      { kind: "rect", x: 11, y: 124, width: 158, height: 28, fill: "ink" },
-      { kind: "rect", x: 11, y: 150, width: 158, height: 32, fill: "deep" },
-      // Crisp horizontal Berea sandstone bedding ledges jutting left & right
-      { kind: "line", x1: 11, y1: 101, x2: 169, y2: 101, stroke: "accent", strokeWidth: 2.6, opacity: 0.78 },
-      { kind: "line", x1: 11, y1: 125, x2: 169, y2: 125, stroke: "accent-soft", strokeWidth: 2.4, opacity: 0.72 },
-      { kind: "line", x1: 11, y1: 151, x2: 169, y2: 151, stroke: "accent", strokeWidth: 2.4, opacity: 0.72 },
-
-      // Hero Brandywine Falls stepped bridal-veil foaming white cascade fanning across every tier
-      {
-        kind: "path",
-        d: "M72 78 L108 78 L114 101 L122 103 L128 125 L136 127 L144 151 L150 178 L30 178 L36 151 L44 127 L52 125 L58 103 L66 101 Z",
-        fill: "accent-soft",
+        d: "M14 149 L62 150 M14 156 L60 157 M14 163 L58 164 M128 146 L166 146 M130 153 L166 153 M132 160 L166 160",
+        stroke: "deep",
+        strokeWidth: 1.3,
         opacity: 0.56,
       },
+      { kind: "path", d: "M34 143 L34 164 M50 144 L50 165 M144 139 L144 162", stroke: "deep", strokeWidth: 1.1, opacity: 0.44 },
+      // Shaded beneath-bridge truss & dark creek shadow spanning between the sandstone abutments
+      { kind: "polygon", points: "58,143 132,140 130,152 60,154", fill: "deep", opacity: 0.72 },
+
+      // Hero — Iconic Everett Covered Bridge (3/4 angle spanning Furnace Run Creek)
+      // Long receding barn-red timber side wall spanning Furnace Run Creek (3/4 right face)
+      { kind: "polygon", points: "68,101 150,106 150,140 68,144", fill: "accent" },
+      { kind: "polygon", points: "68,101 150,106 150,140 68,144", fill: "ink", opacity: 0.22 },
+      // Vertical board-and-batten timber siding seams along the covered-bridge side wall
       {
         kind: "path",
-        d: "M75 78 L105 78 L110 101 L117 104 L122 125 L130 128 L136 151 L142 178 L38 178 L44 151 L50 128 L58 125 L63 104 L70 101 Z",
-        fill: "paper",
-        opacity: 0.92,
+        d: "M78 102 L78 143 M88 103 L88 143 M98 103 L98 142 M108 104 L108 142 M118 104 L118 141 M128 105 L128 141 M138 105 L138 140",
+        stroke: "deep",
+        strokeWidth: 1.0,
+        opacity: 0.42,
       },
-      // Dark stepped shale rock ribs peeking cleanly through the vertical bridal-veil ribbons
-      { kind: "rect", x: 78, y: 104, width: 4, height: 19, fill: "ink", opacity: 0.58 },
-      { kind: "rect", x: 97, y: 104, width: 4, height: 19, fill: "ink", opacity: 0.54 },
-      { kind: "rect", x: 64, y: 129, width: 5, height: 20, fill: "deep", opacity: 0.56 },
-      { kind: "rect", x: 87, y: 129, width: 5, height: 20, fill: "deep", opacity: 0.52 },
-      { kind: "rect", x: 112, y: 129, width: 5, height: 20, fill: "deep", opacity: 0.56 },
-      // Crisp bright foaming ledge-lip highlights where water breaks over each step
-      { kind: "line", x1: 62, y1: 102, x2: 118, y2: 102, stroke: "paper", strokeWidth: 2.2, strokeLinecap: "round" },
-      { kind: "line", x1: 50, y1: 126, x2: 130, y2: 126, stroke: "paper", strokeWidth: 2.4, strokeLinecap: "round" },
-      { kind: "line", x1: 40, y1: 152, x2: 140, y2: 152, stroke: "paper", strokeWidth: 2.6, strokeLinecap: "round" },
+      // Classic Everett Covered Bridge side ventilation window openings under the eaves
+      { kind: "rect", x: 80, y: 111, width: 14, height: 7, rx: 1, fill: "deep", opacity: 0.88 },
+      { kind: "rect", x: 103, y: 112, width: 14, height: 7, rx: 1, fill: "deep", opacity: 0.88 },
+      { kind: "rect", x: 126, y: 113, width: 13, height: 6.5, rx: 1, fill: "deep", opacity: 0.88 },
+      // Bottom timber chord beam spanning the creek cleanly atop the abutments
+      { kind: "path", d: "M28 143 L68 144 L150 140", stroke: "deep", strokeWidth: 2.6, strokeLinecap: "round" },
 
-      // Plane 4: Misty plunge pool, foam rings & rocky Brandywine Creek
-      { kind: "rect", x: 11, y: 176, width: 158, height: 53, fill: "mid" },
-      { kind: "ellipse", cx: 90, cy: 177, rx: 56, ry: 9, fill: "paper", opacity: 0.78 },
-      { kind: "ellipse", cx: 90, cy: 184, rx: 46, ry: 6, stroke: "paper", strokeWidth: 1.8, opacity: 0.86 },
-      { kind: "ellipse", cx: 90, cy: 195, rx: 58, ry: 7.5, stroke: "accent-soft", strokeWidth: 1.5, opacity: 0.72 },
-      { kind: "path", d: "M48 212 Q90 206 132 212", stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.74 },
+      // Sunlit front gable facade of Everett Covered Bridge (classic barn-red!)
+      { kind: "polygon", points: "28,103 48,80 68,101 68,144 28,144", fill: "accent" },
+      {
+        kind: "path",
+        d: "M34 97 L34 143 M62 96 L62 143 M48 82 L48 108",
+        stroke: "deep",
+        strokeWidth: 0.9,
+        opacity: 0.34,
+      },
+      // Crisp white timber gable fascia & corner trim boards
+      { kind: "line", x1: 68, y1: 101, x2: 68, y2: 144, stroke: "paper", strokeWidth: 1.5, opacity: 0.88 },
+      // Dark open timber portal archway entrance into the covered bridge
+      { kind: "path", d: "M36 144 L36 115 Q48 105 60 115 L60 144 Z", fill: "deep" },
+      // Subtle sunlit wooden bridge deck & interior glimpse receding into the portal
+      { kind: "polygon", points: "40,144 56,144 52,135 44,135", fill: "tertiary-soft", opacity: 0.54 },
+      { kind: "path", d: "M36 144 L36 115 Q48 105 60 115 L60 144", stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.9 },
 
-      // Plane 5: Foreground warm layered sandstone gorge ledges framing bottom corners
-      { kind: "path", d: "M11 168 L34 172 L46 196 L64 214 L60 229 L11 229 Z", fill: "deep" },
-      { kind: "path", d: "M169 168 L146 172 L134 196 L116 214 L120 229 L169 229 Z", fill: "deep" },
-      { kind: "path", d: "M11 172 L34 175 M11 196 L44 198 M169 172 L146 175 M169 196 L136 198", stroke: "accent", strokeWidth: 1.8, strokeLinecap: "round", opacity: 0.78 },
+      // Steep overhanging pitched gable roof spanning across the creek
+      { kind: "polygon", points: "48,76 146,84 156,108 72,103", fill: "deep" },
+      // Crisp cedar-shingle roof slope shading & sunlit ridge cap
+      {
+        kind: "path",
+        d: "M58 84 L148 91 M64 93 L152 99",
+        stroke: "ink",
+        strokeWidth: 1.2,
+        opacity: 0.72,
+      },
+      { kind: "path", d: "M22 105 L48 76 L73 103", stroke: "paper", strokeWidth: 2.2, strokeLinecap: "round", strokeLinejoin: "round", opacity: 0.94 },
+      { kind: "line", x1: 48, y1: 76, x2: 146, y2: 84, stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.86 },
+
+      // Plane 4: Shimmering barn-red covered-bridge reflections & flat stepping stones in Furnace Run Creek
+      // Warm shimmering barn-red covered-bridge reflection rippling across Furnace Run Creek
+      { kind: "ellipse", cx: 96, cy: 162, rx: 32, ry: 3.4, fill: "accent", opacity: 0.62 },
+      { kind: "ellipse", cx: 94, cy: 171, rx: 28, ry: 3.2, fill: "accent-soft", opacity: 0.56 },
+      { kind: "ellipse", cx: 92, cy: 180, rx: 22, ry: 2.6, fill: "accent", opacity: 0.44 },
+      { kind: "line", x1: 72, y1: 158, x2: 118, y2: 158, stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.76 },
+      // Flat Ohio sandstone stepping stones & gentle whitewater ripples in Furnace Run Creek
+      { kind: "ellipse", cx: 74, cy: 196, rx: 11, ry: 3.6, fill: "tertiary" },
+      { kind: "ellipse", cx: 102, cy: 204, rx: 13, ry: 4.0, fill: "tertiary" },
+      { kind: "ellipse", cx: 118, cy: 190, rx: 9, ry: 3.0, fill: "deep" },
+      { kind: "ellipse", cx: 78, cy: 215, rx: 12, ry: 3.6, fill: "deep" },
+      {
+        kind: "path",
+        d: "M60 198 Q74 202 88 197 M86 207 Q102 211 118 206 M58 186 Q90 182 124 186 M52 220 Q92 215 130 220",
+        stroke: "paper",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
+        opacity: 0.82,
+      },
+
+      // Plane 5: Framing rocky autumn creek banks & warm maple foliage in lower corners
+      { kind: "path", d: "M11 162 L44 166 L54 184 L44 208 L54 229 L11 229 Z", fill: "deep" },
+      { kind: "path", d: "M169 160 L138 164 L128 182 L138 204 L126 229 L169 229 Z", fill: "deep" },
+      { kind: "path", d: "M11 166 L44 168 L52 182 M169 164 L138 166 L130 180", stroke: "tertiary", strokeWidth: 1.8, strokeLinecap: "round", opacity: 0.76 },
+      { kind: "ellipse", cx: 22, cy: 204, rx: 16, ry: 10, fill: "accent", opacity: 0.62 },
+      { kind: "ellipse", cx: 158, cy: 206, rx: 16, ry: 10, fill: "tertiary", opacity: 0.58 },
     ],
   },
 
@@ -420,75 +464,119 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "DRTO",
-    subject: "Hexagonal brick Fort Jefferson, arched casemate gunports, harbor turret & turquoise Gulf shallows",
+    subject: "Six-sided hexagonal brick Fort Jefferson, corner bastions, polygonal moat & turquoise Gulf reefs",
     accentLight: "#C2603C",
     accentDark: "#EB9674",
+    tertiaryLight: "#4B7E52",
+    tertiaryDark: "#82BA89",
     skyMood: "noon",
     nodes: [
-      // Plane 1: Radiant Gulf noon sky, sun, trade-wind cumulus & frigatebirds
-      { kind: "circle", cx: 138, cy: 36, r: 19, fill: "accent-soft", opacity: 0.38 },
-      { kind: "circle", cx: 138, cy: 36, r: 10, fill: "paper", opacity: 0.96 },
-      { kind: "path", d: "M18 42 Q32 30 48 36 Q60 28 74 36 Q84 34 92 42 Z", fill: "paper", opacity: 0.84 },
-      { kind: "path", d: "M108 58 Q122 50 138 55 Q150 51 164 58 Z", fill: "paper", opacity: 0.68 },
-      { kind: "path", d: "M58 58 Q63 53 68 58 Q73 53 78 58", stroke: "ink", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.78 },
+      // Plane 1: Radiant Gulf noon sky, sun, trade-wind cumulus & soaring frigatebirds
+      { kind: "circle", cx: 38, cy: 36, r: 19, fill: "accent-soft", opacity: 0.36 },
+      { kind: "circle", cx: 38, cy: 36, r: 10, fill: "paper", opacity: 0.96 },
+      { kind: "path", d: "M72 34 Q86 24 102 30 Q114 22 128 30 Q140 28 148 36 Z", fill: "paper", opacity: 0.84 },
+      { kind: "path", d: "M16 58 Q32 50 48 56 Q60 52 72 58 Z", fill: "paper", opacity: 0.66 },
+      { kind: "path", d: "M82 54 Q87 49 92 54 Q97 49 102 54", stroke: "ink", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.78 },
+      { kind: "path", d: "M138 48 Q142 44 146 48 Q150 44 154 48", stroke: "ink", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.7 },
 
-      // Plane 2: Distant Gulf horizon & shallow sandbar waters behind Garden Key
-      { kind: "rect", x: 11, y: 110, width: 158, height: 42, fill: "far" },
-      { kind: "line", x1: 11, y1: 112, x2: 169, y2: 112, stroke: "mid", strokeWidth: 2, opacity: 0.72 },
+      // Plane 2: Elevated Gulf horizon & luminous turquoise coral reef shoals encircling Garden Key
+      { kind: "rect", x: 11, y: 84, width: 158, height: 145, fill: "mid" },
+      { kind: "rect", x: 11, y: 84, width: 158, height: 28, fill: "far" },
+      { kind: "line", x1: 11, y1: 85, x2: 169, y2: 85, stroke: "ink", strokeWidth: 1.6, opacity: 0.56 },
+      // Glowing shallow turquoise coral-sand halo wrapping all sides of Garden Key
+      { kind: "ellipse", cx: 90, cy: 138, rx: 82, ry: 34, fill: "far", opacity: 0.76 },
+      { kind: "ellipse", cx: 90, cy: 144, rx: 74, ry: 28, fill: "paper", opacity: 0.28 },
 
-      // Plane 3: Hero massive hexagonal brick Fort Jefferson & Garden Key Harbor Light
-      // Interior parade-ground palm crowns peeking above the brick ramparts
-      { kind: "path", d: "M48 92 Q58 78 72 86 Q82 78 94 90 L94 96 L48 96 Z", fill: "deep", opacity: 0.84 },
-      // Slender white iron Garden Key Harbor Light turret rising from the bastion
-      { kind: "rect", x: 116, y: 58, width: 7, height: 34, fill: "paper" },
-      { kind: "rect", x: 114, y: 56, width: 11, height: 2.5, fill: "deep" },
-      { kind: "rect", x: 116.5, y: 50, width: 6, height: 6, fill: "accent" },
-      { kind: "polygon", points: "119.5,44 115.5,50 123.5,50", fill: "deep" },
+      // Plane 3: Matching 6-sided polygonal outer counterscarp seawall & deep turquoise moat
+      // Outer hexagonal counterscarp seawall cradling the moat around Garden Key
+      {
+        kind: "polygon",
+        points: "12,139 46,173 137,171 166,135 163,124 128,95 49,97 15,126",
+        fill: "paper",
+        opacity: 0.92,
+      },
+      // Inner polygonal water moat encircling the entire hexagonal brick fortress
+      {
+        kind: "polygon",
+        points: "15,137 48,169 135,167 163,133 159,123 126,98 52,100 18,126",
+        fill: "ink",
+      },
 
-      // Left sunlit hexagonal brick curtain wall & bastion corner (x=22..96)
-      { kind: "polygon", points: "22,94 96,86 96,150 22,146", fill: "accent" },
-      // Right shadowed hexagonal brick curtain wall (x=96..160)
-      { kind: "polygon", points: "96,86 160,96 160,146 96,150", fill: "ink" },
-      // Brick parapet cap & crisp corner quoin highlight
-      { kind: "path", d: "M22 94 L96 86 L160 96", stroke: "paper", strokeWidth: 2, opacity: 0.84 },
-      { kind: "line", x1: 96, y1: 86, x2: 96, y2: 150, stroke: "deep", strokeWidth: 1.6, opacity: 0.72 },
-      // Horizontal brick tier stringcourse dividing the two casemate tiers
-      { kind: "path", d: "M22 119 L96 116 L160 120", stroke: "deep", strokeWidth: 1.4, opacity: 0.65 },
+      // Plane 4: Hero elevated 3/4 view of 6-sided hexagonal brick Fort Jefferson & bastions
+      // Full 6-sided brick parapet deck enclosing the lush green interior parade ground
+      { kind: "polygon", points: "24,114 52,92 122,90 154,108 128,134 56,136", fill: "accent-soft" },
+      // Interior hexagonal emerald parade ground lawn & palm crowns
+      { kind: "polygon", points: "34,114 58,97 116,95 144,109 122,128 62,130", fill: "tertiary" },
+      // Inner rear brick courtyard walls stepping down into the parade ground (shows all 6 sides!)
+      { kind: "polygon", points: "34,114 58,97 58,103 38,117", fill: "accent" },
+      { kind: "polygon", points: "58,97 116,95 116,101 58,103", fill: "accent" },
+      { kind: "polygon", points: "116,95 144,109 140,114 116,101", fill: "ink", opacity: 0.72 },
+      // Tropical palm clusters & historic brick barracks peeking from the central parade ground
+      { kind: "ellipse", cx: 74, cy: 112, rx: 11, ry: 5.5, fill: "deep", opacity: 0.68 },
+      { kind: "ellipse", cx: 102, cy: 115, rx: 10, ry: 5, fill: "deep", opacity: 0.62 },
+      { kind: "rect", x: 78, y: 104, width: 20, height: 5, fill: "accent", opacity: 0.84 },
 
-      // Upper & lower neat rows of arched casemate gunports on sunlit left wall
+      // Exterior Curtain Wall 1 — Front-left angled brick face (sunlit warm brick)
+      { kind: "polygon", points: "24,114 56,136 56,158 24,136", fill: "accent" },
+      // Exterior Curtain Wall 2 — Front-center broad brick face (rich sunlit brick)
+      { kind: "polygon", points: "56,136 128,134 128,156 56,158", fill: "accent" },
+      { kind: "polygon", points: "56,136 128,134 128,156 56,158", fill: "ink", opacity: 0.16 },
+      // Exterior Curtain Wall 3 — Front-right angled brick face (sculpted coastal shadow)
+      { kind: "polygon", points: "128,134 154,108 154,130 128,156", fill: "ink" },
+      { kind: "polygon", points: "128,134 154,108 154,130 128,156", fill: "accent", opacity: 0.32 },
+
+      // 4 Protruding Angular Corner Bastions creating Fort Jefferson's iconic multi-faceted star plan
+      // Far-left corner bastion
+      { kind: "polygon", points: "18,116 24,114 24,136 18,138", fill: "accent-soft" },
+      { kind: "polygon", points: "18,116 26,122 26,144 18,138", fill: "accent" },
+      // Front-left corner bastion (crisp two-facet angular projection)
+      { kind: "polygon", points: "48,136 54,140 54,162 48,158", fill: "accent" },
+      { kind: "polygon", points: "54,140 62,136 62,158 54,162", fill: "ink" },
+      // Front-right corner bastion (crisp two-facet angular projection)
+      { kind: "polygon", points: "121,134 130,138 130,160 121,156", fill: "accent" },
+      { kind: "polygon", points: "130,138 137,131 137,153 130,160", fill: "deep" },
+      // Far-right corner bastion
+      { kind: "polygon", points: "153,108 160,111 160,133 153,130", fill: "deep" },
+
+      // Crisp parapet cap highlight & horizontal casemate stringcourse wrapping all visible edges
+      { kind: "path", d: "M18 116 L24 114 L52 92 L122 90 L154 108 L160 111", stroke: "paper", strokeWidth: 1.4, opacity: 0.88 },
+      { kind: "path", d: "M18 116 L54 140 L130 138 L160 111", stroke: "paper", strokeWidth: 1.6, opacity: 0.92 },
+      { kind: "path", d: "M24 125 L54 149 L130 147 L154 120", stroke: "deep", strokeWidth: 1.1, opacity: 0.56 },
+
+      // Neat two-tier rows of arched casemate gunports across all 3 angled exterior walls
+      // Front-left angled wall gunports (following perspective slope)
       {
         kind: "path",
-        d: "M31 111 L31 105 A3 3 0 0 1 37 105 L37 111 Z M45 110 L45 104 A3 3 0 0 1 51 104 L51 110 Z M59 108 L59 102 A3 3 0 0 1 65 102 L65 108 Z M73 107 L73 101 A3 3 0 0 1 79 101 L79 107 Z M85 106 L85 100 A2.75 2.75 0 0 1 90.5 100 L90.5 106 Z M31 137 L31 130 A3 3 0 0 1 37 130 L37 137 Z M45 136 L45 129 A3 3 0 0 1 51 129 L51 136 Z M59 135 L59 128 A3 3 0 0 1 65 128 L65 135 Z M73 134 L73 127 A3 3 0 0 1 79 127 L79 134 Z M85 133 L85 126 A2.75 2.75 0 0 1 90.5 126 L90.5 133 Z",
+        d: "M29 126.5 L29 123 A1.6 1.6 0 0 1 32.2 123 L32.2 126.5 Z M36 131.5 L36 128 A1.6 1.6 0 0 1 39.2 128 L39.2 131.5 Z M43 136.5 L43 133 A1.6 1.6 0 0 1 46.2 133 L46.2 136.5 Z M29 136.5 L29 133 A1.6 1.6 0 0 1 32.2 133 L32.2 136.5 Z M36 141.5 L36 138 A1.6 1.6 0 0 1 39.2 138 L39.2 141.5 Z M43 146.5 L43 143 A1.6 1.6 0 0 1 46.2 143 L46.2 146.5 Z",
         fill: "deep",
       },
-
-      // Arched casemate gunports on shadowed right wall (catching sunlit arch glints)
+      // Front-center wall gunports (two crisp rows)
       {
         kind: "path",
-        d: "M104 107 L104 101 A2.75 2.75 0 0 1 109.5 101 L109.5 107 Z M117 109 L117 103 A2.75 2.75 0 0 1 122.5 103 L122.5 109 Z M130 110 L130 104 A2.75 2.75 0 0 1 135.5 104 L135.5 110 Z M143 112 L143 106 A2.75 2.75 0 0 1 148.5 106 L148.5 112 Z",
+        d: "M67 144.5 L67 141 A2 2 0 0 1 71 141 L71 144.5 Z M78 144.3 L78 140.8 A2 2 0 0 1 82 140.8 L82 144.3 Z M89 144 L89 140.5 A2 2 0 0 1 93 140.5 L93 144 Z M100 143.8 L100 140.3 A2 2 0 0 1 104 140.3 L104 143.8 Z M111 143.5 L111 140 A2 2 0 0 1 115 140 L115 143.5 Z M67 154 L67 150.5 A2 2 0 0 1 71 150.5 L71 154 Z M78 153.8 L78 150.3 A2 2 0 0 1 82 150.3 L82 153.8 Z M89 153.5 L89 150 A2 2 0 0 1 93 150 L93 153.5 Z M100 153.3 L100 149.8 A2 2 0 0 1 104 149.8 L104 153.3 Z M111 153 L111 149.5 A2 2 0 0 1 115 149.5 L115 153 Z",
+        fill: "deep",
+      },
+      // Front-right shaded wall gunports (catching sunlit coral-light contrast)
+      {
+        kind: "path",
+        d: "M138.5 131.5 L138.5 128 A1.6 1.6 0 0 1 141.7 128 L141.7 131.5 Z M146 124 L146 120.5 A1.6 1.6 0 0 1 149.2 120.5 L149.2 124 Z M138.5 140.5 L138.5 137 A1.6 1.6 0 0 1 141.7 137 L141.7 140.5 Z M146 133 L146 129.5 A1.6 1.6 0 0 1 149.2 129.5 L149.2 133 Z",
         fill: "accent-soft",
-        opacity: 0.74,
-      },
-      {
-        kind: "path",
-        d: "M104 134 L104 127 A2.75 2.75 0 0 1 109.5 127 L109.5 134 Z M117 135 L117 128 A2.75 2.75 0 0 1 122.5 128 L122.5 135 Z M130 137 L130 130 A2.75 2.75 0 0 1 135.5 130 L135.5 137 Z M143 138 L143 131 A2.75 2.75 0 0 1 148.5 131 L148.5 138 Z",
-        fill: "paper",
-        opacity: 0.66,
+        opacity: 0.78,
       },
 
-      // Plane 4: Moat counterscarp wall, pure white coral-sand beach spit & layered Gulf shallows
-      { kind: "path", d: "M16 146 L96 151 L166 146 L166 156 L96 160 L16 155 Z", fill: "far" },
-      { kind: "rect", x: 11, y: 154, width: 158, height: 75, fill: "mid" },
-      // Sweeping luminous white coral-sand beach spit curving from left edge
-      { kind: "path", d: "M11 152 Q52 152 96 164 Q64 176 11 178 Z", fill: "paper", opacity: 0.94 },
-      // Banded turquoise Gulf coral shallows & rhythmic wave lines
-      { kind: "path", d: "M11 180 Q68 172 122 182 Q148 186 169 180 L169 202 Q116 208 66 200 Q34 196 11 202 Z", fill: "far", opacity: 0.54 },
-      { kind: "path", d: "M18 186 Q56 180 96 186 T164 186", stroke: "paper", strokeWidth: 1.8, strokeLinecap: "round", opacity: 0.84 },
-      { kind: "path", d: "M28 202 Q68 196 110 202 T160 202", stroke: "paper", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.72 },
-      { kind: "path", d: "M14 216 Q60 210 108 216 T166 216", stroke: "accent-soft", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.65 },
+      // Iconic white Garden Key Harbor Light turret rising from the rear-right rampart bastion
+      { kind: "path", d: "M117 94 L118.5 64 L124.5 64 L126 94 Z", fill: "paper" },
+      { kind: "rect", x: 116, y: 62, width: 11, height: 2.4, rx: 0.8, fill: "deep" },
+      { kind: "rect", x: 118.5, y: 56, width: 6, height: 6, fill: "accent" },
+      { kind: "polygon", points: "121.5,50 117.5,56 125.5,56", fill: "deep" },
 
-      // Plane 5: Foreground dark coral-head reef rim anchoring lower corners
-      { kind: "path", d: "M11 206 Q36 210 54 229 L11 229 Z", fill: "deep" },
+      // Plane 5: Pure white coral-sand beach spit, banded turquoise Gulf waves & foreground reef rim
+      { kind: "path", d: "M11 164 Q36 164 56 176 Q36 186 11 186 Z", fill: "paper", opacity: 0.94 },
+      { kind: "path", d: "M11 190 Q66 182 122 190 Q148 194 169 188 L169 208 Q116 214 66 206 Q34 202 11 208 Z", fill: "far", opacity: 0.46 },
+      { kind: "path", d: "M18 190 Q58 184 98 190 T164 190", stroke: "paper", strokeWidth: 1.7, strokeLinecap: "round", opacity: 0.84 },
+      { kind: "path", d: "M26 204 Q68 198 110 204 T162 204", stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.72 },
+      { kind: "path", d: "M14 217 Q60 211 108 217 T166 217", stroke: "accent-soft", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.64 },
+      { kind: "path", d: "M11 208 Q36 212 54 229 L11 229 Z", fill: "deep" },
       { kind: "path", d: "M169 212 Q146 214 132 229 L169 229 Z", fill: "deep" },
     ],
   },
@@ -498,7 +586,7 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "EVER",
-    subject: "Golden sunrise over the sawgrass River of Grass, cypress domes & poised Great Blue Heron",
+    subject: "Golden sunrise over the sawgrass River of Grass, cruising alligator, cypress domes & poised Great Blue Heron",
     accentLight: "#C9853A",
     accentDark: "#EEB46E",
     skyMood: "dawn",
@@ -522,7 +610,7 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       { kind: "path", d: "M11 106 L169 106 L169 144 L11 144 Z", fill: "mid" },
       { kind: "path", d: "M11 112 L169 112 M11 122 L169 122 M11 132 L169 132", stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.54 },
 
-      // Plane 3: Still reflective slough water, sunrise reflection & floating lily pads
+      // Plane 3: Still reflective slough water, sunrise reflection, cruising background alligator & lily pads
       { kind: "path", d: "M11 138 Q62 132 118 138 Q146 140 169 136 L169 229 L11 229 Z", fill: "ink" },
       // Shimmering vertical golden sunrise path on mirror slough water
       { kind: "ellipse", cx: 90, cy: 148, rx: 28, ry: 3.2, fill: "accent", opacity: 0.82 },
@@ -530,6 +618,17 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       { kind: "ellipse", cx: 90, cy: 170, rx: 26, ry: 3, fill: "accent", opacity: 0.68 },
       { kind: "line", x1: 72, y1: 148, x2: 108, y2: 148, stroke: "paper", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.86 },
       { kind: "line", x1: 66, y1: 162, x2: 114, y2: 162, stroke: "paper", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.72 },
+      // Small American alligator cruising quietly along the mid-background slough waterline (offset cleanly from heron)
+      { kind: "ellipse", cx: 133, cy: 142.5, rx: 21, ry: 2.2, fill: "accent-soft", opacity: 0.44 },
+      {
+        kind: "path",
+        d: "M113 142.4 C113.5 140.8 115.2 140.4 117 140.8 L122.4 140.4 C123.6 138.0 126.4 137.4 128 139.5 L129.8 139.6 L131.5 138.4 L133.4 139.4 L135.2 138.3 L137.2 139.4 L139 138.6 L141.5 140.2 C144.8 140.8 147.6 141.4 150.4 140.3 L152.8 139.8 L151.6 142.4 Z",
+        fill: "deep",
+      },
+      { kind: "circle", cx: 125.2, cy: 138.9, r: 0.75, fill: "paper", opacity: 0.92 },
+      { kind: "line", x1: 111, y1: 142.8, x2: 154, y2: 142.8, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.84 },
+      { kind: "path", d: "M122 145 Q138 144.4 155 145.4", stroke: "accent-soft", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.76 },
+      { kind: "path", d: "M130 147.4 Q143 147 156 147.8", stroke: "paper", strokeWidth: 0.9, strokeLinecap: "round", opacity: 0.56 },
       // Floating water lily pads & crisp white lily blossom
       { kind: "ellipse", cx: 56, cy: 204, rx: 12, ry: 3.8, fill: "deep" },
       { kind: "ellipse", cx: 128, cy: 196, rx: 14, ry: 4.2, fill: "deep" },
@@ -688,81 +787,109 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "ISRO",
-    subject: "Lake Superior boreal basalt cove, Rock Harbor Lighthouse & wading bull moose at dawn",
+    subject: "Commanding Greenstone Ridge island massif in Lake Superior, Rock Harbor Lighthouse & wading bull moose at dawn",
     accentLight: "#3D8580",
     accentDark: "#7EC4BE",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Cool northern Lake Superior dawn sky, sun & calm horizon clouds
-      { kind: "circle", cx: 128, cy: 52, r: 24, fill: "accent-soft", opacity: 0.38 },
-      { kind: "circle", cx: 128, cy: 52, r: 12, fill: "paper", opacity: 0.94 },
-      { kind: "path", d: "M16 36 Q48 30 82 36 Q56 40 16 36 Z", fill: "paper", opacity: 0.64 },
-      { kind: "path", d: "M88 64 Q124 58 164 64 Q134 68 88 64 Z", fill: "accent-soft", opacity: 0.54 },
+      // Plane 1: Cool northern Lake Superior dawn sky, rising sun & horizon clouds
+      { kind: "circle", cx: 132, cy: 42, r: 25, fill: "accent-soft", opacity: 0.38 },
+      { kind: "circle", cx: 132, cy: 42, r: 12.5, fill: "paper", opacity: 0.94 },
+      { kind: "path", d: "M16 32 Q48 26 84 32 Q56 36 16 32 Z", fill: "paper", opacity: 0.64 },
+      { kind: "path", d: "M90 58 Q126 52 164 58 Q134 62 90 58 Z", fill: "accent-soft", opacity: 0.52 },
 
-      // Plane 2: Long glacially striated Lake Superior archipelago islands & Rock Harbor Lighthouse
+      // Plane 2: Open Lake Superior horizon surrounding the commanding Isle Royale island massif on both sides
+      { kind: "rect", x: 11, y: 118, width: 158, height: 111, fill: "mid" },
+      { kind: "rect", x: 11, y: 118, width: 158, height: 34, fill: "far", opacity: 0.54 },
+      { kind: "line", x1: 11, y1: 119, x2: 169, y2: 119, stroke: "mid", strokeWidth: 1.4, opacity: 0.68 },
+      // Far distant Isle Royale satellite islet on far left horizon
+      { kind: "path", d: "M11 119 Q16 115 22 119 Z", fill: "far", opacity: 0.72 },
+
+      // Commanding main Isle Royale basalt island massif (Greenstone Ridge) surrounded by lake water on both sides
       {
         kind: "path",
-        d: "M11 100 L38 94 L76 98 L112 94 L169 98 L169 114 L11 114 Z",
-        fill: "far",
-      },
-      // Closer forested basalt point supporting Rock Harbor Lighthouse on the right
-      {
-        kind: "path",
-        d: "M84 114 Q112 100 144 102 L169 108 L169 120 L84 120 Z",
+        d: "M22 135 L30 118 L44 96 L56 80 L70 84 L84 72 L102 78 L116 90 L132 108 L148 118 L155 135 Q122 140 88 139 Q54 140 22 135 Z",
         fill: "ink",
       },
-      // Crisp white Rock Harbor Lighthouse & tiny keeper's house on the rocky point
-      { kind: "path", d: "M128 104 L130 74 L136 74 L138 104 Z", fill: "paper" },
-      { kind: "rect", x: 138, y: 94, width: 12, height: 10, fill: "paper", opacity: 0.92 },
-      { kind: "polygon", points: "137,94 144,89 151,94", fill: "accent" },
-      { kind: "rect", x: 129, y: 72, width: 8, height: 2.5, fill: "deep" },
-      { kind: "rect", x: 130.5, y: 67, width: 5, height: 5, fill: "accent" },
-      { kind: "polygon", points: "133,62 129.5,67 136.5,67", fill: "deep" },
-      // Spruce spires dotting the far lighthouse point
-      { kind: "polygon", points: "112,86 106,108 118,108", fill: "deep" },
-      { kind: "polygon", points: "156,82 149,108 163,108", fill: "deep" },
-      // Soft northern cove dawn mist ribbon
-      { kind: "ellipse", cx: 88, cy: 116, rx: 72, ry: 6, fill: "paper", opacity: 0.44 },
+      // Sunlit eastern Greenstone Ridge glacial escarpment catching northern dawn light
+      {
+        kind: "path",
+        d: "M84 72 L102 78 L116 90 L132 108 L148 118 L155 135 L118 138 L104 114 L92 94 Z",
+        fill: "mid",
+        opacity: 0.68,
+      },
+      // Crisp dawn ridge highlight along the main Greenstone Ridge spine
+      {
+        kind: "path",
+        d: "M56 80 L70 84 L84 72 L102 78 L116 90",
+        stroke: "accent-soft",
+        strokeWidth: 1.6,
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        opacity: 0.78,
+      },
+      // Dark rugged basalt shoreline cliffs at the base of the island massif
+      {
+        kind: "path",
+        d: "M22 135 L32 124 L56 122 L84 116 L112 122 L138 118 L155 135 Q122 140 88 139 Q54 140 22 135 Z",
+        fill: "deep",
+      },
+      // Evergreen boreal spruce spires cloaking Greenstone Ridge & the rocky shoreline
+      { kind: "polygon", points: "44,82 39,102 49,102", fill: "deep" },
+      { kind: "polygon", points: "58,68 52,92 64,92", fill: "deep" },
+      { kind: "polygon", points: "74,72 68,94 80,94", fill: "deep" },
+      { kind: "polygon", points: "88,62 82,86 94,86", fill: "deep" },
+      { kind: "polygon", points: "102,68 96,90 108,90", fill: "deep" },
+      { kind: "polygon", points: "118,98 112,126 124,126", fill: "deep" },
 
-      // Plane 3: Glassy Lake Superior cove water & dawn reflections
-      { kind: "rect", x: 11, y: 116, width: 158, height: 113, fill: "mid" },
-      { kind: "rect", x: 11, y: 116, width: 158, height: 34, fill: "far", opacity: 0.46 },
-      // Sun & lighthouse dawn shimmer across the cove
-      { kind: "ellipse", cx: 132, cy: 128, rx: 22, ry: 2.6, fill: "paper", opacity: 0.72 },
-      { kind: "ellipse", cx: 130, cy: 140, rx: 28, ry: 3, fill: "accent-soft", opacity: 0.64 },
-      { kind: "line", x1: 108, y1: 152, x2: 152, y2: 152, stroke: "paper", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.62 },
-      // Left boreal basalt headland with jagged spruce silhouettes
-      { kind: "path", d: "M11 124 Q36 118 58 134 L11 138 Z", fill: "ink" },
-      { kind: "polygon", points: "22,94 13,128 31,128", fill: "deep" },
-      { kind: "polygon", points: "36,102 28,132 44,132", fill: "deep" },
-      { kind: "polygon", points: "48,112 42,134 54,134", fill: "deep" },
+      // Prominent crisp white Rock Harbor Lighthouse & keeper's house on the eastern rocky point
+      { kind: "path", d: "M129 124 L131 86 L138 86 L140 124 Z", fill: "paper" },
+      { kind: "path", d: "M135 124 L135.5 86 L138 86 L140 124 Z", fill: "far", opacity: 0.56 },
+      { kind: "rect", x: 140, y: 112, width: 12, height: 12, fill: "paper", opacity: 0.94 },
+      { kind: "polygon", points: "139,112 146,106 153,112", fill: "accent" },
+      { kind: "rect", x: 130, y: 83.5, width: 9, height: 2.8, rx: 0.8, fill: "deep" },
+      { kind: "rect", x: 131.5, y: 77.5, width: 6, height: 6, fill: "accent" },
+      { kind: "circle", cx: 134.5, cy: 80.5, r: 1.6, fill: "paper", opacity: 0.95 },
+      { kind: "polygon", points: "134.5,71.5 130.5,77.5 138.5,77.5", fill: "deep" },
+
+      // Plane 3: Soft Lake Superior dawn mist, mirrored island reflection & sunrise shimmer
+      { kind: "ellipse", cx: 88, cy: 138, rx: 72, ry: 5.5, fill: "paper", opacity: 0.44 },
+      // Subtle dark mirror reflection of the Greenstone Ridge massif on the glassy cove
+      { kind: "path", d: "M34 140 L146 140 L132 154 L84 160 L48 154 Z", fill: "ink", opacity: 0.28 },
+      // Sun & Rock Harbor Lighthouse dawn shimmer on the lake
+      { kind: "ellipse", cx: 134, cy: 146, rx: 22, ry: 2.6, fill: "paper", opacity: 0.74 },
+      { kind: "ellipse", cx: 132, cy: 156, rx: 26, ry: 2.8, fill: "accent-soft", opacity: 0.64 },
+      { kind: "line", x1: 112, y1: 166, x2: 152, y2: 166, stroke: "paper", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.58 },
+      // Low left basalt cove point keeping the left Lake Superior water channel around the island clear
+      { kind: "path", d: "M11 164 Q24 162 36 172 L11 176 Z", fill: "ink" },
+      { kind: "polygon", points: "18,144 12,168 24,168", fill: "deep" },
 
       // Plane 4: Hero antlered bull moose wading in the misty foreground cove
       // Soft dark reflection on the glassy cove water beneath the moose
-      { kind: "ellipse", cx: 86, cy: 204, rx: 30, ry: 7, fill: "ink", opacity: 0.42 },
+      { kind: "ellipse", cx: 86, cy: 208, rx: 30, ry: 6.5, fill: "ink", opacity: 0.42 },
       // Bull moose body: unmistakable humped shoulder, deep chest, trailing bell & sturdy legs
       {
         kind: "path",
-        d: "M54 176 C54 162 64 156 76 154 C84 146 96 144 104 152 L114 156 C120 158 124 164 122 170 C118 174 112 172 108 172 L106 178 L102 176 L102 200 L97 200 L96 178 L88 179 L87 198 L82 198 L82 179 L68 180 L67 200 L62 200 L62 182 L58 198 L54 198 Z",
+        d: "M54 182 C54 168 64 162 76 160 C84 152 96 150 104 158 L114 162 C120 164 124 170 122 176 C118 180 112 178 108 178 L106 184 L102 182 L102 206 L97 206 L96 184 L88 185 L87 204 L82 204 L82 185 L68 186 L67 206 L62 206 L62 188 L58 204 L54 204 Z",
         fill: "deep",
       },
       // Sunlit dawn rim-light along the bull moose's high shoulder hump & back
-      { kind: "path", d: "M62 158 Q80 148 98 148", stroke: "accent-soft", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.72 },
-      // Broad sculpted palmate bull moose antlers silhouetted against the bright cove
+      { kind: "path", d: "M62 164 Q80 154 98 154", stroke: "accent-soft", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.74 },
+      // Broad sculpted palmate bull moose antlers silhouetted cleanly against the bright misty lake
       {
         kind: "path",
-        d: "M108 154 C104 142 94 134 86 134 C90 139 92 142 96 144 L91 142 L95 148 L104 155 Z",
+        d: "M108 160 C104 148 94 140 86 140 C90 145 92 148 96 150 L91 148 L95 154 L104 161 Z",
         fill: "deep",
       },
       {
         kind: "path",
-        d: "M111 154 C112 140 122 132 132 134 C128 139 125 142 121 144 L128 143 L123 149 L114 156 Z",
+        d: "M111 160 C112 146 122 138 132 140 C128 145 125 148 121 150 L128 149 L123 155 L114 162 Z",
         fill: "deep",
       },
       // Crisp wading water ripples encircling the moose's legs
-      { kind: "ellipse", cx: 64, cy: 200, rx: 10, ry: 2.4, stroke: "paper", strokeWidth: 1.2, opacity: 0.78 },
-      { kind: "ellipse", cx: 98, cy: 200, rx: 12, ry: 2.6, stroke: "paper", strokeWidth: 1.3, opacity: 0.82 },
-      { kind: "line", x1: 38, y1: 210, x2: 140, y2: 210, stroke: "accent-soft", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.65 },
+      { kind: "ellipse", cx: 64, cy: 206, rx: 10, ry: 2.4, stroke: "paper", strokeWidth: 1.2, opacity: 0.8 },
+      { kind: "ellipse", cx: 98, cy: 206, rx: 12, ry: 2.6, stroke: "paper", strokeWidth: 1.3, opacity: 0.84 },
+      { kind: "line", x1: 38, y1: 214, x2: 140, y2: 214, stroke: "accent-soft", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.65 },
 
       // Plane 5: Foreground glacially striated Lake Superior basalt shoreline ledges
       { kind: "path", d: "M11 200 Q34 206 52 229 L11 229 Z", fill: "deep" },

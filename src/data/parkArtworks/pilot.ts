@@ -637,123 +637,191 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "CONG",
-    subject: "Cathedral old-growth bald cypress, golden swamp sunbeams & boardwalk",
+    subject: "Flooded bald-cypress swamp, wide buttressed trunks, mirror reflections & raised wooden boardwalk",
     accentLight: "#B38530",
     accentDark: "#E2B862",
     skyMood: "mist",
     nodes: [
-      // Plane 1: Upper canopy glow & diagonal golden sunbeams cutting through swamp mist
-      { kind: "circle", cx: 124, cy: 28, r: 18, fill: "accent-soft", opacity: 0.46 },
-      { kind: "polygon", points: "110,14 142,14 78,166 44,166", fill: "accent-soft", opacity: 0.25 },
-      { kind: "polygon", points: "148,14 166,14 114,166 90,166", fill: "paper", opacity: 0.2 },
-      { kind: "polygon", points: "88,14 104,14 38,164 20,164", fill: "accent-soft", opacity: 0.16 },
+      // Plane 1: Clean sunlit misty forest sky (y=11..78) & gentle morning canopy glow
+      { kind: "circle", cx: 88, cy: 48, r: 30, fill: "accent-soft", opacity: 0.34 },
+      { kind: "circle", cx: 88, cy: 48, r: 18, fill: "accent-soft", opacity: 0.46 },
+      { kind: "circle", cx: 88, cy: 48, r: 9, fill: "paper", opacity: 0.88 },
 
-      // Plane 2: Distant old-growth cypress colonnade & floodplain mist veil
-      { kind: "rect", x: 54, y: 22, width: 6, height: 134, fill: "far", opacity: 0.65 },
-      { kind: "rect", x: 84, y: 26, width: 5, height: 130, fill: "far", opacity: 0.55 },
-      { kind: "rect", x: 106, y: 24, width: 6, height: 132, fill: "far", opacity: 0.62 },
-      { kind: "rect", x: 124, y: 28, width: 5, height: 128, fill: "far", opacity: 0.55 },
-      // Soft swamp mist hovering over water line
-      { kind: "ellipse", cx: 90, cy: 148, rx: 72, ry: 12, fill: "paper", opacity: 0.42 },
-
-      // Plane 3: Hero cathedral bald cypress trunks with flared buttresses & Spanish moss
-      // Mid-left secondary cypress
+      // Distant misty bottomland cypress treeline across the far floodplain horizon
       {
         kind: "path",
-        d: "M64 14 L74 14 L75 130 Q79 148 84 160 L56 160 Q61 146 63 130 Z",
+        d: "M11 106 Q26 94 42 104 Q58 92 74 102 Q90 96 106 104 Q124 92 142 102 Q156 95 169 104 L169 136 L11 136 Z",
+        fill: "far",
+        opacity: 0.72,
+      },
+      // Soft floodplain morning mist hovering along the distant waterline
+      { kind: "ellipse", cx: 90, cy: 132, rx: 78, ry: 8, fill: "paper", opacity: 0.46 },
+
+      // Plane 2: Glassy dark mirror swamp water (y=134..229)
+      { kind: "rect", x: 11, y: 134, width: 158, height: 95, fill: "mid" },
+      { kind: "rect", x: 11, y: 162, width: 158, height: 67, fill: "ink", opacity: 0.42 },
+      { kind: "rect", x: 11, y: 194, width: 158, height: 35, fill: "deep", opacity: 0.34 },
+      // Warm sunlit reflection channel down the calm central water
+      { kind: "ellipse", cx: 88, cy: 144, rx: 28, ry: 4.5, fill: "accent-soft", opacity: 0.44 },
+      { kind: "ellipse", cx: 86, cy: 154, rx: 22, ry: 3.2, fill: "paper", opacity: 0.38 },
+      { kind: "line", x1: 11, y1: 134, x2: 169, y2: 134, stroke: "paper", strokeWidth: 1.2, opacity: 0.56 },
+
+      // Plane 3: 4 unmistakable broad-flared buttressed bald cypress trees & crisp vertical mirror reflections
+      // Tree 1 (Mid-distance left cypress, x=24, waterline y=144) + mirror reflection
+      {
+        kind: "path",
+        d: "M21 60 L27 60 L28 118 Q31 134 35 144 L11 144 Q18 134 20 118 Z",
         fill: "ink",
       },
-      // Left cathedral giant cypress with wide flared fluted buttress
+      { kind: "ellipse", cx: 24, cy: 56, rx: 17, ry: 7.5, fill: "ink" },
+      { kind: "ellipse", cx: 18, cy: 65, rx: 13, ry: 5.5, fill: "ink" },
       {
         kind: "path",
-        d: "M24 14 L44 14 L46 126 Q52 154 62 178 L14 178 Q22 154 23 126 Z",
+        d: "M11 145 L34 145 Q30 156 28 170 L27 202 L21 202 L20 170 Q18 156 11 145 Z",
         fill: "deep",
-      },
-      { kind: "line", x1: 43, y1: 14, x2: 46, y2: 142, stroke: "accent", strokeWidth: 1.5, opacity: 0.62 },
-      // Right cathedral giant cypress with wide flared buttress
-      {
-        kind: "path",
-        d: "M134 14 L154 14 L156 128 Q162 154 168 180 L118 180 Q128 154 132 128 Z",
-        fill: "deep",
-      },
-      { kind: "line", x1: 134, y1: 14, x2: 131, y2: 144, stroke: "accent", strokeWidth: 1.6, opacity: 0.7 },
-      // High overarching cypress boughs
-      {
-        kind: "path",
-        d: "M12 14 L168 14 L168 38 Q144 48 124 34 Q102 46 82 32 Q58 46 38 34 Q24 44 12 36 Z",
-        fill: "ink",
-        opacity: 0.85,
-      },
-      // Draped Spanish moss garlands hanging from the upper canopy
-      {
-        kind: "path",
-        d: "M46 34 C44 48 48 56 45 70 C50 60 53 48 51 35 Z",
-        fill: "mid",
-        opacity: 0.82,
-      },
-      {
-        kind: "path",
-        d: "M78 32 C76 46 80 54 78 66 C82 56 85 44 83 32 Z",
-        fill: "mid",
-        opacity: 0.78,
-      },
-      {
-        kind: "path",
-        d: "M114 34 C112 50 116 62 113 78 C118 66 121 50 119 34 Z",
-        fill: "mid",
-        opacity: 0.84,
-      },
-      {
-        kind: "path",
-        d: "M128 36 C126 48 129 56 127 64 C131 56 133 46 132 36 Z",
-        fill: "ink",
-        opacity: 0.76,
+        opacity: 0.3,
       },
 
-      // Plane 4: Dark mirror floodplain water, trunk reflections & knobby cypress knees
-      { kind: "rect", x: 12, y: 156, width: 156, height: 72, fill: "mid", opacity: 0.82 },
-      { kind: "rect", x: 12, y: 186, width: 156, height: 42, fill: "ink", opacity: 0.42 },
-      // Crisp vertical trunk reflections & golden sun shimmer on the water
-      { kind: "rect", x: 24, y: 178, width: 22, height: 48, fill: "deep", opacity: 0.34 },
-      { kind: "rect", x: 132, y: 180, width: 22, height: 46, fill: "deep", opacity: 0.34 },
-      { kind: "polygon", points: "56,162 84,162 72,226 38,226", fill: "accent-soft", opacity: 0.24 },
-      // Subtle mirror water ripples
-      { kind: "line", x1: 18, y1: 170, x2: 72, y2: 170, stroke: "paper", strokeWidth: 1.1, opacity: 0.42 },
-      { kind: "line", x1: 112, y1: 174, x2: 162, y2: 174, stroke: "paper", strokeWidth: 1.1, opacity: 0.42 },
-      { kind: "line", x1: 24, y1: 196, x2: 68, y2: 196, stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.48 },
-      // Knobby bald cypress knees rising out of the mirror floodplain
+      // Tree 3 (Mid-distance right-center cypress, x=114, waterline y=142) + mirror reflection
       {
         kind: "path",
-        d: "M22 204 L25 186 Q28 182 31 186 L34 204 Z M38 208 L41 192 Q44 188 47 192 L50 208 Z M54 196 L56 184 Q58 181 60 184 L62 196 Z",
-        fill: "deep",
+        d: "M110 54 L118 54 L119 116 Q122 132 127 142 L101 142 Q106 132 109 116 Z",
+        fill: "ink",
       },
+      { kind: "ellipse", cx: 114, cy: 50, rx: 20, ry: 8, fill: "ink" },
+      { kind: "ellipse", cx: 123, cy: 59, rx: 15, ry: 6, fill: "ink" },
       {
         kind: "path",
-        d: "M124 198 L126 185 Q128 182 130 185 L132 198 Z M138 206 L141 190 Q144 186 147 190 L150 206 Z M153 202 L156 188 Q158 185 160 188 L163 202 Z",
+        d: "M102 143 L126 143 Q121 154 119 168 L118 196 L110 196 L109 168 Q107 154 102 143 Z",
         fill: "deep",
+        opacity: 0.28,
       },
-      { kind: "line", x1: 20, y1: 204, x2: 52, y2: 204, stroke: "paper", strokeWidth: 1, opacity: 0.55 },
-      { kind: "line", x1: 122, y1: 206, x2: 164, y2: 206, stroke: "paper", strokeWidth: 1, opacity: 0.55 },
 
-      // Plane 5: Perspective wooden boardwalk receding into the cypress cathedral
-      { kind: "polygon", points: "89,156 101,156 122,228 68,228", fill: "accent", opacity: 0.85 },
-      // Perspective boardwalk plank lines
-      { kind: "line", x1: 86, y1: 168, x2: 104, y2: 168, stroke: "deep", strokeWidth: 1, opacity: 0.55 },
-      { kind: "line", x1: 82, y1: 182, x2: 108, y2: 182, stroke: "deep", strokeWidth: 1.1, opacity: 0.58 },
-      { kind: "line", x1: 77, y1: 198, x2: 113, y2: 198, stroke: "deep", strokeWidth: 1.2, opacity: 0.62 },
-      { kind: "line", x1: 72, y1: 215, x2: 118, y2: 215, stroke: "deep", strokeWidth: 1.4, opacity: 0.65 },
-      // Boardwalk handrails & stanchions
-      { kind: "line", x1: 89, y1: 146, x2: 64, y2: 228, stroke: "deep", strokeWidth: 2.2, strokeLinecap: "round" },
-      { kind: "line", x1: 101, y1: 146, x2: 126, y2: 228, stroke: "deep", strokeWidth: 2.2, strokeLinecap: "round" },
-      { kind: "line", x1: 89, y1: 146, x2: 64, y2: 228, stroke: "accent-soft", strokeWidth: 0.9, opacity: 0.7 },
-      { kind: "line", x1: 101, y1: 146, x2: 126, y2: 228, stroke: "accent-soft", strokeWidth: 0.9, opacity: 0.7 },
+      // Tree 2 (Hero foreground left bald cypress, x=48, waterline y=158) + layered feathery crown + reflection
       {
         kind: "path",
-        d: "M84 162 L84 174 M78 182 L78 198 M71 204 L71 224 M106 162 L106 174 M112 182 L112 198 M119 204 L119 224",
+        d: "M43 40 L53 40 L54 122 C56 138 61 150 67 158 L29 158 C35 150 40 138 42 122 Z",
+        fill: "deep",
+      },
+      // Sunlit right trunk & fluted buttress rim highlight
+      {
+        kind: "path",
+        d: "M53 46 L54 122 C56 137 60 148 65 157",
+        stroke: "accent-soft",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
+        opacity: 0.62,
+      },
+      // Layered horizontal feathery bald-cypress canopy boughs
+      { kind: "ellipse", cx: 48, cy: 32, rx: 25, ry: 8.5, fill: "deep" },
+      { kind: "ellipse", cx: 36, cy: 42, rx: 20, ry: 7, fill: "deep" },
+      { kind: "ellipse", cx: 61, cy: 44, rx: 17, ry: 6.5, fill: "deep" },
+      { kind: "ellipse", cx: 48, cy: 52, rx: 19, ry: 6, fill: "ink", opacity: 0.82 },
+      // Vertical mirror water reflection of hero left cypress
+      {
+        kind: "path",
+        d: "M30 159 L66 159 C60 168 56 179 54 194 L53 229 L43 229 L42 194 C40 179 36 168 30 159 Z",
+        fill: "deep",
+        opacity: 0.34,
+      },
+
+      // Tree 4 (Hero foreground right bald cypress, x=147, waterline y=164) + layered feathery crown + reflection
+      {
+        kind: "path",
+        d: "M141 34 L153 34 L154 124 C157 142 162 154 169 164 L126 164 C133 154 138 142 140 124 Z",
+        fill: "deep",
+      },
+      // Sunlit left trunk & fluted buttress rim highlight catching morning light
+      {
+        kind: "path",
+        d: "M141 42 L140 124 C138 140 134 152 128 163",
+        stroke: "accent",
+        strokeWidth: 1.7,
+        strokeLinecap: "round",
+        opacity: 0.72,
+      },
+      // Layered horizontal feathery bald-cypress canopy boughs
+      { kind: "ellipse", cx: 147, cy: 26, rx: 26, ry: 9, fill: "deep" },
+      { kind: "ellipse", cx: 134, cy: 38, rx: 21, ry: 7.5, fill: "deep" },
+      { kind: "ellipse", cx: 158, cy: 42, rx: 16, ry: 6.5, fill: "deep" },
+      { kind: "ellipse", cx: 144, cy: 49, rx: 19, ry: 6, fill: "ink", opacity: 0.84 },
+      // Vertical mirror water reflection of hero right cypress
+      {
+        kind: "path",
+        d: "M127 165 L169 165 C162 175 157 187 154 202 L153 229 L141 229 L140 202 C138 187 133 175 127 165 Z",
+        fill: "deep",
+        opacity: 0.36,
+      },
+
+      // Crisp horizontal mirror water ripples breaking the trunk reflections
+      { kind: "line", x1: 11, y1: 158, x2: 68, y2: 158, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.62 },
+      { kind: "line", x1: 122, y1: 164, x2: 169, y2: 164, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.62 },
+      { kind: "line", x1: 16, y1: 184, x2: 56, y2: 184, stroke: "accent-soft", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.45 },
+      { kind: "line", x1: 122, y1: 190, x2: 164, y2: 190, stroke: "accent-soft", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.45 },
+      { kind: "line", x1: 118, y1: 212, x2: 162, y2: 212, stroke: "paper", strokeWidth: 1, strokeLinecap: "round", opacity: 0.38 },
+
+      // Plane 4: Distinct small rounded cone-like cypress knees poking cleanly out of the water
+      {
+        kind: "path",
+        d: "M17 174 L20 160 Q22 157 24 160 L27 174 Z M31 178 L34 166 Q36 163 38 166 L41 178 Z",
+        fill: "deep",
+      },
+      { kind: "line", x1: 15, y1: 174, x2: 43, y2: 174, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.65 },
+      {
+        kind: "path",
+        d: "M117 178 L120 165 Q122 162 124 165 L127 178 Z M131 186 L134 171 Q137 167 140 171 L143 186 Z M148 182 L150 171 Q152 168 154 171 L156 182 Z",
+        fill: "deep",
+      },
+      { kind: "line", x1: 115, y1: 178, x2: 130, y2: 178, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.65 },
+      { kind: "line", x1: 129, y1: 186, x2: 158, y2: 186, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.65 },
+
+      // Plane 5: Raised wooden boardwalk running forward in clean perspective toward bottom-left/bottom-center
+      // Dark water shadow & vertical support pilings standing in the swamp water beneath the raised deck
+      { kind: "polygon", points: "83,142 93,142 114,229 44,229", fill: "deep", opacity: 0.44 },
+      {
+        kind: "path",
+        d: "M76 156 L76 168 M67 178 L67 194 M56 204 L56 223 M97 156 L97 168 M102 178 L102 194 M108 204 L108 223",
         stroke: "deep",
-        strokeWidth: 1.8,
+        strokeWidth: 2.8,
         strokeLinecap: "round",
       },
+      // Tiny white waterline ripples where the boardwalk pilings meet the glassy swamp water
+      {
+        kind: "path",
+        d: "M72 168 L80 168 M62 194 L72 194 M51 223 L61 223 M93 168 L101 168 M97 194 L107 194 M103 223 L113 223",
+        stroke: "paper",
+        strokeWidth: 1.1,
+        strokeLinecap: "round",
+        opacity: 0.62,
+      },
+      // Raised warm wooden boardwalk plank deck surface + outer timber stringer beams
+      { kind: "polygon", points: "83,138 93,138 114,229 46,229", fill: "accent-soft" },
+      { kind: "polygon", points: "83,138 93,138 114,229 46,229", fill: "accent", opacity: 0.56 },
+      { kind: "line", x1: 83, y1: 138, x2: 46, y2: 229, stroke: "deep", strokeWidth: 2.2 },
+      { kind: "line", x1: 93, y1: 138, x2: 114, y2: 229, stroke: "deep", strokeWidth: 2.2 },
+      // Crisp perspective-spaced wooden deck plank seams
+      {
+        kind: "path",
+        d: "M81 144 L95 144 M78 152 L97 152 M74 162 L99 162 M69 174 L102 174 M63 188 L105 188 M56 204 L109 204 M49 221 L113 221",
+        stroke: "deep",
+        strokeWidth: 1.25,
+        opacity: 0.62,
+      },
+      // Vertical wooden handrail posts rising cleanly along both sides of the boardwalk
+      {
+        kind: "path",
+        d: "M83 131 L83 138 M76 144 L76 156 M67 160 L67 178 M56 179 L56 204 M46 197 L46 229 M93 131 L93 138 M97 144 L97 156 M102 160 L102 178 M108 179 L108 204 M114 197 L114 229",
+        stroke: "deep",
+        strokeWidth: 2.1,
+        strokeLinecap: "round",
+      },
+      // Parallel upper & middle wooden handrails with warm sunlit top edge
+      { kind: "line", x1: 83, y1: 131, x2: 46, y2: 197, stroke: "deep", strokeWidth: 2.8, strokeLinecap: "round" },
+      { kind: "line", x1: 83, y1: 130.5, x2: 46, y2: 196.5, stroke: "accent-soft", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.88 },
+      { kind: "line", x1: 83, y1: 134.5, x2: 46, y2: 213, stroke: "deep", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.88 },
+      { kind: "line", x1: 93, y1: 131, x2: 114, y2: 197, stroke: "deep", strokeWidth: 2.8, strokeLinecap: "round" },
+      { kind: "line", x1: 93, y1: 130.5, x2: 114, y2: 196.5, stroke: "accent-soft", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.88 },
+      { kind: "line", x1: 93, y1: 134.5, x2: 114, y2: 213, stroke: "deep", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.88 },
     ],
   },
 
@@ -767,52 +835,78 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
     accentDark: "#E8AF67",
     skyMood: "noon",
     nodes: [
-      // Plane 1: Upper 40% sunlit Black Hills prairie sky & soft cumulus clouds
+      // Plane 1: Upper sunlit Black Hills prairie sky & soft cumulus clouds
       { kind: "circle", cx: 142, cy: 32, r: 16, fill: "accent-soft", opacity: 0.36 },
       { kind: "circle", cx: 142, cy: 32, r: 9.5, fill: "accent", opacity: 0.88 },
-      { kind: "path", d: "M22 44 Q32 34 46 38 Q56 30 68 38 Q78 36 84 44 Z", fill: "paper", opacity: 0.82 },
-      { kind: "path", d: "M102 52 Q112 44 124 47 Q134 42 146 52 Z", fill: "paper", opacity: 0.7 },
+      { kind: "path", d: "M22 40 Q32 30 46 34 Q56 26 68 34 Q78 32 84 40 Z", fill: "paper", opacity: 0.82 },
+      { kind: "path", d: "M108 46 Q118 39 130 42 Q139 37 150 46 Z", fill: "paper", opacity: 0.7 },
 
-      // Plane 2: Rolling Black Hills horizon & prairie grass swell
-      { kind: "path", d: "M12 74 Q48 60 88 68 Q128 58 168 74 L168 106 L12 106 Z", fill: "far" },
-      { kind: "path", d: "M12 88 Q54 76 96 82 Q134 78 168 88 L168 112 L12 112 Z", fill: "mid" },
+      // Plane 2: Rolling Black Hills horizon & sunlit prairie ridge swell
+      { kind: "path", d: "M11 76 Q44 65 86 73 Q128 63 169 75 L169 106 L11 106 Z", fill: "far" },
+      { kind: "path", d: "M11 88 Q54 77 96 83 Q134 79 169 89 L169 112 L11 112 Z", fill: "mid" },
       // Sunlit prairie crest edge
-      { kind: "path", d: "M12 88 Q54 76 96 82 Q134 78 168 88", stroke: "accent-soft", strokeWidth: 2, opacity: 0.72 },
+      { kind: "path", d: "M11 88 Q54 77 96 83 Q134 79 169 89", stroke: "accent-soft", strokeWidth: 2, opacity: 0.74 },
       // Small Black Hills ponderosa pine tufts on far left slope
-      { kind: "polygon", points: "26,68 21,82 31,82", fill: "ink", opacity: 0.85 },
-      { kind: "polygon", points: "36,72 31,84 41,84", fill: "ink", opacity: 0.78 },
+      { kind: "polygon", points: "26,69 21,83 31,83", fill: "ink", opacity: 0.85 },
+      { kind: "polygon", points: "36,73 31,85 41,85", fill: "ink", opacity: 0.78 },
 
-      // Plane 3 (Upper Hero): Strong iconic American bison standing on the prairie ridge
+      // Plane 3 (Upper Hero): Anatomically accurate American Bison silhouette (NPS arrowhead proportions)
+      // Massive elevated shoulder hump, low-slung shaggy head & beard, tucked lean flank, angled-hock hind legs
       {
         kind: "path",
-        d: "M64 84 L64 73 C62 67 66 59 74 58 C82 57 88 61 95 62 C102 63 107 67 108 73 L107 84 L103 84 L102 76 L95 75 L94 84 L90 84 L90 76 L79 77 L78 85 L74 85 L73 76 L68 77 L68 84 Z",
+        d: "M55.5 66.5 C55.5 62.5 58 58.5 63.5 57.5 C67.5 54 71.5 48.5 76.5 48.5 C81.5 48.5 85 53 90 56 C96 56.5 102 56.5 106.5 60 C108.5 63 108.5 68 106.5 72.5 L107.2 74.5 L105.5 83 L103.2 83 L104 75.5 C102.5 73.5 101.5 72 100.5 71 L98.5 75 L97 83 L94.8 83 L95.8 75.5 C95 73.5 94 71.5 92.5 69.5 C87 70 83 72.5 79.5 75.5 L77.8 76.5 L77 83 L74.8 83 L75.2 76.5 L71.5 76.5 L70.2 83 L67.8 83 L68.2 76.5 C65.5 76.5 63.5 75 62 76.5 C60 75 59 73 58 72 C56 71.5 55.2 69 55.5 66.5 Z",
         fill: "deep",
       },
-      // Shaggy bison head, beard & short curved horn
+      // Crisp upturned curved bison horn silhouetted cleanly against the bright prairie sky
       {
         kind: "path",
-        d: "M65 64 C59 64 56 68 57 74 C58 78 62 79 65 76 Z",
+        d: "M63.5 58.2 C60.5 57.8 58.8 55.8 58.8 52.8 C59.9 54.4 61.3 55.6 64 56.2 Z",
         fill: "deep",
       },
       {
         kind: "path",
-        d: "M61 64 Q58 60 62 59",
+        d: "M61.6 57.2 C59.8 56.4 58.9 54.8 58.9 53",
         stroke: "paper",
+        strokeWidth: 0.9,
+        strokeLinecap: "round",
+        opacity: 0.82,
+      },
+      // Short curved bison tail with terminal tuft
+      {
+        kind: "path",
+        d: "M106.2 60.5 Q110.5 63 111.2 67.8",
+        stroke: "deep",
         strokeWidth: 1.5,
         strokeLinecap: "round",
-        opacity: 0.85,
       },
-      { kind: "path", d: "M68 61 Q77 57 88 61", stroke: "accent-soft", strokeWidth: 1.3, strokeLinecap: "round", opacity: 0.75 },
+      { kind: "ellipse", cx: 111.4, cy: 69.2, rx: 1.3, ry: 2.2, fill: "deep" },
+      // Sunlit crest rim along the elevated shoulder hump & subtle woolly cape demarcation
+      {
+        kind: "path",
+        d: "M69 52.5 C72.5 49.2 75 48.6 77.5 48.8 C81.5 49.2 85.2 53.2 89.5 55.8",
+        stroke: "accent-soft",
+        strokeWidth: 1.3,
+        strokeLinecap: "round",
+        opacity: 0.78,
+      },
+      {
+        kind: "path",
+        d: "M82.5 54 C84 60 83 66 80 71.5",
+        stroke: "ink",
+        strokeWidth: 1.2,
+        strokeLinecap: "round",
+        opacity: 0.62,
+      },
 
       // Plane 4 (Lower 60%): Curving cutaway earth strata opening into Wind Cave's vaulted limestone cavern
-      { kind: "path", d: "M12 96 Q60 90 112 96 Q142 98 168 94 L168 228 L12 228 Z", fill: "ink" },
+      { kind: "path", d: "M11 96 Q60 90 112 96 Q142 98 169 94 L169 229 L11 229 Z", fill: "ink" },
       // Sedimentary limestone cutaway strata ribbons above the vault
-      { kind: "path", d: "M12 103 Q64 97 118 103 Q144 105 168 101", stroke: "accent-soft", strokeWidth: 2.2, opacity: 0.58 },
-      { kind: "path", d: "M12 110 Q66 105 120 111 Q146 113 168 109", stroke: "mid", strokeWidth: 2.4, opacity: 0.65 },
+      { kind: "path", d: "M11 103 Q64 97 118 103 Q144 105 169 101", stroke: "accent-soft", strokeWidth: 2.2, opacity: 0.58 },
+      { kind: "path", d: "M11 110 Q66 105 120 111 Q146 113 169 109", stroke: "mid", strokeWidth: 2.4, opacity: 0.65 },
       // Vaulted dark subterranean limestone cavern interior
       {
         kind: "path",
-        d: "M20 228 C18 176 26 138 50 122 C72 108 108 108 130 122 C154 138 162 176 160 228 Z",
+        d: "M20 229 C18 176 26 138 50 122 C72 108 108 108 130 122 C154 138 162 176 160 229 Z",
         fill: "deep",
       },
       // Soft golden subterranean glow inside the vaulted cavern
@@ -856,8 +950,8 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         opacity: 0.72,
       },
       // Cavern floor limestone ledges framing the base of the cutaway
-      { kind: "path", d: "M12 208 Q46 200 72 214 L90 218 L108 214 Q134 200 168 208 L168 228 L12 228 Z", fill: "ink" },
-      { kind: "path", d: "M12 216 Q52 212 90 220 Q128 212 168 216 L168 228 L12 228 Z", fill: "deep", opacity: 0.85 },
+      { kind: "path", d: "M11 208 Q46 200 72 214 L90 218 L108 214 Q134 200 169 208 L169 229 L11 229 Z", fill: "ink" },
+      { kind: "path", d: "M11 216 Q52 212 90 220 Q128 212 169 216 L169 229 L11 229 Z", fill: "deep", opacity: 0.85 },
     ],
   },
 
@@ -866,7 +960,7 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "VOYA",
-    subject: "Aurora Borealis curtains, granite white-pine islands & lone northwoods canoe",
+    subject: "Aurora Borealis curtains, mid-lake Canadian Shield pine island & lone northwoods canoe",
     accentLight: "#2A9D82",
     accentDark: "#69E2C4",
     skyMood: "night",
@@ -879,101 +973,126 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       { kind: "circle", cx: 136, cy: 22, r: 1.5, fill: "paper", opacity: 0.94 },
       { kind: "circle", cx: 154, cy: 36, r: 1.1, fill: "paper", opacity: 0.8 },
       { kind: "circle", cx: 34, cy: 62, r: 1, fill: "paper", opacity: 0.72 },
-      { kind: "circle", cx: 146, cy: 74, r: 1.1, fill: "paper", opacity: 0.76 },
+      { kind: "circle", cx: 148, cy: 70, r: 1.1, fill: "paper", opacity: 0.76 },
 
       // Broad translucent aurora sky veil
       {
         kind: "path",
-        d: "M14 78 C36 48 64 38 92 52 C118 64 140 46 166 28 L166 64 C140 82 116 98 88 86 C60 74 36 86 14 108 Z",
+        d: "M11 76 C34 46 64 36 92 50 C118 62 142 44 169 26 L169 62 C142 80 116 94 88 82 C60 70 34 84 11 104 Z",
         fill: "accent",
         opacity: 0.34,
       },
       // Sinuous folded vertical Aurora Borealis curtain ribbon
       {
         kind: "path",
-        d: "M16 92 C40 64 66 56 94 70 C120 82 144 64 166 44 L166 56 C144 76 118 92 92 80 C64 66 40 76 16 104 Z",
+        d: "M11 90 C38 62 66 54 94 68 C120 80 144 62 169 42 L169 54 C144 74 118 90 92 78 C64 64 38 74 11 102 Z",
         fill: "accent",
         opacity: 0.76,
       },
       // Luminous bright lower aurora edge
       {
         kind: "path",
-        d: "M16 100 C40 72 66 64 94 78 C120 90 144 72 166 52",
+        d: "M11 98 C38 70 66 62 94 76 C120 88 144 70 169 50",
         stroke: "accent-soft",
         strokeWidth: 2.8,
         strokeLinecap: "round",
         opacity: 0.94,
       },
       // Vertical shimmering curtain rays rising upward from the ribbon
-      { kind: "line", x1: 38, y1: 78, x2: 38, y2: 46, stroke: "accent-soft", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.44 },
-      { kind: "line", x1: 58, y1: 68, x2: 58, y2: 34, stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.36 },
-      { kind: "line", x1: 82, y1: 72, x2: 82, y2: 40, stroke: "accent-soft", strokeWidth: 2.4, strokeLinecap: "round", opacity: 0.48 },
-      { kind: "line", x1: 112, y1: 80, x2: 112, y2: 44, stroke: "paper", strokeWidth: 1.7, strokeLinecap: "round", opacity: 0.38 },
-      { kind: "line", x1: 138, y1: 68, x2: 138, y2: 32, stroke: "accent-soft", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.45 },
+      { kind: "line", x1: 38, y1: 76, x2: 38, y2: 44, stroke: "accent-soft", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.44 },
+      { kind: "line", x1: 58, y1: 66, x2: 58, y2: 32, stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.36 },
+      { kind: "line", x1: 82, y1: 70, x2: 82, y2: 38, stroke: "accent-soft", strokeWidth: 2.4, strokeLinecap: "round", opacity: 0.48 },
+      { kind: "line", x1: 112, y1: 78, x2: 112, y2: 42, stroke: "paper", strokeWidth: 1.7, strokeLinecap: "round", opacity: 0.38 },
+      { kind: "line", x1: 138, y1: 66, x2: 138, y2: 30, stroke: "accent-soft", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.45 },
 
-      // Plane 2: Far boreal shoreline across the lake
+      // Plane 2: Distant low boreal treeline far across the lake horizon (y=114..126)
       {
         kind: "path",
-        d: "M12 128 L26 122 L42 126 L64 120 L86 126 L112 120 L138 125 L168 120 L168 140 L12 140 Z",
+        d: "M11 122 L24 117 L38 120 L58 115 L84 120 L114 115 L140 119 L156 115 L169 119 L169 128 L11 128 Z",
+        fill: "far",
+        opacity: 0.72,
+      },
+
+      // Plane 3: Calm dark northwoods lake spanning full width behind & around BOTH sides of the island
+      { kind: "rect", x: 11, y: 125, width: 158, height: 104, fill: "mid" },
+      { kind: "rect", x: 11, y: 125, width: 158, height: 22, fill: "deep", opacity: 0.38 },
+      // Shimmering emerald aurora reflections visible on the open lake to the left, right, and foreground
+      { kind: "ellipse", cx: 30, cy: 140, rx: 16, ry: 2.4, fill: "accent", opacity: 0.48 },
+      { kind: "ellipse", cx: 148, cy: 138, rx: 18, ry: 2.5, fill: "accent", opacity: 0.5 },
+      { kind: "ellipse", cx: 28, cy: 156, rx: 15, ry: 2.2, fill: "accent-soft", opacity: 0.38 },
+      { kind: "ellipse", cx: 146, cy: 158, rx: 19, ry: 2.6, fill: "accent-soft", opacity: 0.4 },
+      { kind: "ellipse", cx: 90, cy: 176, rx: 46, ry: 4.2, fill: "accent", opacity: 0.42 },
+      { kind: "ellipse", cx: 88, cy: 214, rx: 50, ry: 4, fill: "accent", opacity: 0.34 },
+      { kind: "line", x1: 16, y1: 148, x2: 44, y2: 148, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.5 },
+      { kind: "line", x1: 132, y1: 148, x2: 164, y2: 148, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.5 },
+
+      // Plane 4 (Hero): Prominent Canadian Shield rocky granite island surrounded by open water (x=52..126, y=108..154)
+      // Soft mirrored reflection of the island dome & pines on the calm lake below
+      {
+        kind: "path",
+        d: "M54 154 L124 154 C118 164 112 167 104 172 L96 184 L89 175 L82 188 L74 176 L67 182 C61 169 57 163 54 154 Z",
+        fill: "deep",
+        opacity: 0.34,
+      },
+      { kind: "line", x1: 58, y1: 164, x2: 118, y2: 164, stroke: "accent-soft", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.5 },
+      { kind: "line", x1: 68, y1: 174, x2: 108, y2: 174, stroke: "paper", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.48 },
+
+      // Smooth glaciated Canadian Shield granite dome shoreline (open water on BOTH left x<52 and right x>126)
+      {
+        kind: "path",
+        d: "M52 152 C59 142 72 138 90 138 C106 138 118 143 126 152 Q89 156 52 152 Z",
         fill: "far",
       },
-
-      // Plane 3: Hero glacially smoothed Canadian Shield granite islands & jagged white pines
-      // Left whaleback granite island
-      { kind: "path", d: "M12 140 C24 124 58 122 82 140 Z", fill: "ink" },
-      { kind: "path", d: "M18 134 C34 126 56 126 74 134", stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.48 },
-      // Left windswept white pine silhouettes
+      // Shaded lower granite rock face meeting the lake
       {
         kind: "path",
-        d: "M34 132 L34 94 M34 98 L24 101 M34 100 L44 98 M34 108 L22 110 M34 108 L46 111 M34 118 L25 120 M34 118 L43 120",
-        stroke: "deep",
-        strokeWidth: 2.5,
-        strokeLinecap: "round",
+        d: "M52 152 C66 147 110 147 126 152 Q89 156 52 152 Z",
+        fill: "ink",
+        opacity: 0.78,
       },
+      // Aurora-lit upper granite whaleback highlight & bright waterline shimmer
       {
         kind: "path",
-        d: "M54 132 L54 104 M54 108 L46 110 M54 108 L63 111 M54 117 L45 119 M54 117 L64 119",
+        d: "M58 147 C68 140 80 138 94 139 C106 140 115 143 121 147",
+        stroke: "accent-soft",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+        opacity: 0.72,
+      },
+      { kind: "line", x1: 48, y1: 153.5, x2: 130, y2: 153.5, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.64 },
+
+      // Crisp cluster of tall pointed white-pine & black-spruce silhouettes crowning the island
+      // Tall iconic windswept white pine at island crest
+      {
+        kind: "path",
+        d: "M82 142 L82 108 M82 112 L73 115 M82 113 L92 111 M82 120 L71 122 M82 120 L94 123 M82 128 L73 130 M82 128 L91 130",
         stroke: "deep",
-        strokeWidth: 2.2,
+        strokeWidth: 2.3,
         strokeLinecap: "round",
       },
-      { kind: "polygon", points: "22,108 14,134 30,134", fill: "deep" },
-      { kind: "polygon", points: "67,114 60,136 74,136", fill: "deep" },
-
-      // Right granite island & spruce/pine spires
-      { kind: "path", d: "M114 140 C130 124 152 122 168 132 L168 140 Z", fill: "ink" },
-      { kind: "polygon", points: "136,100 127,134 145,134", fill: "deep" },
-      { kind: "polygon", points: "152,92 142,134 162,134", fill: "deep" },
-      { kind: "polygon", points: "124,114 117,138 131,138", fill: "deep" },
-
-      // Plane 4: Dark northwoods lake water & shimmering aurora reflections
-      { kind: "rect", x: 12, y: 139, width: 156, height: 89, fill: "mid" },
-      { kind: "rect", x: 12, y: 139, width: 156, height: 22, fill: "deep", opacity: 0.36 },
-      // Shimmering emerald aurora reflections across the center water channel
-      { kind: "ellipse", cx: 92, cy: 152, rx: 32, ry: 3.5, fill: "accent", opacity: 0.56 },
-      { kind: "ellipse", cx: 88, cy: 162, rx: 40, ry: 4.2, fill: "accent", opacity: 0.52 },
-      { kind: "ellipse", cx: 94, cy: 173, rx: 44, ry: 4.5, fill: "accent-soft", opacity: 0.44 },
-      { kind: "ellipse", cx: 86, cy: 184, rx: 36, ry: 3.6, fill: "accent", opacity: 0.42 },
-      { kind: "ellipse", cx: 92, cy: 212, rx: 48, ry: 4, fill: "accent", opacity: 0.34 },
-      { kind: "line", x1: 68, y1: 152, x2: 114, y2: 152, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.58 },
-      { kind: "line", x1: 60, y1: 173, x2: 124, y2: 173, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.52 },
+      // Pointed boreal spruce & pine silhouettes flanking the white pine across the granite dome
+      { kind: "polygon", points: "68,116 61,144 75,144", fill: "deep" },
+      { kind: "polygon", points: "96,112 88,144 104,144", fill: "deep" },
+      { kind: "polygon", points: "108,122 101,146 115,146", fill: "deep" },
+      { kind: "polygon", points: "60,127 55,147 65,147", fill: "deep" },
+      { kind: "polygon", points: "117,130 112,148 122,148", fill: "deep" },
 
       // Plane 5: Foreground lone northwoods canoe, paddler & V-wake ripples
       // Canoe hull with upturned voyageur bow & stern
       {
         kind: "path",
-        d: "M56 189 C60 198 70 202 90 202 C110 202 120 198 124 189 C116 194 106 195 90 195 C74 195 64 194 56 189 Z",
+        d: "M56 196 C60 205 70 209 90 209 C110 209 120 205 124 196 C116 201 106 202 90 202 C74 202 64 201 56 196 Z",
         fill: "deep",
       },
-      { kind: "path", d: "M60 192 Q90 197 120 192", stroke: "accent-soft", strokeWidth: 1.1, opacity: 0.72 },
+      { kind: "path", d: "M60 199 Q90 204 120 199", stroke: "accent-soft", strokeWidth: 1.1, opacity: 0.72 },
       // Silhouetted paddler & angled paddle dipping into the water
-      { kind: "circle", cx: 83, cy: 177, r: 3.4, fill: "deep" },
-      { kind: "path", d: "M77 195 L79 182 L88 183 L89 195 Z", fill: "deep" },
-      { kind: "line", x1: 79, y1: 184, x2: 96, y2: 204, stroke: "deep", strokeWidth: 2, strokeLinecap: "round" },
+      { kind: "circle", cx: 83, cy: 184, r: 3.4, fill: "deep" },
+      { kind: "path", d: "M77 202 L79 189 L88 190 L89 202 Z", fill: "deep" },
+      { kind: "line", x1: 79, y1: 191, x2: 96, y2: 211, stroke: "deep", strokeWidth: 2, strokeLinecap: "round" },
       // Crisp V-wake ripples & paddle dip ring
       {
         kind: "path",
-        d: "M122 199 C136 202 150 206 164 212 M118 203 C132 208 144 214 156 222",
+        d: "M122 206 C136 209 152 213 169 220 M118 210 C132 215 146 221 160 229",
         stroke: "accent-soft",
         strokeWidth: 1.4,
         strokeLinecap: "round",
@@ -981,13 +1100,13 @@ export const PILOT_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       },
       {
         kind: "path",
-        d: "M42 203 Q78 207 116 203",
+        d: "M42 210 Q78 214 116 210",
         stroke: "paper",
         strokeWidth: 1.2,
         strokeLinecap: "round",
         opacity: 0.68,
       },
-      { kind: "ellipse", cx: 96, cy: 205, rx: 6, ry: 2, stroke: "paper", strokeWidth: 1, opacity: 0.65 },
+      { kind: "ellipse", cx: 96, cy: 212, rx: 6, ry: 2, stroke: "paper", strokeWidth: 1, opacity: 0.65 },
     ],
   },
 ] as const

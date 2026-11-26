@@ -19,103 +19,167 @@ export const ALASKA_VOLCANIC_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "DENA",
-    subject: "Denali double-summit South & North Peak massif towering above Wonder Lake tundra",
-    accentLight: "#C77858",
-    accentDark: "#EEA688",
+    subject: "Stony Hill vista of Denali's colossal asymmetric Alaska Range massif above braided Toklat River & Denali Park Road tundra",
+    accentLight: "#C87D44",
+    accentDark: "#F0AE78",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Subarctic dawn sun, crisp radial glow & high cirrus bands
-      { kind: "circle", cx: 142, cy: 38, r: 22, fill: "accent-soft", opacity: 0.42 },
-      { kind: "circle", cx: 142, cy: 38, r: 12, fill: "accent", opacity: 0.88 },
-      { kind: "circle", cx: 142, cy: 38, r: 6.5, fill: "paper", opacity: 0.78 },
-      { kind: "path", d: "M18 28 Q42 23 68 28 Q48 31 18 28 Z", fill: "paper", opacity: 0.65 },
-      { kind: "path", d: "M118 22 Q140 18 164 23 Q144 26 118 22 Z", fill: "paper", opacity: 0.52 },
-
-      // Plane 2: Low distant Alaska Range foothills dwarfed by Denali
-      { kind: "path", d: "M11 114 L28 102 L44 108 L138 104 L154 96 L169 108 L169 144 L11 144 Z", fill: "far" },
-      { kind: "path", d: "M154 96 L162 104 L151 106 L146 102 Z", fill: "paper", opacity: 0.7 },
-
-      // Plane 3: Hero — Colossal 20,310-ft double-summit Denali massif
-      // Unmistakable twin crown: North Peak (70,42) + saddle (82,53) + supreme South Peak (101,28)
+      // Plane 1: Expansive subarctic sky, low northern sun & summit snow-plume banner
+      { kind: "circle", cx: 30, cy: 30, r: 17, fill: "accent-soft", opacity: 0.38 },
+      { kind: "circle", cx: 30, cy: 30, r: 8.5, fill: "paper", opacity: 0.96 },
+      { kind: "path", d: "M16 44 Q42 39 68 44 Q48 47 16 44 Z", fill: "paper", opacity: 0.6 },
+      // High-altitude windswept snow banner streaming off Denali's supreme South Peak
       {
         kind: "path",
-        d: "M11 134 L30 98 L48 76 L62 52 L70 42 L76 47 L82 53 L92 38 L101 28 L110 39 L122 58 L138 76 L154 100 L169 124 L169 146 L11 146 Z",
+        d: "M114 27 C128 24 146 27 166 34 C148 36 132 34 118 35 Z",
+        fill: "paper",
+        opacity: 0.82,
+      },
+      {
+        kind: "path",
+        d: "M126 37 C140 36 154 38 168 42 C154 43 138 42 126 39 Z",
+        fill: "paper",
+        opacity: 0.56,
+      },
+
+      // Plane 2: Colossal Edge-to-Edge Asymmetric Alaska Range Wall — Mount Foraker, Mount Hunter & Supreme Denali Massif
+      // Subsidiary western Alaska Range peaks (Foraker 28,68 & Hunter 54,58) spanning left edge to the glacial saddle
+      {
+        kind: "path",
+        d: "M11 114 L18 90 L28 68 L40 80 L54 58 L68 78 L80 96 L80 128 L11 128 Z",
+        fill: "mid",
+      },
+      // Crisp sunlit snow facets on Mount Foraker & Mount Hunter for razor monochrome relief
+      { kind: "polygon", points: "28,68 18,90 27,86 34,94 38,80", fill: "paper", opacity: 0.92 },
+      { kind: "polygon", points: "54,58 42,84 52,80 60,92 65,78", fill: "paper", opacity: 0.94 },
+      { kind: "polygon", points: "28,68 40,80 42,108 28,108 30,86", fill: "deep", opacity: 0.64 },
+      { kind: "polygon", points: "54,58 68,78 72,110 56,110 58,84", fill: "deep", opacity: 0.68 },
+
+      // HERO MASSIF: Towering asymmetric double-crowned Denali wall offset boldly right-of-center
+      // North Peak (89,47) + Denali Pass (99,54) + Supreme South Peak (114,26) + massive Harper/Cassin shoulder to right edge
+      {
+        kind: "path",
+        d: "M54 122 L72 86 L89 47 L99 54 L114 26 L132 48 L146 60 L158 76 L169 84 L169 130 L54 130 Z",
         fill: "ink",
       },
-      // Monumental sunlit snow-and-glacier armor blanketing the upper massif
+      // Blazing white alpine glacier & snow-armored massif slopes dominating the sky
       {
         kind: "path",
-        d: "M48 76 L62 52 L70 42 L76 47 L82 53 L92 38 L101 28 L110 39 L122 58 L138 76 L148 94 L132 96 L120 82 L110 98 L98 84 L88 100 L76 86 L64 98 L54 88 L40 94 Z",
+        d: "M72 86 L89 47 L99 54 L114 26 L132 48 L146 60 L158 76 L169 84 L169 102 L154 96 L142 104 L128 90 L114 106 L100 92 L88 106 L76 96 L64 106 Z",
         fill: "paper",
+        opacity: 0.98,
+      },
+      // Subtle dawn warmth grazing the eastern ridge crest
+      {
+        kind: "path",
+        d: "M114 26 L132 48 L146 60 L154 78 L138 78 L126 60 L115 44 Z",
+        fill: "accent-soft",
+        opacity: 0.42,
+      },
+      // Razor-sharp shadowed Wickersham Wall & Cassin Ridge vertical rock buttresses (high-contrast grayscale relief!)
+      { kind: "polygon", points: "89,47 93,86 78,94 84,66", fill: "deep", opacity: 0.78 },
+      { kind: "polygon", points: "99,54 104,96 92,94 95,68", fill: "deep", opacity: 0.82 },
+      { kind: "polygon", points: "114,26 122,88 109,94 112,52", fill: "deep", opacity: 0.8 },
+      { kind: "polygon", points: "132,48 144,94 129,90 130,64", fill: "deep", opacity: 0.72 },
+      { kind: "polygon", points: "146,60 158,96 144,98 145,76", fill: "ink", opacity: 0.74 },
+      // Sweeping lower Alaskan foothills & Muldrow glacial outwash bench emphasizing immense scale
+      {
+        kind: "path",
+        d: "M11 108 Q44 98 78 110 Q114 98 146 108 L169 102 L169 132 L11 132 Z",
+        fill: "far",
+      },
+      {
+        kind: "path",
+        d: "M11 108 Q44 98 78 110 Q114 98 146 108 L169 102",
+        stroke: "deep",
+        strokeWidth: 1.3,
+        opacity: 0.56,
+      },
+
+      // Plane 3 & 4: Vast Rolling Subarctic Tundra Valley, Braided Toklat/McKinley River & Denali Park Road (NO LAKE!)
+      // Broad upper rolling tundra hill sloping across the valley from left
+      { kind: "path", d: "M11 118 Q56 108 108 128 L169 122 L169 170 L11 170 Z", fill: "mid" },
+      // Mid-valley dark rolling subarctic tundra slopes framing the wide braided gravel river
+      { kind: "path", d: "M11 132 Q42 124 72 138 Q122 126 169 136 L169 229 L11 229 Z", fill: "ink" },
+      // Warm autumn subarctic tundra ridge highlights sweeping down Stony Hill
+      { kind: "path", d: "M11 132 Q42 124 72 138", stroke: "paper", strokeWidth: 1.5, opacity: 0.68 },
+      { kind: "path", d: "M96 134 Q134 126 169 136 L169 162 Q132 152 96 156 Z", fill: "accent", opacity: 0.36 },
+
+      // Wide sweeping pale cobble-gravel riverbed of the braided McKinley / Toklat River
+      {
+        kind: "path",
+        d: "M42 128 C66 138 94 148 106 162 C118 176 92 192 78 229 L28 229 C46 200 76 184 68 168 C60 152 38 142 22 132 Z",
+        fill: "far",
+      },
+      // Dark exposed glacial gravel-bar islands dividing the river into braided channels
+      { kind: "path", d: "M50 144 Q68 142 82 152 Q66 156 50 144 Z", fill: "ink", opacity: 0.84 },
+      { kind: "path", d: "M72 162 Q92 160 100 172 Q82 178 72 162 Z", fill: "deep", opacity: 0.8 },
+      { kind: "path", d: "M58 186 Q78 182 88 196 Q68 202 58 186 Z", fill: "ink", opacity: 0.86 },
+      { kind: "path", d: "M42 208 Q64 204 74 218 Q54 224 42 208 Z", fill: "deep", opacity: 0.78 },
+      // Crisp bright white braided glacial meltwater streams weaving around the gravel bars
+      {
+        kind: "path",
+        d: "M34 130 C56 142 86 152 96 166 C106 180 76 196 66 229",
+        stroke: "paper",
+        strokeWidth: 2.6,
+        strokeLinecap: "round",
         opacity: 0.96,
       },
-      // Warm dawn alpenglow sweeping South Peak's eastern ridge & Harper Glacier
       {
         kind: "path",
-        d: "M101 28 L110 39 L122 58 L138 76 L146 92 L128 90 L118 74 L108 82 L100 54 Z",
-        fill: "accent-soft",
-        opacity: 0.62,
+        d: "M28 132 C46 144 68 158 74 174 C80 188 52 204 40 229",
+        stroke: "paper",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        opacity: 0.9,
       },
       {
         kind: "path",
-        d: "M101 28 L110 39 L120 56 L112 62 L102 48 Z",
-        fill: "accent",
-        opacity: 0.44,
+        d: "M48 138 C68 148 92 160 88 176 C84 190 66 206 54 228",
+        stroke: "paper",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+        opacity: 0.82,
       },
-      // Steep dark granite buttresses & Wickersham Wall shadow ribs for razor monochrome relief
-      { kind: "polygon", points: "70,42 66,68 54,84 62,56", fill: "deep", opacity: 0.72 },
-      { kind: "polygon", points: "82,53 78,84 90,82 88,60", fill: "deep", opacity: 0.78 },
-      { kind: "polygon", points: "98,42 93,78 104,76 102,52", fill: "ink", opacity: 0.68 },
-      { kind: "polygon", points: "118,64 114,94 126,90 124,72", fill: "deep", opacity: 0.64 },
-      { kind: "path", d: "M34 94 L52 84 L66 96 L84 86 L98 98 L118 86 L138 96 L154 102", stroke: "deep", strokeWidth: 1.4, opacity: 0.55 },
 
-      // Plane 4: Rolling subarctic tundra hills & glassy Wonder Lake reflection
-      { kind: "path", d: "M11 132 Q46 118 88 128 Q132 118 169 130 L169 156 L11 156 Z", fill: "mid" },
-      { kind: "path", d: "M11 138 Q52 128 96 136 Q136 128 169 138 L169 154 L11 154 Z", fill: "accent", opacity: 0.36 },
-      // Far Wonder Lake black-spruce treeline band
+      // Rolling foreground Stony Hill tundra shoulder on the right traversed by the Denali Park Road
       {
         kind: "path",
-        d: "M11 148 L18 139 L24 148 L32 140 L39 149 L48 142 L56 150 L72 144 L86 150 L102 145 L118 149 L128 141 L136 149 L145 140 L153 148 L161 139 L169 148 L169 154 L11 154 Z",
-        fill: "deep",
-      },
-      // Calm Wonder Lake basin
-      { kind: "rect", x: 11, y: 152, width: 158, height: 77, fill: "ink" },
-      { kind: "rect", x: 11, y: 152, width: 158, height: 28, fill: "mid", opacity: 0.45 },
-      // Inverted dark massif reflection
-      {
-        kind: "path",
-        d: "M28 153 L152 153 L134 180 L114 202 L101 214 L92 204 L82 194 L70 204 L58 190 L42 174 Z",
-        fill: "deep",
-        opacity: 0.58,
-      },
-      // Inverted luminous white double-summit reflection
-      {
-        kind: "path",
-        d: "M52 176 L130 176 L114 202 L101 214 L92 204 L82 194 L70 204 L60 192 Z",
-        fill: "paper",
-        opacity: 0.74,
+        d: "M169 144 Q134 148 112 168 Q94 186 84 229 L169 229 Z",
+        fill: "mid",
       },
       {
         kind: "path",
-        d: "M96 176 L130 176 L114 202 L101 214 Z",
-        fill: "accent-soft",
-        opacity: 0.46,
+        d: "M169 144 Q134 148 112 168 Q94 186 84 229",
+        stroke: "deep",
+        strokeWidth: 1.6,
+        opacity: 0.72,
       },
-      // Crisp horizontal glassy lake water ripples breaking the reflection
-      { kind: "line", x1: 36, y1: 162, x2: 146, y2: 162, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.62 },
-      { kind: "line", x1: 46, y1: 174, x2: 136, y2: 174, stroke: "deep", strokeWidth: 1.5, strokeLinecap: "round", opacity: 0.58 },
-      { kind: "line", x1: 54, y1: 186, x2: 128, y2: 186, stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.66 },
-      { kind: "line", x1: 64, y1: 198, x2: 118, y2: 198, stroke: "deep", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.55 },
-      { kind: "line", x1: 72, y1: 209, x2: 110, y2: 209, stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.58 },
+      // Iconic tiny sinuous ribbon of the Denali Park Road curving through the subarctic tundra hills
+      {
+        kind: "path",
+        d: "M168 152 C148 154 128 160 122 170 C116 180 144 186 138 198 C132 210 112 216 106 229",
+        stroke: "deep",
+        strokeWidth: 4.4,
+        strokeLinecap: "round",
+      },
+      {
+        kind: "path",
+        d: "M168 152 C148 154 128 160 122 170 C116 180 144 186 138 198 C132 210 112 216 106 229",
+        stroke: "paper",
+        strokeWidth: 2.1,
+        strokeLinecap: "round",
+        opacity: 0.96,
+      },
 
-      // Plane 5: Foreground subarctic shore & slender Alaskan black spruce spires
-      { kind: "path", d: "M11 196 Q44 208 74 224 L112 224 Q142 208 169 196 L169 229 L11 229 Z", fill: "deep" },
-      // Slender needle-thin taiga black spruce on left bank
-      { kind: "polygon", points: "22,126 17,154 20,154 15,184 19,184 13,214 31,214 25,184 29,184 24,154 27,154", fill: "deep" },
-      { kind: "polygon", points: "37,152 33,174 36,174 31,210 43,210 38,174 41,174", fill: "deep" },
-      // Slender taiga black spruce on right bank
-      { kind: "polygon", points: "157,132 152,160 155,160 150,188 154,188 148,214 166,214 160,188 164,188 159,160 162,160", fill: "deep" },
-      { kind: "polygon", points: "143,156 139,178 142,178 137,212 149,212 144,178 147,178", fill: "deep" },
+      // Plane 5: Dark foreground tundra bluff & sparse stunted subarctic black spruces at the far edges
+      { kind: "path", d: "M11 168 Q34 176 48 198 Q56 212 58 229 L11 229 Z", fill: "deep" },
+      { kind: "path", d: "M11 168 Q34 176 48 198", stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.65 },
+      { kind: "path", d: "M169 198 Q152 206 142 229 L169 229 Z", fill: "deep" },
+      // Just three sparse, slender, stunted subarctic black spruces tucked at the far edge
+      { kind: "polygon", points: "18,150 14,174 16.5,174 13,196 23,196 19.5,174 22,174", fill: "deep" },
+      { kind: "polygon", points: "29,164 26,184 32,184", fill: "deep" },
+      { kind: "polygon", points: "159,180 155,202 163,202", fill: "deep" },
     ],
   },
 
@@ -1187,98 +1251,144 @@ export const ALASKA_VOLCANIC_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
   // =========================================================================
   {
     code: "YELL",
-    subject: "Old Faithful soaring white steam geyser & Grand Prismatic concentric thermal terrace rings",
-    accentLight: "#D98A2B",
-    accentDark: "#F5B85E",
+    subject: "Old Faithful soaring white steam geyser above vivid rainbow concentric rings of Grand Prismatic Spring",
+    accentLight: "#E05A2B",
+    accentDark: "#FF895C",
+    tertiaryLight: "#1684A7",
+    tertiaryDark: "#4CCAEF",
     skyMood: "dawn",
     nodes: [
-      // Plane 1: Golden Yellowstone dawn sky & open morning clouds
-      { kind: "circle", cx: 140, cy: 38, r: 22, fill: "accent-soft", opacity: 0.42 },
-      { kind: "circle", cx: 140, cy: 38, r: 11.5, fill: "accent", opacity: 0.9 },
-      { kind: "circle", cx: 140, cy: 38, r: 6, fill: "paper", opacity: 0.8 },
-      { kind: "path", d: "M18 32 Q42 26 66 32 Q46 36 18 32 Z", fill: "paper", opacity: 0.62 },
-      { kind: "path", d: "M118 54 Q140 49 164 54 Q144 58 118 54 Z", fill: "paper", opacity: 0.48 },
+      // Plane 1: Golden Yellowstone dawn sky, sunrise glow & open morning clouds
+      { kind: "circle", cx: 142, cy: 34, r: 20, fill: "accent-soft", opacity: 0.42 },
+      { kind: "circle", cx: 142, cy: 34, r: 10.5, fill: "accent", opacity: 0.88 },
+      { kind: "circle", cx: 142, cy: 34, r: 5.5, fill: "paper", opacity: 0.86 },
+      { kind: "path", d: "M18 30 Q42 24 66 30 Q46 34 18 30 Z", fill: "paper", opacity: 0.64 },
+      { kind: "path", d: "M120 48 Q142 43 165 48 Q144 52 120 48 Z", fill: "paper", opacity: 0.5 },
 
-      // Plane 2: Distant Yellowstone caldera rim plateaus & continuous lodgepole pine ridge
-      { kind: "path", d: "M11 104 Q48 86 90 96 Q132 84 169 102 L169 138 L11 138 Z", fill: "far" },
+      // Plane 2: Distant Yellowstone caldera rim plateaus & continuous lodgepole pine horizon
+      { kind: "path", d: "M11 92 Q48 76 90 86 Q132 76 169 90 L169 124 L11 124 Z", fill: "far" },
       {
         kind: "path",
-        d: "M11 122 L18 108 L25 120 L33 106 L41 118 L49 108 L57 120 L66 110 L74 122 L106 122 L114 110 L122 120 L131 106 L139 118 L148 106 L156 118 L164 108 L169 116 L169 144 L11 144 Z",
+        d: "M11 108 L18 96 L25 106 L33 94 L41 105 L49 96 L57 107 L66 98 L74 109 L106 109 L114 98 L122 107 L131 94 L139 105 L148 94 L156 106 L164 96 L169 104 L169 128 L11 128 Z",
         fill: "ink",
       },
       {
         kind: "path",
-        d: "M11 132 L22 118 L32 132 L44 120 L54 134 L66 124 L76 138 L104 138 L116 124 L126 134 L138 118 L148 132 L159 118 L169 130 L169 148 L11 148 Z",
+        d: "M11 118 L21 106 L31 118 L43 108 L53 120 L65 112 L75 124 L105 124 L116 112 L127 120 L138 106 L149 118 L159 106 L169 116 L169 130 L11 130 Z",
         fill: "deep",
       },
 
-      // Plane 3: Hero Upper — Monumental Soaring Old Faithful Geyser Column
-      // Outer sunlit feathery steam halo widening high into the golden morning sky
+      // Plane 3: Hero Upper — Clean, Slimmer Soaring Old Faithful Geyser Column
+      // Subtle warm morning glow behind the rising feathery geyser plume
       {
         kind: "path",
-        d: "M82 140 C78 112 72 86 70 60 C68 40 76 24 90 20 C106 16 118 28 116 48 C114 66 106 86 102 114 L98 140 Z",
+        d: "M84 124 C81 100 77 78 75 56 C74 38 80 23 90 20 C102 18 110 29 108 45 C106 60 101 78 98 102 L96 124 Z",
         fill: "accent-soft",
-        opacity: 0.56,
+        opacity: 0.52,
       },
-      // Blazing tall white feathery geyser water & steam column drifting gently right
+      // Crisp white feathery geyser water & steam column drifting gently right
       {
         kind: "path",
-        d: "M84 142 C82 114 78 88 76 62 C75 44 82 26 92 22 C103 20 112 32 108 48 C114 54 112 66 104 72 C108 82 104 94 98 102 C100 116 98 128 96 142 Z",
+        d: "M86 125 C84 102 81 78 80 56 C79 40 84 25 92 22 C100 20 106 30 104 44 C109 50 107 60 100 66 C103 74 100 84 96 92 C97 104 96 114 94 125 Z",
         fill: "paper",
         opacity: 0.98,
       },
-      // High detached wind-blown geyser steam tufts
-      { kind: "ellipse", cx: 112, cy: 36, rx: 10, ry: 6, fill: "paper", opacity: 0.78 },
-      { kind: "ellipse", cx: 122, cy: 44, rx: 8, ry: 4.5, fill: "paper", opacity: 0.58 },
-      // Pressurized central vertical water-jet core & shadow flute
+      // High detached wind-blown geyser steam wisps
+      { kind: "ellipse", cx: 109, cy: 34, rx: 8.5, ry: 4.8, fill: "paper", opacity: 0.78 },
+      { kind: "ellipse", cx: 118, cy: 41, rx: 6.5, ry: 3.6, fill: "paper", opacity: 0.58 },
+      // Pressurized central vertical water-jet core
       {
         kind: "path",
-        d: "M87 142 C87 110 86 78 90 36 C94 78 93 110 93 142 Z",
+        d: "M88 125 C88 98 87 72 90 36 C93 72 92 98 92 125 Z",
         fill: "mid",
         opacity: 0.34,
       },
-      { kind: "line", x1: 90, y1: 140, x2: 90, y2: 46, stroke: "paper", strokeWidth: 2, strokeLinecap: "round", opacity: 0.95 },
-      // Low sloped siliceous sinter geyser cone mound at the eruption base
-      { kind: "path", d: "M64 146 Q90 132 116 146 Z", fill: "far" },
-      { kind: "path", d: "M72 146 Q90 137 108 146", stroke: "paper", strokeWidth: 1.6, strokeLinecap: "round", opacity: 0.88 },
+      { kind: "line", x1: 90, y1: 123, x2: 90, y2: 44, stroke: "paper", strokeWidth: 1.9, strokeLinecap: "round", opacity: 0.96 },
+      // Low sloped siliceous sinter geyser mound at the eruption base
+      { kind: "path", d: "M68 128 Q90 116 112 128 Z", fill: "far" },
+      { kind: "path", d: "M74 128 Q90 121 106 128", stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round", opacity: 0.88 },
 
-      // Plane 4: Hero Foreground — Grand Prismatic Spring Concentric Mineral Terrace Rings!
-      { kind: "path", d: "M11 144 Q90 138 169 144 L169 229 L11 229 Z", fill: "mid" },
-      // Organic golden-ochre mineral runoff channels fanning out from Grand Prismatic
+      // Plane 4: Hero Showcase — Vibrant Concentric Rainbow Rings of Grand Prismatic Spring!
+      // Outer dark mineral sinter terrace framing the glowing geothermal pool
+      { kind: "path", d: "M11 126 Q90 120 169 126 L169 229 L11 229 Z", fill: "deep" },
+      // Pale mineralized travertine bench behind the spring separating it cleanly from the pine ridge
+      { kind: "path", d: "M11 126 Q90 120 169 126 L169 144 Q90 136 11 144 Z", fill: "far", opacity: 0.72 },
+      // Organic golden-amber & fiery orange bacterial runoff streams radiating across the dark sinter terrace
       {
         kind: "path",
-        d: "M42 204 C36 212 28 218 22 229 M64 210 C60 218 54 222 50 229 M116 210 C122 218 128 222 134 229 M138 204 C146 212 152 218 158 229",
-        stroke: "accent",
-        strokeWidth: 4.2,
+        d: "M34 196 C26 206 18 214 12 228 M52 204 C46 214 38 220 32 229 M74 208 C72 218 68 222 65 229 M106 208 C110 218 114 222 118 229 M128 204 C136 214 144 220 150 229 M146 196 C154 206 162 214 168 228",
+        stroke: "ink",
+        strokeWidth: 5,
         strokeLinecap: "round",
-        opacity: 0.82,
+        opacity: 0.9,
       },
       {
         kind: "path",
-        d: "M52 208 C48 216 42 222 38 229 M128 208 C134 216 140 222 146 229",
-        stroke: "accent-soft",
-        strokeWidth: 2.2,
+        d: "M42 200 C34 210 26 218 20 229 M64 206 C60 216 54 222 48 229 M116 206 C122 216 128 222 134 229 M138 200 C146 210 154 218 160 229",
+        stroke: "accent",
+        strokeWidth: 3.4,
+        strokeLinecap: "round",
+        opacity: 0.92,
+      },
+      {
+        kind: "path",
+        d: "M24 182 C18 186 14 190 11 196 M156 182 C162 186 166 190 169 196",
+        stroke: "ink",
+        strokeWidth: 3.8,
         strokeLinecap: "round",
         opacity: 0.84,
       },
-      // Concentric glowing thermal rings (burnt-amber outer -> gold -> pale mineral rim -> deep sapphire vent)
-      { kind: "ellipse", cx: 90, cy: 186, rx: 70, ry: 27, fill: "accent", opacity: 0.92 },
-      { kind: "ellipse", cx: 90, cy: 186, rx: 56, ry: 20.5, fill: "accent-soft", opacity: 0.96 },
-      { kind: "ellipse", cx: 90, cy: 186, rx: 42, ry: 14.5, fill: "paper", opacity: 0.95 },
-      { kind: "ellipse", cx: 90, cy: 186, rx: 28, ry: 9.2, fill: "ink" },
-      { kind: "ellipse", cx: 90, cy: 186, rx: 16, ry: 5, fill: "deep" },
-      // Crisp mineral terrace contour lines emphasizing the concentric rings in both color & monochrome
-      { kind: "ellipse", cx: 90, cy: 186, rx: 63, ry: 23.5, stroke: "deep", strokeWidth: 1, opacity: 0.36 },
-      { kind: "ellipse", cx: 90, cy: 186, rx: 49, ry: 17.5, stroke: "accent", strokeWidth: 1.2, opacity: 0.56 },
-      // Delicate thermal steam ribbons curling upward off Grand Prismatic
-      { kind: "path", d: "M64 176 C60 166 66 158 62 150", stroke: "paper", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.78 },
-      { kind: "path", d: "M116 176 C120 166 114 158 118 150", stroke: "paper", strokeWidth: 2.2, strokeLinecap: "round", opacity: 0.78 },
 
-      // Plane 5: Foreground dark sinter terrace corners & lodgepole pine tips framing the base
-      { kind: "path", d: "M11 206 Q26 214 38 229 L11 229 Z", fill: "deep" },
-      { kind: "path", d: "M169 206 Q154 214 142 229 L169 229 Z", fill: "deep" },
-      { kind: "polygon", points: "19,182 13,210 25,210", fill: "deep" },
-      { kind: "polygon", points: "161,182 155,210 167,210", fill: "deep" },
+      // Concentric glowing thermal rainbow rings centered generously in the lower showcase (cx=90, cy=177)
+      // Ring 1: Outer warm ochre bacterial crust halo
+      { kind: "ellipse", cx: 90, cy: 177, rx: 75, ry: 35, fill: "ink", opacity: 0.92 },
+      // Ring 2: Vivid fiery orange-terracotta outer thermophile mat ring
+      { kind: "ellipse", cx: 90, cy: 177, rx: 67, ry: 30.5, fill: "accent", opacity: 0.98 },
+      // Ring 3: Luminous golden-amber inner bacterial ring (with subtle ochre contour separating the fiery orange)
+      {
+        kind: "ellipse",
+        cx: 90,
+        cy: 177,
+        rx: 55,
+        ry: 24.5,
+        fill: "accent-soft",
+        stroke: "ink",
+        strokeWidth: 2,
+        opacity: 0.98,
+      },
+      // Ring 4: Glowing shallow aquamarine-turquoise mineral shelf
+      {
+        kind: "ellipse",
+        cx: 90,
+        cy: 177,
+        rx: 43,
+        ry: 18.2,
+        fill: "tertiary-soft",
+        stroke: "paper",
+        strokeWidth: 1.3,
+        opacity: 0.98,
+      },
+      // Ring 5: Deep radiant cerulean-sapphire boiling core
+      { kind: "ellipse", cx: 90, cy: 177, rx: 30, ry: 12, fill: "tertiary" },
+      // Subtle abyssal boiling vent heart & shimmering surface highlight inside the sapphire core
+      { kind: "ellipse", cx: 90, cy: 177.5, rx: 16, ry: 6, fill: "deep", opacity: 0.24 },
+      { kind: "ellipse", cx: 90, cy: 177, rx: 22, ry: 8.6, stroke: "tertiary-soft", strokeWidth: 1.1, opacity: 0.65 },
+      { kind: "path", d: "M78 176 Q90 173 102 176", stroke: "paper", strokeWidth: 1.2, strokeLinecap: "round", opacity: 0.72 },
+
+      // Crisp scalloped mineral terrace ripple contour lines for woodcut precision
+      { kind: "ellipse", cx: 90, cy: 177, rx: 61, ry: 27.5, stroke: "deep", strokeWidth: 0.9, opacity: 0.3 },
+      { kind: "ellipse", cx: 90, cy: 177, rx: 49, ry: 21.5, stroke: "accent", strokeWidth: 1.1, opacity: 0.52 },
+
+      // Soft rising white mineral steam wisps curling delicately above the glowing turquoise-sapphire core
+      { kind: "path", d: "M66 168 C61 157 67 148 63 138", stroke: "paper", strokeWidth: 2.3, strokeLinecap: "round", opacity: 0.76 },
+      { kind: "path", d: "M84 166 C81 156 87 148 84 140", stroke: "paper", strokeWidth: 1.9, strokeLinecap: "round", opacity: 0.66 },
+      { kind: "path", d: "M114 168 C119 157 113 148 117 138", stroke: "paper", strokeWidth: 2.3, strokeLinecap: "round", opacity: 0.76 },
+
+      // Plane 5: Subtle foreground sinter crust corners & edge lodgepole pines framing the showcase
+      { kind: "path", d: "M11 210 Q24 216 34 229 L11 229 Z", fill: "deep" },
+      { kind: "path", d: "M169 210 Q156 216 146 229 L169 229 Z", fill: "deep" },
+      { kind: "polygon", points: "17,188 12,214 22,214", fill: "deep" },
+      { kind: "polygon", points: "163,188 158,214 168,214", fill: "deep" },
     ],
   },
 ] as const
