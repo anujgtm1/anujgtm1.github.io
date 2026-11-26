@@ -136,7 +136,8 @@ test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/boo
   assert.ok(body.includes("PL. I · THROUGH THE LENS"))
   assert.ok(body.includes("Open photo gallery"))
   assert.ok(body.includes("BOOKSHELF"))
-  assert.ok(body.includes("Stocking the Shelf"))
+  assert.match(body, /\d+ VOLUMES SHELVED · QUICK MARGINALIA/)
+  assert.ok(body.includes('href="/books/#book-'))
   assert.ok(body.includes("TRAVEL ATLAS"))
   assert.ok(body.includes("Places &amp; Field Coordinates"))
   assert.ok(body.includes("Ready for Stamps"))
@@ -163,10 +164,13 @@ test("photos renders architectural empty plate and native closedby lightbox dial
   assert.ok(!body.includes('aria-modal="true"'))
 })
 
-test("bookshelf renders warm empty state, native closedby dialog, and Bookbinder Studio link", async () => {
+test("bookshelf renders imported Goodreads volumes, view controls, native closedby dialog, and Bookbinder Studio link", async () => {
   const { body } = await fetchText("/books/")
-  assert.ok(body.includes("Reading Room · Stocking the Shelf"))
-  assert.ok(body.includes("Reading covers and quick notes from the margins are on the way."))
+  assert.match(body, /Reading Room · \d+ Volumes/)
+  assert.ok(body.includes("Currently Reading"))
+  assert.ok(body.includes("The Brothers Karamazov"))
+  assert.ok(body.includes("1984"))
+  assert.ok(!body.includes("On the Stack"), "Queued to-read books should not be imported by default")
   assert.ok(body.includes('closedby="any"'))
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
