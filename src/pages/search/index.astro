@@ -8,19 +8,43 @@ import { SEARCH } from "@consts"
 import {
   normalizeBlogToSearchItem,
   normalizeBookToSearchItem,
+  normalizePhotoToSearchItem,
   normalizeProjectToSearchItem,
   normalizeTravelToSearchItem,
 } from "@lib/search"
 import { deriveYearRead } from "@lib/bookshelf"
+import { sortPhotos } from "@lib/photos"
 import { formatShortDate } from "@lib/utils"
 import type { SearchItem } from "@types"
 
-const [rawPosts, rawProjects, rawBooks, rawTrips] = await Promise.all([
+const [rawPosts, rawProjects, rawBooks, rawTrips, rawPhotos] = await Promise.all([
   getCollection("blog"),
   getCollection("projects"),
   getCollection("books"),
   getCollection("travel"),
+  getCollection("photos"),
 ])
+
+const sortedPhotos = sortPhotos(
+  rawPhotos
+    .filter((photo) => !photo.data.draft)
+    .map((photo) => ({
+      slug: photo.slug,
+      title: photo.data.title,
+      imageUrl: photo.data.imageUrl,
+      thumbnailUrl: photo.data.thumbnailUrl,
+      alt: photo.data.alt,
+      caption: photo.data.caption,
+      date: formatShortDate(photo.data.date),
+      dateIso: photo.data.date.toISOString(),
+      location: photo.data.location,
+      album: photo.data.album,
+      camera: photo.data.camera,
+      aspectRatio: photo.data.aspectRatio,
+      featured: photo.data.featured,
+      tags: photo.data.tags,
+    })),
+)
 
 const items: readonly SearchItem[] = [
   ...rawPosts
@@ -90,6 +114,7 @@ const items: readonly SearchItem[] = [
         highlights: trip.data.highlights,
       }),
     ),
+  ...sortedPhotos.map((photo) => normalizePhotoToSearchItem(photo)),
 ]
 ---
 

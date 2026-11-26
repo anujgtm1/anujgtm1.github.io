@@ -45,6 +45,8 @@ export type TravelRegion =
 
 export type ProjectStatus = "active" | "shipped" | "research" | "archived"
 
+export type PhotoAspectRatio = "landscape" | "portrait" | "square" | "wide"
+
 export type Coordinates = {
   readonly lat: number
   readonly lng: number
@@ -117,6 +119,23 @@ export type NowSnapshot = {
   readonly listeningOrThinking: string
 }
 
+export type PhotoItem = {
+  readonly slug: string
+  readonly title: string
+  readonly imageUrl: string
+  readonly thumbnailUrl?: string
+  readonly alt: string
+  readonly caption?: string
+  readonly date: string
+  readonly dateIso: string
+  readonly location?: string
+  readonly album?: string
+  readonly camera?: string
+  readonly aspectRatio?: PhotoAspectRatio
+  readonly featured?: boolean
+  readonly tags: readonly string[]
+}
+
 export type SearchItem =
   | {
       readonly kind: "blog"
@@ -162,6 +181,18 @@ export type SearchItem =
       readonly tags: readonly string[]
       readonly region: TravelRegion
       readonly stampCode: string
+    }
+  | {
+      readonly kind: "photo"
+      readonly id: string
+      readonly title: string
+      readonly subtitle: string
+      readonly summary: string
+      readonly href: string
+      readonly date?: string
+      readonly tags: readonly string[]
+      readonly album?: string
+      readonly location?: string
     }
 
 export type RssFeedEntry =

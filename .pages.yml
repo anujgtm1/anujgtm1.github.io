@@ -185,6 +185,79 @@ content:
         label: Field Notes
         type: rich-text
 
+  - name: photos
+    label: Photo Gallery
+    type: collection
+    path: src/content/photos
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, album, location, date, draft]
+      primary: title
+      sort: [date, title]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Photo Title
+        type: string
+        required: true
+      - name: imageUrl
+        label: Full-Resolution Image (URL or Upload)
+        type: image
+        required: true
+      - name: thumbnailUrl
+        label: Grid Preview Image (optional)
+        type: image
+        required: false
+      - name: alt
+        label: Accessible Alt Text
+        type: string
+        required: true
+      - name: caption
+        label: Caption (optional)
+        type: text
+        required: false
+      - name: date
+        label: Date Taken
+        type: date
+        required: true
+      - name: location
+        label: Location (optional)
+        type: string
+        required: false
+      - name: album
+        label: Album / Series (optional)
+        type: string
+        required: false
+      - name: camera
+        label: Camera / Lens (optional)
+        type: string
+        required: false
+      - name: aspectRatio
+        label: Aspect Ratio Hint (optional)
+        type: select
+        required: false
+        options:
+          values: [landscape, portrait, square, wide]
+      - name: featured
+        label: Featured
+        type: boolean
+        default: false
+      - name: tags
+        label: Tags (optional)
+        type: string
+        list: true
+        required: false
+        default: []
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Extended Notes (optional)
+        type: rich-text
+
   - name: projects
     label: Projects
     type: collection

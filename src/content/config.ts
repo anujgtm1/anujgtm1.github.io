@@ -105,4 +105,23 @@ const now = defineCollection({
   }),
 })
 
-export const collections = { work, blog, books, travel, projects, now }
+const photos = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    imageUrl: z.string(),
+    thumbnailUrl: z.string().optional(),
+    alt: z.string(),
+    caption: z.string().optional(),
+    date: z.coerce.date(),
+    location: z.string().optional(),
+    album: z.string().optional(),
+    camera: z.string().optional(),
+    aspectRatio: z.enum(["landscape", "portrait", "square", "wide"]).optional(),
+    featured: z.boolean().optional(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().optional(),
+  }),
+})
+
+export const collections = { work, blog, books, travel, projects, now, photos }

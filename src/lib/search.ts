@@ -1,11 +1,13 @@
 import type {
   BlogItem,
   BookItem,
+  PhotoItem,
   ProjectItem,
   SearchItem,
   TravelItem,
 } from "../types/domain.ts"
 import { buildBookHref } from "./bookshelf.ts"
+import { buildPhotoHref } from "./photos.ts"
 
 export type SearchKindMeta = {
   readonly label: string
@@ -17,6 +19,7 @@ export const SEARCH_KIND_META: Readonly<Record<SearchItem["kind"], SearchKindMet
   project: { label: "Project", plural: "Projects" },
   book: { label: "Book", plural: "Books" },
   travel: { label: "Field Log", plural: "Travel" },
+  photo: { label: "Photo", plural: "Photos" },
 }
 
 export function normalizeBlogToSearchItem(item: BlogItem): Extract<SearchItem, { kind: "blog" }> {
@@ -77,6 +80,38 @@ export function normalizeTravelToSearchItem(
     tags: [item.region, item.country, item.stampCode, ...item.highlights],
     region: item.region,
     stampCode: item.stampCode,
+  }
+}
+
+export function normalizePhotoToSearchItem(
+  item: PhotoItem,
+): Extract<SearchItem, { kind: "photo" }> {
+  const subtitleParts = [item.album, item.location, item.camera]
+    .map((part) => part?.trim())
+    .filter((part): part is string => Boolean(part && part.length > 0))
+
+  const tagSet = new Set<string>(item.tags)
+  if (item.album?.trim()) {
+    tagSet.add(item.album.trim())
+  }
+  if (item.location?.trim()) {
+    tagSet.add(item.location.trim())
+  }
+  if (item.camera?.trim()) {
+    tagSet.add(item.camera.trim())
+  }
+
+  return {
+    kind: "photo",
+    id: `photo:${item.slug}`,
+    title: item.title,
+    subtitle: subtitleParts.length > 0 ? subtitleParts.join(" · ") : "Photograph",
+    summary: item.caption?.trim() || item.alt,
+    href: buildPhotoHref(item.slug),
+    date: item.date,
+    tags: [...tagSet],
+    album: item.album,
+    location: item.location,
   }
 }
 
