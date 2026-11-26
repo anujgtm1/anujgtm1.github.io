@@ -1,0 +1,59 @@
+---
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import PhotoGallery from "@components/PhotoGallery"
+import { PHOTOS } from "@consts"
+import { sortPhotos } from "@lib/photos"
+import { formatShortDate } from "@lib/utils"
+import type { PhotoItem } from "@types"
+
+const rawPhotos = (await getCollection("photos")).filter((entry) => !entry.data.draft)
+
+const photos: readonly PhotoItem[] = sortPhotos(
+  rawPhotos.map((entry) => ({
+    slug: entry.slug,
+    title: entry.data.title,
+    imageUrl: entry.data.imageUrl,
+    thumbnailUrl: entry.data.thumbnailUrl,
+    alt: entry.data.alt,
+    caption: entry.data.caption,
+    date: formatShortDate(entry.data.date),
+    dateIso: entry.data.date.toISOString(),
+    location: entry.data.location,
+    album: entry.data.album,
+    camera: entry.data.camera,
+    aspectRatio: entry.data.aspectRatio,
+    featured: entry.data.featured,
+    tags: entry.data.tags,
+  })),
+)
+---
+
+<PageLayout title={PHOTOS.TITLE} description={PHOTOS.DESCRIPTION}>
+  <TopLayout>
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">
+        {
+          photos.length > 0
+            ? `Darkroom · ${photos.length} ${photos.length === 1 ? "Frame" : "Frames"}`
+            : "Darkroom · Contact Sheets on the Way"
+        }
+      </p>
+      <h1 class="editorial-title text-ink">{PHOTOS.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {PHOTOS.DESCRIPTION}
+        {
+          photos.length > 0
+            ? " Select any frame to open the full-resolution lightbox."
+            : ""
+        }
+      </p>
+    </div>
+  </TopLayout>
+
+  <BottomLayout>
+    <PhotoGallery client:load photos={photos} />
+  </BottomLayout>
+</PageLayout>
