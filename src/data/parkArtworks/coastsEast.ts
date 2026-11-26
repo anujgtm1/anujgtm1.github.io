@@ -1053,14 +1053,14 @@ export const COASTS_EAST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       // Sweeping winding asphalt ribbon of Skyline Drive hugging the Blue Ridge crest
       {
         kind: "path",
-        d: "M169 144 C136 146 98 152 84 164 C72 174 106 184 136 196 C152 202 162 212 169 224 L116 224 C104 206 54 188 58 168 C62 150 118 140 169 138 Z",
+        d: "M169 144 C136 146 98 152 84 164 C72 174 106 184 136 196 C152 202 162 212 169 229 L116 229 C104 206 54 188 58 168 C62 150 118 140 169 138 Z",
         fill: "far",
         opacity: 0.86,
       },
       // Crisp dashed golden-white center highway stripe along Skyline Drive
       {
         kind: "path",
-        d: "M166 141 C124 143 74 152 70 168 C68 182 122 198 144 224",
+        d: "M166 141 C124 143 74 152 70 168 C68 182 122 198 144 229",
         stroke: "paper",
         strokeWidth: 1.5,
         strokeLinecap: "round",
