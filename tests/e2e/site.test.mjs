@@ -205,10 +205,30 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   const islandRes = await fetchText(islandMatch[1])
   assert.equal(islandRes.status, 200)
   assert.ok(islandRes.body.includes("0 0 180 240"), "UnifiedTravelAtlas bundle should emit 3:4 WPA poster viewBox")
-  for (const pilotCode of ["GRCA", "BLCA", "NERI", "MORA", "HAVO", "CONG", "WICA", "VOYA"]) {
+  for (const bespokeCode of [
+    "GRCA",
+    "BLCA",
+    "NERI",
+    "MORA",
+    "HAVO",
+    "CONG",
+    "WICA",
+    "VOYA",
+    "ARCH",
+    "BRCA",
+    "CANY",
+    "CARE",
+    "ZION",
+    "MEVE",
+    "PEFO",
+    "SAGU",
+    "BIBE",
+    "GUMO",
+    "WHSA",
+  ]) {
     assert.ok(
-      islandRes.body.includes(pilotCode),
-      `UnifiedTravelAtlas bundle should include pilot artwork "${pilotCode}"`,
+      islandRes.body.includes(bespokeCode),
+      `UnifiedTravelAtlas bundle should include bespoke artwork "${bespokeCode}"`,
     )
   }
 })

@@ -4,6 +4,7 @@ import { NATIONAL_PARKS } from "../../src/data/nationalParks.ts"
 import {
   PARK_ARTWORKS,
   PILOT_PARK_ARTWORKS,
+  SOUTHWEST_PARK_ARTWORKS,
   getParkArtwork,
 } from "../../src/data/parkArtworks/index.ts"
 import { US_ALBERS_VIEWBOX, US_STATES } from "../../src/data/usStates.ts"
@@ -163,16 +164,27 @@ test("Natural Earth I world countries, graticule, and projected park coordinates
   assert.equal(visitedOnly[0]?.id, USA_ISO_ID)
 })
 
-test("Phase 1 pilot WPA park artworks cover all 8 pilot parks with unique layered geometry and valid palettes", () => {
-  const expectedPilotCodes = [
+test("Bespoke WPA park artworks cover all 19 pilot + Southwest parks with unique layered geometry and valid palettes", () => {
+  const expectedCodes = [
+    "ARCH",
+    "BIBE",
     "BLCA",
+    "BRCA",
+    "CANY",
+    "CARE",
     "CONG",
     "GRCA",
+    "GUMO",
     "HAVO",
+    "MEVE",
     "MORA",
     "NERI",
+    "PEFO",
+    "SAGU",
     "VOYA",
+    "WHSA",
     "WICA",
+    "ZION",
   ]
   const parkCodeSet = new Set(NATIONAL_PARKS.map((p) => p.code))
   const validInks = new Set<ParkArtworkInk>([
@@ -191,12 +203,13 @@ test("Phase 1 pilot WPA park artworks cover all 8 pilot parks with unique layere
   const hexColorRe = /^#[0-9A-Fa-f]{6}$/
 
   assert.equal(PILOT_PARK_ARTWORKS.length, 8)
+  assert.equal(SOUTHWEST_PARK_ARTWORKS.length, 11)
   const actualCodes = Object.keys(PARK_ARTWORKS).sort()
-  assert.deepEqual(actualCodes, expectedPilotCodes)
+  assert.deepEqual(actualCodes, expectedCodes)
 
   const geometrySignatures = new Set<string>()
 
-  for (const code of expectedPilotCodes) {
+  for (const code of expectedCodes) {
     assert.ok(parkCodeSet.has(code), `${code} must match a valid NATIONAL_PARKS code`)
     const spec = getParkArtwork(code)
     assert.ok(spec, `getParkArtwork(${code}) must return artwork spec`)
@@ -206,8 +219,8 @@ test("Phase 1 pilot WPA park artworks cover all 8 pilot parks with unique layere
     assert.match(spec.accentDark, hexColorRe, `${code} accentDark must be a 6-digit hex pigment`)
     assert.ok(validSkyMoods.has(spec.skyMood), `${code} has invalid skyMood: ${spec.skyMood}`)
     assert.ok(
-      spec.nodes.length >= 12,
-      `${code} must have richly layered geometry (>= 12 nodes), got ${spec.nodes.length}`,
+      spec.nodes.length >= 14,
+      `${code} must have richly layered geometry (>= 14 nodes), got ${spec.nodes.length}`,
     )
 
     for (const node of spec.nodes) {
