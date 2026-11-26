@@ -127,7 +127,7 @@ test("draft blog entries are excluded from static output", async () => {
   assert.equal(status, 404, "Draft blog post should not be built into live routes")
 })
 
-test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/bookshelf portals, atlas band, and real projects", async () => {
+test("homepage renders Swiss Notebook split hero, recent journal, viewfinder, interactive bookshelf modal, static atlas band, and real projects", async () => {
   const { body } = await fetchText("/")
   assert.ok(body.includes("INDEX · VOL. 2026"))
   assert.ok(body.includes("A quiet archive of software, books, and journeys."))
@@ -137,7 +137,10 @@ test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/boo
   assert.ok(body.includes("Open photo gallery"))
   assert.ok(body.includes("BOOKSHELF"))
   assert.match(body, /\d+ VOLUMES SHELVED · QUICK MARGINALIA/)
-  assert.ok(body.includes('href="/books/#book-'))
+  assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes('aria-labelledby="home-book-dialog-title"'))
+  assert.ok(!body.includes('role="dialog"'))
+  assert.ok(!body.includes('aria-modal='))
   assert.ok(body.includes("TRAVEL ATLAS"))
   assert.ok(body.includes("Places &amp; Field Coordinates"))
   assert.ok(body.includes('viewBox="0 0 1000 520"'), "Homepage should render the 1000x520 Natural Earth map")
@@ -149,7 +152,7 @@ test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/boo
   assert.ok(body.includes("Ready for Stamps"))
   assert.ok(!body.includes("swiss-home-atlas-ocean"), "Homepage should no longer render the rough equirectangular ocean pattern")
   assert.ok(!body.includes("EQUIRECTANGULAR PROJECTION"), "Homepage should no longer label the old rough projection")
-  assert.ok(!body.includes("<astro-island"), "Homepage static travel map must ship zero framework JS islands")
+  assert.ok(!body.includes("UnifiedTravelAtlas"), "Homepage static travel map must ship zero travel atlas JS islands")
   assert.ok(body.includes("WORKSHOP · SELECTED PROJECTS"))
   assert.ok(body.includes("Bookbinder Studio"))
   assert.ok(body.includes("Travel Planner"))
@@ -163,14 +166,17 @@ test("blog renders clean Swiss Notes Desk empty state when no posts are publishe
   assert.ok(body.includes("First dispatches on the desk"))
 })
 
-test("photos renders architectural empty plate and native closedby lightbox dialog", async () => {
+test("photo gallery renders graceful multi-album empty state, nav link, and excludes nonexistent album routes", async () => {
   const { body } = await fetchText("/photos/")
   assert.ok(body.includes("Through the Lens · Photo Archive"))
-  assert.ok(body.includes("Photo Archive · Ready for First Plates"))
-  assert.ok(body.includes('id="swiss-photo-lightbox"'))
-  assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes("Albums") && body.includes("Contact Sheets on the Way"))
+  assert.ok(body.includes("Photo albums and travel contact sheets will appear here soon."))
   assert.ok(!body.includes('role="dialog"'))
-  assert.ok(!body.includes('aria-modal="true"'))
+  assert.ok(!body.includes('aria-modal='))
+  assert.ok(body.includes('href="/photos"'))
+
+  const missingAlbum = await fetchText("/photos/nonexistent-album/")
+  assert.equal(missingAlbum.status, 404, "Nonexistent photo album route should return 404")
 })
 
 test("bookshelf renders imported Goodreads volumes, view controls, native closedby dialog, and Bookbinder Studio link", async () => {
@@ -181,6 +187,9 @@ test("bookshelf renders imported Goodreads volumes, view controls, native closed
   assert.ok(body.includes("1984"))
   assert.ok(!body.includes("On the Stack"), "Queued to-read books should not be imported by default")
   assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes('aria-labelledby="book-dialog-title"'))
+  assert.ok(!body.includes('role="dialog"'))
+  assert.ok(!body.includes('aria-modal='))
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
 

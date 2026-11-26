@@ -15,7 +15,7 @@ export const BLOG: Page = {
 export const PHOTOS: Page = {
   TITLE: "Photos",
   DESCRIPTION:
-    "Contact plates and quiet frames from travels, the workshop bench, and everyday walks.",
+    "Contact sheets, quiet light, and field photographs from travels, the workshop bench, and everyday walks.",
 }
 
 export const BOOKS: Page = {
@@ -52,7 +52,7 @@ export const NOW: Page = {
 
 export const SEARCH: Page = {
   TITLE: "Search",
-  DESCRIPTION: "Search essays, projects, books, and travel logs across the journal.",
+  DESCRIPTION: "Search essays, projects, books, photos, and travel logs across the journal.",
 }
 
 export const LINKS: Links = [

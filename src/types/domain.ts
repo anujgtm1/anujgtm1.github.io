@@ -45,6 +45,10 @@ export type TravelRegion =
 
 export type ProjectStatus = "active" | "shipped" | "research" | "archived"
 
+export type PhotoCategory = "travel" | "craft" | "everyday" | "portrait"
+
+export type PhotoAspectRatio = "landscape" | "portrait" | "square" | "wide"
+
 export type Coordinates = {
   readonly lat: number
   readonly lng: number
@@ -112,23 +116,37 @@ export type BlogItem = {
   readonly heroImageAlt?: string
 }
 
-export type PhotoCategory = "travel" | "craft" | "everyday" | "portrait"
-
 export type PhotoItem = {
   readonly slug: string
   readonly title: string
-  readonly image: string
+  readonly imageUrl: string
+  readonly thumbnailUrl?: string
   readonly alt: string
+  readonly caption?: string
   readonly date: string
+  readonly dateIso: string
   readonly dateMs: number
   readonly location?: string
-  readonly camera?: string
-  readonly caption?: string
+  readonly album?: string
   readonly category: PhotoCategory
+  readonly camera?: string
+  readonly aspectRatio?: PhotoAspectRatio
   readonly featured?: boolean
+  readonly tags: readonly string[]
   readonly linkedHref?: string
   readonly linkedLabel?: string
   readonly draft?: boolean
+}
+
+export type PhotoAlbum = {
+  readonly slug: string
+  readonly name: string
+  readonly count: number
+  readonly coverPhoto: PhotoItem
+  readonly previewPhotos: readonly PhotoItem[]
+  readonly dateRange: string
+  readonly locations: readonly string[]
+  readonly photos: readonly PhotoItem[]
 }
 
 export type RecentJournalKind = "blog" | "project" | "travel" | "book"
@@ -214,6 +232,18 @@ export type SearchItem =
       readonly tags: readonly string[]
       readonly region: TravelRegion
       readonly stampCode: string
+    }
+  | {
+      readonly kind: "photo"
+      readonly id: string
+      readonly title: string
+      readonly subtitle: string
+      readonly summary: string
+      readonly href: string
+      readonly date?: string
+      readonly tags: readonly string[]
+      readonly album?: string
+      readonly location?: string
     }
 
 export type RssFeedEntry =

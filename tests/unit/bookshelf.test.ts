@@ -3,10 +3,13 @@ import test from "node:test"
 import {
   BOOK_STATUS_META,
   SPINE_PALETTES,
+  buildBookHref,
   computeSpineMetrics,
   deriveYearRead,
   filterBooks,
+  formatRating,
   formatSpineTitle,
+  getAuthorInitials,
   getAvailableYears,
   groupBooksByYear,
   packBooksIntoShelves,
@@ -254,4 +257,20 @@ test("groupBooksByYear and getAvailableYears group reading first and years desce
   assert.equal(deriveYearRead(new Date("2026-03-18")), 2026)
   assert.equal(deriveYearRead(undefined, 2025), 2025)
   assert.equal(deriveYearRead(undefined), null)
+})
+
+test("buildBookHref returns canonical bookshelf hash URL", () => {
+  assert.equal(buildBookHref("ddia"), "/books/#book-ddia")
+  assert.equal(buildBookHref("the-myth-of-sisyphus"), "/books/#book-the-myth-of-sisyphus")
+})
+
+test("formatRating and getAuthorInitials handle normal and edge inputs", () => {
+  assert.equal(formatRating(undefined), "")
+  assert.equal(formatRating(0), "")
+  assert.equal(formatRating(4), "★★★★☆")
+  assert.equal(formatRating(7), "★★★★★")
+
+  assert.equal(getAuthorInitials("Martin Kleppmann"), "M.K.")
+  assert.equal(getAuthorInitials("Plato"), "PLA")
+  assert.equal(getAuthorInitials("   "), "")
 })

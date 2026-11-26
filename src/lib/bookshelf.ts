@@ -425,6 +425,27 @@ function formatInlineMarkdown(text: string): string {
     .replace(/`([^`]+)`/g, "<code>$1</code>")
 }
 
+export function buildBookHref(slug: string): string {
+  return `/books/#book-${slug}`
+}
+
+export function formatRating(rating: number | undefined): string {
+  if (!rating || rating < 1) {
+    return ""
+  }
+  const clamped = Math.min(5, Math.max(1, Math.round(rating)))
+  return "★".repeat(clamped) + "☆".repeat(5 - clamped)
+}
+
+export function getAuthorInitials(author: string): string {
+  const parts = author.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return ""
+  if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase()
+  const first = parts[0][0] ?? ""
+  const last = parts[parts.length - 1][0] ?? ""
+  return `${first}.${last}.`.toUpperCase()
+}
+
 export function renderBookNotesHtml(markdown: string): string {
   const trimmed = markdown.trim()
   if (trimmed.length === 0) {

@@ -2,8 +2,9 @@
 import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
+import HomeBookshelf from "@components/HomeBookshelf"
 import { SITE, SOCIALS } from "@consts"
-import { SPINE_PALETTES, deriveYearRead, sortBooks } from "@lib/bookshelf"
+import { deriveYearRead, sortBooks } from "@lib/bookshelf"
 import { VISITED_COUNTRY_IDS } from "@data/visitedCountries"
 import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "@data/worldCountries"
 import { formatCoordinates } from "@lib/atlas"
@@ -63,15 +64,20 @@ const photos: readonly PhotoItem[] = rawPhotos
   .map((photo) => ({
     slug: photo.slug,
     title: photo.data.title,
-    image: photo.data.image,
+    imageUrl: photo.data.imageUrl,
+    thumbnailUrl: photo.data.thumbnailUrl,
     alt: photo.data.alt,
+    caption: photo.data.caption,
     date: formatShortDate(photo.data.date),
+    dateIso: photo.data.date.toISOString(),
     dateMs: photo.data.date.getTime(),
     location: photo.data.location,
-    camera: photo.data.camera,
-    caption: photo.data.caption,
+    album: photo.data.album,
     category: photo.data.category,
+    camera: photo.data.camera,
+    aspectRatio: photo.data.aspectRatio,
     featured: photo.data.featured,
+    tags: photo.data.tags,
     linkedHref: photo.data.linkedHref,
     linkedLabel: photo.data.linkedLabel,
     draft: photo.data.draft,
@@ -251,7 +257,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                 {
                   featuredPhoto ? (
                     <img
-                      src={featuredPhoto.image}
+                      src={featuredPhoto.imageUrl}
                       alt={featuredPhoto.alt}
                       fetchpriority="high"
                       decoding="async"
@@ -409,185 +415,8 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
             </a>
           </figure>
 
-          <!-- Layer 2 (Bottom): Tactile Bookshelf -->
-          <div class="mt-8 pt-8 border-t border-border flex flex-col gap-4" aria-labelledby="hero-bookshelf-heading">
-            <div class="flex items-baseline justify-between gap-4">
-              <h2 id="hero-bookshelf-heading" class="editorial-kicker text-accent">
-                BOOKSHELF
-              </h2>
-              <a
-                href="/books"
-                class="whitespace-nowrap shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-              >
-                {books.length > 0 ? `All ${books.length} books →` : "All books →"}
-              </a>
-            </div>
-
-            {
-              shelfSpines.length > 0 ? (
-                <>
-                  <div class="space-y-0">
-                    <div class="flex items-end justify-start sm:justify-between gap-2 overflow-x-auto pt-3 pb-0 px-1">
-                      {shelfSpines.map((book) => {
-                        const palette = SPINE_PALETTES[book.spineTheme]
-                        return (
-                          <a
-                            href={`/books/#book-${book.slug}`}
-                            aria-label={`${book.title} by ${book.author}`}
-                            class="book-spine-btn shrink-0 flex-1 max-w-[60px] min-w-[42px] flex flex-col items-center justify-between rounded-none border px-1.5 py-3 shadow-sm"
-                            style={{
-                              "background-color": palette.bg,
-                              color: palette.text,
-                              "border-color": palette.border,
-                              "block-size": "188px",
-                            }}
-                          >
-                            <span
-                              aria-hidden="true"
-                              class="w-full h-0.5 opacity-80"
-                              style={{ "background-color": palette.band }}
-                            />
-                            <span
-                              class="my-2 font-serif text-xs font-medium tracking-tight"
-                              style={{
-                                "writing-mode": "vertical-rl",
-                                "max-block-size": "124px",
-                                overflow: "hidden",
-                                "text-overflow": "ellipsis",
-                              }}
-                            >
-                              {book.title}
-                            </span>
-                            <span
-                              aria-hidden="true"
-                              class="w-full h-0.5 opacity-70"
-                              style={{ "background-color": palette.band }}
-                            />
-                          </a>
-                        )
-                      })}
-                    </div>
-
-                    <div aria-hidden="true" class="space-y-0">
-                      <div class="h-2.5 w-full border-t border-accent/45 border-x border-border bg-surface-elevated shadow-[0_8px_16px_-10px_rgba(19,18,16,0.45)]" />
-                      <div class="h-1 w-[97%] mx-auto bg-border/80" />
-                    </div>
-                  </div>
-
-                  <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
-                    <span>{books.length} VOLUMES SHELVED · QUICK MARGINALIA</span>
-                    <span>CLOTH &amp; NOTES</span>
-                  </div>
-                </>
-              ) : (
-                <a
-                  href="/books"
-                  class="group block space-y-4 focus-visible:outline-2"
-                >
-                  <div class="border border-border bg-surface/55 px-4 pt-5 pb-3 group-hover:border-accent/60 transition-colors">
-                    <svg
-                      viewBox="0 0 560 112"
-                      class="block w-full h-auto select-none"
-                      role="img"
-                      aria-label="Minimalist archival bookshelf with brass bookends awaiting volumes"
-                    >
-                      {/* Subtle vertical index ticks */}
-                      <g stroke="var(--border)" stroke-width="0.75" opacity="0.65">
-                        <line x1="112" y1="24" x2="112" y2="84" stroke-dasharray="3 4" />
-                        <line x1="224" y1="24" x2="224" y2="84" stroke-dasharray="3 4" />
-                        <line x1="336" y1="24" x2="336" y2="84" stroke-dasharray="3 4" />
-                        <line x1="448" y1="24" x2="448" y2="84" stroke-dasharray="3 4" />
-                      </g>
-
-                      {/* Left architectural brass bookend */}
-                      <path
-                        d="M 28 24 L 36 24 L 36 86 L 74 86 L 74 90 L 28 90 Z"
-                        fill="var(--accent)"
-                        opacity="0.78"
-                      />
-                      <rect
-                        x="42"
-                        y="32"
-                        width="18"
-                        height="54"
-                        fill="none"
-                        stroke="var(--border)"
-                        stroke-width="1"
-                        stroke-dasharray="3 2"
-                      />
-
-                      {/* Right architectural brass bookend */}
-                      <path
-                        d="M 532 24 L 524 24 L 524 86 L 486 86 L 486 90 L 532 90 Z"
-                        fill="var(--accent)"
-                        opacity="0.78"
-                      />
-                      <rect
-                        x="500"
-                        y="38"
-                        width="18"
-                        height="48"
-                        fill="none"
-                        stroke="var(--border)"
-                        stroke-width="1"
-                        stroke-dasharray="3 2"
-                      />
-
-                      {/* Quiet center shelf label */}
-                      <text
-                        x="280"
-                        y="59"
-                        text-anchor="middle"
-                        fill="var(--ink-muted)"
-                        font-family="JetBrains Mono, monospace"
-                        font-size="10.5"
-                        letter-spacing="1.8"
-                      >
-                        SHELF 01 · READY FOR VOLUMES
-                      </text>
-
-                      {/* Horizontal shelf ledge */}
-                      <rect
-                        x="12"
-                        y="90"
-                        width="536"
-                        height="9"
-                        fill="var(--surface-elevated)"
-                        stroke="var(--border)"
-                        stroke-width="1"
-                      />
-                      <line
-                        x1="12"
-                        y1="90"
-                        x2="548"
-                        y2="90"
-                        stroke="var(--accent)"
-                        stroke-width="1.2"
-                        opacity="0.5"
-                      />
-                      <rect
-                        x="26"
-                        y="99"
-                        width="508"
-                        height="4"
-                        fill="var(--border)"
-                        opacity="0.7"
-                      />
-                    </svg>
-                  </div>
-
-                  <div class="flex flex-wrap items-baseline justify-between gap-2 text-xs text-ink-muted">
-                    <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-ink group-hover:text-accent transition-colors">
-                      Stocking the Shelf
-                    </span>
-                    <span class="text-xs text-ink-muted">
-                      Reading covers &amp; quick marginalia coming soon.
-                    </span>
-                  </div>
-                </a>
-              )
-            }
-          </div>
+          <!-- Layer 2 (Bottom): Interactive Tactile Bookshelf with Preview Modal -->
+          <HomeBookshelf client:load books={shelfSpines} totalBooks={books.length} />
         </div>
       </div>
     </Container>
