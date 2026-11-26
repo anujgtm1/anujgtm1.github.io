@@ -4,15 +4,14 @@ import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
 import { SITE, SOCIALS } from "@consts"
 import { SPINE_PALETTES, deriveYearRead, sortBooks } from "@lib/bookshelf"
-import {
-  ATLAS_VIEWBOX,
-  WORLD_LANDMASSES,
-  formatCoordinates,
-  projectCoordinatesToMap,
-} from "@lib/atlas"
+import { VISITED_COUNTRY_IDS } from "@data/visitedCountries"
+import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "@data/worldCountries"
+import { formatCoordinates } from "@lib/atlas"
 import { buildRecentJournalEntries } from "@lib/journal"
+import { computeParkSurveySummary } from "@lib/parks"
 import { pickFeaturedPhoto } from "@lib/photos"
 import { formatShortDate } from "@lib/utils"
+import { buildNaturalEarthGraticule, projectNaturalEarth } from "@lib/worldProjection"
 import type { PhotoItem, RecentJournalKind } from "@types"
 
 const [rawPosts, rawProjects, rawBooks, rawTrips, rawPhotos] = await Promise.all([
@@ -133,15 +132,16 @@ const JOURNAL_KIND_COLOR: Readonly<Record<RecentJournalKind, string>> = {
   book: "text-accent",
 }
 
-const ATLAS_LAT_LINES = [60, 30, 0, -30, -60] as const
-const ATLAS_LNG_LINES = [-150, -120, -90, -60, -30, 0, 30, 60, 90, 120, 150] as const
+const worldGraticule = buildNaturalEarthGraticule()
+const visitedCountrySet = new Set<string>(VISITED_COUNTRY_IDS)
+const parkSummary = computeParkSurveySummary()
 
 const mapPins = trips.slice(0, 6).map((trip) => ({
   label: trip.data.city,
   country: trip.data.country,
   code: trip.data.stampCode,
   coordinatesLabel: formatCoordinates({ lat: trip.data.lat, lng: trip.data.lng }),
-  point: projectCoordinatesToMap({ lat: trip.data.lat, lng: trip.data.lng }),
+  point: projectNaturalEarth({ lat: trip.data.lat, lng: trip.data.lng }),
   href: `/travel/${trip.slug}/`,
 }))
 ---
@@ -597,50 +597,51 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
   <section class="border-b border-border bg-surface/35" aria-labelledby="home-atlas-heading">
     <Container size="lg">
       <div class="py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
-        <!-- Left (8/12): Live Archival Vector World Map -->
+        <!-- Left (8/12): Static Natural Earth 110m World Map (0 KB JS) -->
         <div class="lg:col-span-8">
           <a
             href="/travel"
             aria-label="Explore the full interactive Travel Atlas"
-            class="group block relative aspect-[2/1] w-full overflow-hidden rounded-none border border-border bg-surface hover:border-atlas transition-colors"
+            class="group block relative aspect-[1000/520] w-full overflow-hidden rounded-none border border-border bg-surface hover:border-atlas transition-colors"
           >
             <svg
-              viewBox={`0 0 ${ATLAS_VIEWBOX.width} ${ATLAS_VIEWBOX.height}`}
+              viewBox={`0 0 ${WORLD_NE_VIEWBOX.width} ${WORLD_NE_VIEWBOX.height}`}
               class="block h-full w-full"
               role="img"
-              aria-label="Archival vector world map displaying Anuj Gautam's travel coordinates"
+              aria-label="Natural Earth world map displaying Anuj Gautam's visited countries and travel coordinates"
             >
-              <defs>
-                <pattern id="swiss-home-atlas-ocean" width="18" height="18" patternUnits="userSpaceOnUse">
-                  <circle cx="9" cy="9" r="0.8" fill="var(--border)" opacity="0.85" />
-                </pattern>
-              </defs>
+              <path
+                d={worldGraticule.outlinePath}
+                fill="var(--surface)"
+                stroke="var(--border)"
+                stroke-width="1"
+              />
 
-              <rect width={ATLAS_VIEWBOX.width} height={ATLAS_VIEWBOX.height} fill="url(#swiss-home-atlas-ocean)" />
+              <g fill="none" stroke="var(--border)" stroke-width="0.6" opacity="0.55">
+                {worldGraticule.parallels.map((line) => (
+                  <path
+                    d={line.d}
+                    stroke-dasharray={line.isPrimary ? "4 4" : undefined}
+                  />
+                ))}
+                {worldGraticule.meridians.map((line) => (
+                  <path d={line.d} />
+                ))}
+              </g>
 
-              <g stroke="var(--border)" stroke-width="0.7" opacity="0.65">
-                {ATLAS_LAT_LINES.map((lat) => {
-                  const y = ((90 - lat) / 180) * ATLAS_VIEWBOX.height
+              <g>
+                {WORLD_COUNTRIES.map((country) => {
+                  const isVisited = visitedCountrySet.has(country.id)
                   return (
-                    <line
-                      x1="0"
-                      y1={y}
-                      x2={ATLAS_VIEWBOX.width}
-                      y2={y}
-                      stroke-dasharray={lat === 0 ? "4 4" : undefined}
+                    <path
+                      d={country.d}
+                      fill={isVisited ? "var(--atlas-soft)" : "var(--surface-elevated)"}
+                      fill-opacity={isVisited ? 0.92 : 0.85}
+                      stroke={isVisited ? "var(--atlas)" : "var(--border)"}
+                      stroke-width={isVisited ? 0.95 : 0.55}
                     />
                   )
                 })}
-                {ATLAS_LNG_LINES.map((lng) => {
-                  const x = ((lng + 180) / 360) * ATLAS_VIEWBOX.width
-                  return <line x1={x} y1="0" x2={x} y2={ATLAS_VIEWBOX.height} />
-                })}
-              </g>
-
-              <g fill="var(--atlas-soft)" stroke="var(--atlas)" stroke-width="1" stroke-opacity="0.55">
-                {WORLD_LANDMASSES.map((landmass) => (
-                  <path d={landmass.d} />
-                ))}
               </g>
 
               {mapPins.length > 1 && (
@@ -683,8 +684,8 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
 
             <span class="pointer-events-none absolute bottom-3 left-3 rounded-none border border-border bg-bg/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted backdrop-blur-sm">
               {trips.length > 0
-                ? `${trips.length} STAMPED DESTINATIONS`
-                : "READY FOR STAMPS · EQUIRECTANGULAR PROJECTION"}
+                ? `${trips.length} STAMPED DESTINATIONS · ${parkSummary.visitedParks}/${parkSummary.totalParks} U.S. PARKS`
+                : `NATURAL EARTH I · ${parkSummary.lower48StatesVisited}/${parkSummary.lower48StatesTotal} LOWER STATES · ${parkSummary.visitedParks}/${parkSummary.totalParks} PARKS`}
             </span>
           </a>
         </div>
@@ -726,14 +727,47 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                 ))}
               </ul>
             ) : (
-              <div class="border-t border-b border-border py-4 space-y-1.5">
-                <p class="font-mono text-[11px] uppercase tracking-[0.12em] text-atlas font-medium">
-                  Ready for Stamps
-                </p>
-                <p class="text-sm text-ink-muted leading-relaxed">
-                  Coordinates and field notes will appear here as journeys are logged.
-                </p>
-              </div>
+              <ul class="border-t border-b border-border divide-y divide-border">
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
+                      USA
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      Lower 48 States
+                    </span>
+                  </span>
+                  <span class="font-mono text-xs text-ink-muted shrink-0 tabular-nums">
+                    {`${parkSummary.lower48StatesVisited} / ${parkSummary.lower48StatesTotal}`}
+                  </span>
+                </li>
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-accent shrink-0">
+                      NPS
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      National Parks
+                    </span>
+                  </span>
+                  <span class="font-mono text-xs text-ink-muted shrink-0 tabular-nums">
+                    {`${parkSummary.visitedParks} / ${parkSummary.totalParks}`}
+                  </span>
+                </li>
+                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                  <span class="flex items-baseline gap-2.5 min-w-0">
+                    <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
+                      WLD
+                    </span>
+                    <span class="font-serif text-base text-ink truncate">
+                      International Logs
+                    </span>
+                  </span>
+                  <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted shrink-0">
+                    Ready for Stamps
+                  </span>
+                </li>
+              </ul>
             )
           }
 
