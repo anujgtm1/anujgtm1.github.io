@@ -1,10 +1,124 @@
-import type { NationalPark, ParkEmblemKind } from "@types"
+import { For, Show } from "solid-js"
+import type { NationalPark, ParkArtworkInk, ParkArtworkNode, ParkEmblemKind } from "@types"
+import { getParkArtwork } from "@data/parkArtworks"
 
 type Props = {
   readonly park: NationalPark
   readonly class?: string
   readonly decorative?: boolean
   readonly idPrefix?: string
+}
+
+const INK_VAR_MAP: Readonly<Record<ParkArtworkInk, string>> = {
+  "sky-top": "var(--emblem-sky-top)",
+  "sky-bottom": "var(--emblem-sky-bottom)",
+  far: "var(--emblem-far)",
+  mid: "var(--emblem-mid)",
+  ink: "var(--emblem-ink)",
+  deep: "var(--emblem-deep)",
+  accent: "var(--emblem-accent)",
+  "accent-soft": "var(--emblem-accent-soft)",
+  paper: "var(--emblem-paper)",
+  none: "none",
+}
+
+function resolveInk(ink: ParkArtworkInk | undefined): string | undefined {
+  return ink ? INK_VAR_MAP[ink] : undefined
+}
+
+function ArtworkNode(props: { readonly node: ParkArtworkNode }) {
+  const n = props.node
+  const fill = resolveInk(n.fill) ?? "none"
+  const stroke = resolveInk(n.stroke)
+
+  switch (n.kind) {
+    case "path":
+      return (
+        <path
+          d={n.d}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-linecap={n.strokeLinecap}
+          stroke-linejoin={n.strokeLinejoin}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    case "circle":
+      return (
+        <circle
+          cx={n.cx}
+          cy={n.cy}
+          r={n.r}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    case "ellipse":
+      return (
+        <ellipse
+          cx={n.cx}
+          cy={n.cy}
+          rx={n.rx}
+          ry={n.ry}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    case "rect":
+      return (
+        <rect
+          x={n.x}
+          y={n.y}
+          width={n.width}
+          height={n.height}
+          rx={n.rx}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    case "line":
+      return (
+        <line
+          x1={n.x1}
+          y1={n.y1}
+          x2={n.x2}
+          y2={n.y2}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-linecap={n.strokeLinecap}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    case "polygon":
+      return (
+        <polygon
+          points={n.points}
+          fill={fill}
+          stroke={stroke}
+          stroke-width={n.strokeWidth}
+          stroke-linejoin={n.strokeLinejoin}
+          stroke-dasharray={n.strokeDasharray}
+          opacity={n.opacity}
+        />
+      )
+    default: {
+      const exhaustive: never = n
+      return exhaustive
+    }
+  }
 }
 
 function EmblemArtwork(props: { readonly kind: ParkEmblemKind }) {
@@ -342,56 +456,142 @@ function EmblemArtwork(props: { readonly kind: ParkEmblemKind }) {
 }
 
 export default function ParkEmblem(props: Props) {
-  const clipId = () => `${props.idPrefix ?? "emblem"}-clip-${props.park.code}`
+  const artwork = () => getParkArtwork(props.park.code)
+  const prefix = () => props.idPrefix ?? "emblem"
+  const clipId = () => `${prefix()}-clip-${props.park.code}`
+  const skyGradId = () => `${prefix()}-sky-${props.park.code}`
+  const legacyClipId = () => `${prefix()}-legacy-${props.park.code}`
+
+  const skyClass = () => {
+    const spec = artwork()
+    return spec ? `park-emblem--sky-${spec.skyMood}` : ""
+  }
+
+  const pigmentStyle = () => {
+    const spec = artwork()
+    return {
+      "--park-light": props.park.pigmentLight,
+      "--park-dark": props.park.pigmentDark,
+      ...(spec
+        ? {
+            "--park-accent-light": spec.accentLight,
+            "--park-accent-dark": spec.accentDark,
+          }
+        : {}),
+    }
+  }
 
   return (
     <svg
-      viewBox="0 0 120 120"
-      class={`park-emblem block h-full w-full ${props.park.visited ? "" : "park-emblem--unvisited"} ${props.class ?? ""}`}
+      viewBox="0 0 180 240"
+      class={`park-emblem block h-full w-full ${skyClass()} ${
+        props.park.visited ? "" : "park-emblem--unvisited"
+      } ${props.class ?? ""}`}
       role={props.decorative ? undefined : "img"}
       aria-hidden={props.decorative ? "true" : undefined}
-      aria-label={props.decorative ? undefined : `${props.park.name} National Park emblem`}
-      style={{
-        "--park-light": props.park.pigmentLight,
-        "--park-dark": props.park.pigmentDark,
-      }}
+      aria-label={props.decorative ? undefined : `${props.park.name} National Park poster`}
+      style={pigmentStyle()}
     >
       <defs>
         <clipPath id={clipId()}>
-          <path d="M12 22 C12 16 16 12 22 12 L98 12 C104 12 108 16 108 22 L108 98 C108 104 104 108 98 108 L22 108 C16 108 12 104 12 98 Z" />
+          <rect x="14" y="14" width="152" height="212" rx="6" />
         </clipPath>
+        <clipPath id={legacyClipId()}>
+          <rect x="12" y="12" width="96" height="96" rx="8" />
+        </clipPath>
+        <linearGradient id={skyGradId()} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="var(--emblem-sky-top)" />
+          <stop offset="100%" stop-color="var(--emblem-sky-bottom)" />
+        </linearGradient>
       </defs>
 
-      {/* Outer archival stamp border */}
+      {/* Outer archival WPA poster mat frame */}
       <rect
         x="4"
         y="4"
-        width="112"
-        height="112"
-        rx="12"
+        width="172"
+        height="232"
+        rx="10"
         fill="var(--emblem-frame)"
         stroke="var(--emblem-border)"
         stroke-width="1.5"
-        stroke-dasharray={props.park.visited ? undefined : "4 3"}
+        stroke-dasharray={props.park.visited ? undefined : "5 3"}
       />
 
-      {/* Clipped WPA screenprint artwork */}
+      {/* Subtle outer letterpress groove */}
+      <rect
+        x="9.5"
+        y="9.5"
+        width="161"
+        height="221"
+        rx="8"
+        fill="none"
+        stroke="var(--emblem-border)"
+        stroke-width="0.65"
+        opacity="0.38"
+      />
+
+      {/* Clipped inner artwork plate */}
       <g clip-path={`url(#${clipId()})`}>
-        <rect x="12" y="12" width="96" height="96" fill="var(--emblem-sky)" />
-        <EmblemArtwork kind={props.park.emblem} />
+        <rect x="14" y="14" width="152" height="212" fill={`url(#${skyGradId()})`} />
+
+        <Show
+          when={artwork()}
+          fallback={
+            <>
+              {/* Harmonious top atmosphere & bottom ground extension for unmigrated emblems */}
+              <rect x="14" y="178" width="152" height="48" fill="var(--emblem-mid)" opacity="0.28" />
+              <line
+                x1="38"
+                y1="202"
+                x2="142"
+                y2="202"
+                stroke="var(--emblem-border)"
+                stroke-width="0.85"
+                opacity="0.55"
+              />
+              <polygon
+                points="90,198.5 93.5,202 90,205.5 86.5,202"
+                fill="var(--emblem-ink)"
+                opacity="0.45"
+              />
+              <g transform="translate(14 44) scale(1.2667)">
+                <g clip-path={`url(#${legacyClipId()})`}>
+                  <rect x="12" y="12" width="96" height="96" fill={`url(#${skyGradId()})`} />
+                  <EmblemArtwork kind={props.park.emblem} />
+                </g>
+                <rect
+                  x="12"
+                  y="12"
+                  width="96"
+                  height="96"
+                  rx="8"
+                  fill="none"
+                  stroke="var(--emblem-border)"
+                  stroke-width="0.9"
+                  opacity="0.6"
+                />
+              </g>
+            </>
+          }
+        >
+          {(spec) => (
+            <For each={spec().nodes}>{(node) => <ArtworkNode node={node} />}</For>
+          )}
+        </Show>
       </g>
 
-      {/* Inner hairline mat border */}
+      {/* Inner hairline mat impression */}
       <rect
-        x="12"
-        y="12"
-        width="96"
-        height="96"
-        rx="9"
+        x="14"
+        y="14"
+        width="152"
+        height="212"
+        rx="6"
         fill="none"
         stroke="var(--emblem-border)"
         stroke-width="1"
-        opacity="0.7"
+        opacity="0.78"
       />
     </svg>
   )

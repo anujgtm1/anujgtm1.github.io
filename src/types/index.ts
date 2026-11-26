@@ -28,6 +28,10 @@ export type {
 } from "./domain.ts"
 export type {
   NationalPark,
+  ParkArtworkInk,
+  ParkArtworkNode,
+  ParkArtworkSkyMood,
+  ParkArtworkSpec,
   ParkBiome,
   ParkEmblemKind,
   ParkInset,

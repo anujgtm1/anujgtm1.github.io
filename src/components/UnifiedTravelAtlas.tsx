@@ -1294,7 +1294,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                                       : "border-dashed border-border/80 bg-surface/50 hover:border-ink-muted"
                                   }`}
                                 >
-                                  <div class="relative w-full aspect-square max-w-[104px]">
+                                  <div class="relative w-full aspect-[3/4] max-w-[132px]">
                                     <ParkEmblem park={park} idPrefix="state-tray" decorative={true} />
                                     <Show when={hasPersonalNotes(park)}>
                                       <span
@@ -1382,7 +1382,7 @@ export default function UnifiedTravelAtlas(props: Props) {
               >
                 <ul
                   role="list"
-                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 lg:grid-cols-7 gap-3 sm:gap-4"
+                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5"
                 >
                   <For each={visibleParks()}>
                     {(park) => (
@@ -1396,7 +1396,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                               : "border-dashed border-border/80 bg-surface/60 hover:border-ink-muted"
                           }`}
                         >
-                          <div class="relative w-full aspect-square max-w-[116px]">
+                          <div class="relative w-full aspect-[3/4]">
                             <ParkEmblem park={park} idPrefix="poster" decorative={true} />
                             <Show when={hasPersonalNotes(park)}>
                               <span
@@ -1667,7 +1667,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   <div class="flex flex-col max-h-[86dvh]">
                     <div class="flex items-start justify-between gap-4 border-b border-border p-5 sm:p-6">
                       <div class="flex items-start gap-4 min-w-0">
-                        <div class="size-20 sm:size-24 shrink-0">
+                        <div class="w-28 sm:w-36 aspect-[3/4] shrink-0">
                           <ParkEmblem park={park} idPrefix="modal" decorative={true} />
                         </div>
                         <div class="space-y-1.5 min-w-0">

@@ -45,6 +45,77 @@ export type ParkEmblemKind =
   | "hot-springs"
   | "glacier-fjord"
 
+export type ParkArtworkInk =
+  | "sky-top"
+  | "sky-bottom"
+  | "far"
+  | "mid"
+  | "ink"
+  | "deep"
+  | "accent"
+  | "accent-soft"
+  | "paper"
+  | "none"
+
+export type ParkArtworkSkyMood = "dawn" | "noon" | "dusk" | "night" | "mist"
+
+type ParkArtworkPaint = {
+  readonly fill?: ParkArtworkInk
+  readonly stroke?: ParkArtworkInk
+  readonly strokeWidth?: number
+  readonly strokeLinecap?: "round" | "butt" | "square"
+  readonly strokeLinejoin?: "round" | "miter" | "bevel"
+  readonly strokeDasharray?: string
+  readonly opacity?: number
+}
+
+export type ParkArtworkNode =
+  | (ParkArtworkPaint & {
+      readonly kind: "path"
+      readonly d: string
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "circle"
+      readonly cx: number
+      readonly cy: number
+      readonly r: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "ellipse"
+      readonly cx: number
+      readonly cy: number
+      readonly rx: number
+      readonly ry: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "rect"
+      readonly x: number
+      readonly y: number
+      readonly width: number
+      readonly height: number
+      readonly rx?: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "line"
+      readonly x1: number
+      readonly y1: number
+      readonly x2: number
+      readonly y2: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "polygon"
+      readonly points: string
+    })
+
+export type ParkArtworkSpec = {
+  readonly code: string
+  readonly subject: string
+  readonly accentLight: string
+  readonly accentDark: string
+  readonly skyMood: ParkArtworkSkyMood
+  readonly nodes: readonly ParkArtworkNode[]
+}
+
 export type ParkPhoto = {
   readonly src: string
   readonly alt: string
