@@ -77,11 +77,12 @@ test("normalizers produce typed SearchItem entries with canonical hrefs", () => 
   assert.equal(project.href, "/projects/topo-deploy-graph/")
   assert.equal(book.href, "/books/#book-invisible-cities")
   assert.equal(travel.href, "/travel/tokyo/")
-  assert.equal(photo.href, "/photos/#photo-morning-alley")
+  assert.equal(photo.href, "/photos/streets/#photo-morning-alley")
   assert.equal(photo.subtitle, "Streets · Lisbon, Portugal · Ricoh GR III")
   assert.equal(photo.summary, "Warm morning light across wet cobblestones.")
   assert.equal(photo.album, "Streets")
   assert.equal(photo.location, "Lisbon, Portugal")
+  assert.equal(photoWithoutCaption.href, "/photos/field-notes/#photo-quiet-shore")
   assert.equal(photoWithoutCaption.subtitle, "Photograph")
   assert.equal(photoWithoutCaption.summary, "Calm tide at dusk")
 

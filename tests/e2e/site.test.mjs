@@ -164,15 +164,17 @@ test("travel atlas renders world projection, empty passport inspector, and Trave
   assert.ok(body.includes("https://travel.anujgtm.com"))
 })
 
-test("photo gallery renders graceful empty state, native closedby lightbox dialog, and nav link", async () => {
+test("photo gallery renders graceful multi-album empty state, nav link, and excludes nonexistent album routes", async () => {
   const { body } = await fetchText("/photos/")
   assert.ok(body.includes("Darkroom · Contact Sheets on the Way"))
-  assert.ok(body.includes("Field photographs and travel contact sheets will appear here soon."))
-  assert.ok(body.includes('closedby="any"'))
-  assert.ok(body.includes('aria-labelledby="photo-lightbox-title"'))
+  assert.ok(body.includes("Albums") && body.includes("Contact Sheets on the Way"))
+  assert.ok(body.includes("Photo albums and travel contact sheets will appear here soon."))
   assert.ok(!body.includes('role="dialog"'))
   assert.ok(!body.includes('aria-modal='))
   assert.ok(body.includes('href="/photos"'))
+
+  const missingAlbum = await fetchText("/photos/nonexistent-album/")
+  assert.equal(missingAlbum.status, 404, "Nonexistent photo album route should return 404")
 })
 
 test("projects, project dossiers, work, and /now showcase Anuj's real engineering history and builds", async () => {

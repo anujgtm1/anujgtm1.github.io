@@ -2,12 +2,18 @@ import assert from "node:assert/strict"
 import test from "node:test"
 import type { PhotoItem } from "../../src/types/domain.ts"
 import {
+  DEFAULT_ALBUM_NAME,
   PHOTO_ASPECT_RATIOS,
+  buildAlbumHref,
+  buildPhotoAlbums,
   buildPhotoHref,
+  filterPhotoAlbums,
   filterPhotos,
   getAdjacentPhotoIndex,
   getPhotoAlbums,
+  resolvePhotoAlbumName,
   resolvePhotoThumbnail,
+  slugifyAlbumName,
   sortPhotos,
 } from "../../src/lib/photos.ts"
 
@@ -81,8 +87,31 @@ test("PHOTO_ASPECT_RATIOS covers all four declared aspect ratio keys", () => {
   })
 })
 
-test("buildPhotoHref returns canonical /photos/#photo-<slug> anchor", () => {
-  assert.equal(buildPhotoHref("morning-alley"), "/photos/#photo-morning-alley")
+test("slugifyAlbumName produces deterministic URL-safe kebab slugs with Field Notes fallback", () => {
+  assert.equal(slugifyAlbumName("Japan"), "japan")
+  assert.equal(slugifyAlbumName("  Kyoto & Hokkaido 2025! "), "kyoto-hokkaido-2025")
+  assert.equal(slugifyAlbumName("Montréal Walks"), "montreal-walks")
+  assert.equal(slugifyAlbumName("   "), "field-notes")
+  assert.equal(slugifyAlbumName("---!!!---"), "field-notes")
+})
+
+test("resolvePhotoAlbumName trims explicit album names and falls back to DEFAULT_ALBUM_NAME", () => {
+  assert.equal(DEFAULT_ALBUM_NAME, "Field Notes")
+  assert.equal(resolvePhotoAlbumName("  Mountains  "), "Mountains")
+  assert.equal(resolvePhotoAlbumName(""), "Field Notes")
+  assert.equal(resolvePhotoAlbumName("   "), "Field Notes")
+  assert.equal(resolvePhotoAlbumName(undefined), "Field Notes")
+})
+
+test("buildAlbumHref and buildPhotoHref construct canonical album-scoped URLs", () => {
+  assert.equal(buildAlbumHref("japan"), "/photos/japan/")
+  assert.equal(buildPhotoHref("kyoto-rain", "Japan"), "/photos/japan/#photo-kyoto-rain")
+  assert.equal(
+    buildPhotoHref("morning-alley", "  Old Town Lisbon "),
+    "/photos/old-town-lisbon/#photo-morning-alley",
+  )
+  assert.equal(buildPhotoHref("quiet-shore"), "/photos/field-notes/#photo-quiet-shore")
+  assert.equal(buildPhotoHref("quiet-shore", "   "), "/photos/field-notes/#photo-quiet-shore")
 })
 
 test("resolvePhotoThumbnail prefers trimmed thumbnailUrl and falls back to imageUrl", () => {
@@ -121,6 +150,190 @@ test("sortPhotos places featured first, then newest dateIso descending, then tit
     SAMPLE_PHOTOS.map((photo) => photo.slug),
     originalSlugs,
   )
+})
+
+test("buildPhotoAlbums returns empty array for empty input", () => {
+  assert.deepEqual(buildPhotoAlbums([]), [])
+})
+
+test("buildPhotoAlbums groups case/spacing variants, selects covers, formats date ranges, and orders Field Notes last", () => {
+  const photos: readonly PhotoItem[] = [
+    {
+      slug: "kyoto-dawn",
+      title: "Kyoto Dawn",
+      imageUrl: "/images/kyoto-1.jpg",
+      alt: "Dawn light in Kyoto",
+      date: "Apr 2026",
+      dateIso: "2026-04-02T00:00:00.000Z",
+      location: "Kyoto, Japan",
+      album: "Kyoto",
+      featured: false,
+      tags: ["Japan"],
+    },
+    {
+      slug: "kyoto-lantern",
+      title: "Kyoto Lantern",
+      imageUrl: "/images/kyoto-2.jpg",
+      alt: "Paper lantern in rain",
+      date: "Jan 2026",
+      dateIso: "2026-01-18T00:00:00.000Z",
+      location: "Gion, Kyoto",
+      album: " kyoto ",
+      featured: true,
+      tags: ["Rain"],
+    },
+    {
+      slug: "kyoto-temple",
+      title: "Kyoto Temple",
+      imageUrl: "/images/kyoto-3.jpg",
+      alt: "Cedar eaves",
+      date: "Feb 2026",
+      dateIso: "2026-02-10T00:00:00.000Z",
+      location: "Arashiyama, Kyoto",
+      album: "KYOTO",
+      featured: false,
+      tags: ["Wood"],
+    },
+    {
+      slug: "kyoto-canal",
+      title: "Kyoto Canal",
+      imageUrl: "/images/kyoto-4.jpg",
+      alt: "Canal reflection",
+      date: "Mar 2026",
+      dateIso: "2026-03-04T00:00:00.000Z",
+      location: "Fushimi, Kyoto",
+      album: "Kyoto",
+      featured: false,
+      tags: ["Water"],
+    },
+    {
+      slug: "ridge-2024",
+      title: "Ridge 2024",
+      imageUrl: "/images/ridge-2024.jpg",
+      alt: "Old mountain ridge",
+      date: "Nov 2024",
+      dateIso: "2024-11-05T00:00:00.000Z",
+      location: "Blue Ridge, NC",
+      album: "Mountains",
+      featured: false,
+      tags: ["Hills"],
+    },
+    {
+      slug: "ridge-2026",
+      title: "Ridge 2026",
+      imageUrl: "/images/ridge-2026.jpg",
+      alt: "Recent ridge",
+      date: "Feb 2026",
+      dateIso: "2026-02-12T00:00:00.000Z",
+      location: "Blue Ridge, NC",
+      album: "Mountains",
+      featured: false,
+      tags: ["Hills"],
+    },
+    {
+      slug: "ungrouped-walk",
+      title: "Ungrouped Walk",
+      imageUrl: "/images/walk.jpg",
+      alt: "Sidewalk shadows",
+      date: "May 2026",
+      dateIso: "2026-05-01T00:00:00.000Z",
+      location: "Chicago, IL",
+      tags: ["Walk"],
+    },
+  ]
+
+  const albums = buildPhotoAlbums(photos)
+
+  // Named albums sorted newest photo dateIso descending; Field Notes placed last despite newer date
+  assert.deepEqual(
+    albums.map((album) => album.slug),
+    ["kyoto", "mountains", "field-notes"],
+  )
+
+  const kyoto = albums[0]
+  assert.ok(kyoto)
+  // Merged all 4 case/whitespace variants under first seen sorted photo's trimmed display name
+  assert.equal(kyoto.count, 4)
+  assert.equal(kyoto.name, "kyoto")
+  // Featured photo wins cover even though kyoto-dawn is newer
+  assert.equal(kyoto.coverPhoto.slug, "kyoto-lantern")
+  // Preview photos capped at 3 starting with coverPhoto
+  assert.deepEqual(
+    kyoto.previewPhotos.map((photo) => photo.slug),
+    ["kyoto-lantern", "kyoto-dawn", "kyoto-canal"],
+  )
+  // Same year with distinct months shows oldest – newest date without duplicating year-only range
+  assert.equal(kyoto.dateRange, "Jan 2026 – Apr 2026")
+  // Locations capped at 3 unique entries
+  assert.equal(kyoto.locations.length, 3)
+
+  const mountains = albums[1]
+  assert.ok(mountains)
+  // No featured photo -> falls back to newest photo
+  assert.equal(mountains.coverPhoto.slug, "ridge-2026")
+  // Multi-year span formats as YYYY – YYYY
+  assert.equal(mountains.dateRange, "2024 – 2026")
+  // Duplicate locations are deduplicated
+  assert.deepEqual(mountains.locations, ["Blue Ridge, NC"])
+
+  const fieldNotes = albums[2]
+  assert.ok(fieldNotes)
+  assert.equal(fieldNotes.name, DEFAULT_ALBUM_NAME)
+  assert.equal(fieldNotes.count, 1)
+  assert.equal(fieldNotes.dateRange, "May 2026")
+})
+
+test("buildPhotoAlbums preserves single-date formatting and returns Field Notes when it is the only album", () => {
+  const onlyUngrouped: readonly PhotoItem[] = [
+    {
+      slug: "frame-a",
+      title: "Frame A",
+      imageUrl: "/a.jpg",
+      alt: "Frame A",
+      date: "Jan 2026",
+      dateIso: "2026-01-05T00:00:00.000Z",
+      tags: [],
+    },
+    {
+      slug: "frame-b",
+      title: "Frame B",
+      imageUrl: "/b.jpg",
+      alt: "Frame B",
+      date: "Jan 2026",
+      dateIso: "2026-01-20T00:00:00.000Z",
+      album: "   ",
+      tags: [],
+    },
+  ]
+
+  const albums = buildPhotoAlbums(onlyUngrouped)
+  assert.equal(albums.length, 1)
+  assert.equal(albums[0]?.slug, "field-notes")
+  assert.equal(albums[0]?.name, "Field Notes")
+  assert.equal(albums[0]?.dateRange, "Jan 2026")
+})
+
+test("filterPhotoAlbums matches album metadata and contained frame metadata", () => {
+  const albums = buildPhotoAlbums(SAMPLE_PHOTOS)
+
+  assert.equal(filterPhotoAlbums(albums, "").length, albums.length)
+  assert.deepEqual(
+    filterPhotoAlbums(albums, "mountains").map((album) => album.slug),
+    ["mountains"],
+  )
+  assert.deepEqual(
+    filterPhotoAlbums(albums, "lisbon").map((album) => album.slug),
+    ["streets"],
+  )
+  assert.deepEqual(
+    filterPhotoAlbums(albums, "x100vi").map((album) => album.slug),
+    ["mountains"],
+  )
+  assert.deepEqual(
+    filterPhotoAlbums(albums, "snow").map((album) => album.slug),
+    ["field-notes"],
+  )
+  assert.deepEqual(filterPhotoAlbums(albums, "nonexistent"), [])
 })
 
 test("getPhotoAlbums returns unique non-empty trimmed albums sorted by count desc then name asc", () => {
