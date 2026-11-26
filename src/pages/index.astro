@@ -2,8 +2,9 @@
 import { getCollection, getEntry } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
+import HomeBookshelf from "@components/HomeBookshelf"
 import { SITE, SOCIALS } from "@consts"
-import { SPINE_PALETTES, deriveYearRead, sortBooks } from "@lib/bookshelf"
+import { buildBookHref, deriveYearRead, sortBooks } from "@lib/bookshelf"
 import { formatCoordinates } from "@lib/atlas"
 import { formatDate, formatShortDate, readingTime } from "@lib/utils"
 
@@ -48,7 +49,7 @@ const books = sortBooks(
 )
 
 const currentlyReadingBook = books.find((book) => book.status === "reading") ?? books[0]
-const featuredSpines = books.slice(0, 6)
+const featuredSpines = books.slice(0, 8)
 
 const trips = rawTrips
   .filter((trip) => !trip.data.draft)
@@ -156,7 +157,7 @@ const fieldDeskGridClass =
 
         {currentlyReadingBook && (
           <a
-            href={`/books/#book-${currentlyReadingBook.slug}`}
+            href={buildBookHref(currentlyReadingBook.slug)}
             class="editorial-card group rounded-xl border border-border bg-surface-elevated p-5 flex flex-col justify-between gap-3 hover:border-accent"
           >
             <span class="text-xs font-mono uppercase tracking-widest text-accent">
@@ -390,83 +391,7 @@ const fieldDeskGridClass =
 
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <!-- Mini Bookshelf Teaser -->
-        <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6">
-          <div class="flex items-baseline justify-between gap-3">
-            <div class="space-y-1">
-              <h3 class="font-serif text-xl font-medium text-ink">Bookshelf</h3>
-              <p class="text-sm text-ink-muted">Quick marginalia &amp; favorites on the desk.</p>
-            </div>
-            <a
-              href="/books"
-              class="text-xs font-mono uppercase tracking-wider text-accent hover:underline underline-offset-4 shrink-0"
-            >
-              {books.length > 0 ? `All ${books.length} →` : "Visit shelf →"}
-            </a>
-          </div>
-
-          {
-            featuredSpines.length > 0 ? (
-              <div>
-                <div class="flex items-end justify-start gap-2 overflow-x-auto pt-4 pb-0 px-2">
-                  {
-                    featuredSpines.map((book) => {
-                      const palette = SPINE_PALETTES[book.spineTheme]
-                      return (
-                        <a
-                          href={`/books/#book-${book.slug}`}
-                          aria-label={`${book.title} by ${book.author}`}
-                          class="book-spine-btn shrink-0 flex flex-col items-center justify-between rounded-t border px-1.5 py-2.5"
-                          style={{
-                            "background-color": palette.bg,
-                            color: palette.text,
-                            "border-color": palette.border,
-                            "min-inline-size": "44px",
-                            "min-block-size": "168px",
-                          }}
-                        >
-                          <span
-                            aria-hidden="true"
-                            class="w-full h-0.5 rounded-full opacity-75"
-                            style={{ "background-color": palette.band }}
-                          />
-                          <span
-                            class="my-2 font-serif text-xs font-medium tracking-tight"
-                            style={{
-                              "writing-mode": "vertical-rl",
-                              "max-block-size": "112px",
-                              overflow: "hidden",
-                              "text-overflow": "ellipsis",
-                            }}
-                          >
-                            {book.title}
-                          </span>
-                          <span
-                            aria-hidden="true"
-                            class="w-full h-0.5 rounded-full opacity-70"
-                            style={{ "background-color": palette.band }}
-                          />
-                        </a>
-                      )
-                    })
-                  }
-                </div>
-                <div aria-hidden="true" class="h-2.5 w-full rounded-sm border-b-4 border-border bg-surface" />
-              </div>
-            ) : (
-              <div class="rounded-lg border border-dashed border-border bg-surface/60 p-5 space-y-2">
-                <p class="text-xs font-mono uppercase tracking-widest text-accent">
-                  Stocking the Shelf
-                </p>
-                <p class="font-serif text-base font-medium text-ink">
-                  2024–2026 reading covers &amp; quick marginalia on the way.
-                </p>
-                <p class="text-xs text-ink-muted leading-relaxed">
-                  Recent reads, favorites, and short margin notes will appear here as volumes are shelved.
-                </p>
-              </div>
-            )
-          }
-        </div>
+        <HomeBookshelf client:load books={featuredSpines} totalBooks={books.length} />
 
         <!-- Mini Passport Stamps Teaser -->
         <div class="rounded-xl border border-border bg-surface-elevated p-6 flex flex-col justify-between gap-6">
