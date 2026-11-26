@@ -20,12 +20,52 @@ export type ParkRegion =
 
 export type ParkInset = "lower48" | "alaska" | "hawaii" | "virgin-islands" | "american-samoa"
 
+export type ParkEmblemKind =
+  | "arch"
+  | "gateway-arch"
+  | "half-dome"
+  | "geyser"
+  | "canyon"
+  | "hoodoos"
+  | "cathedral-peaks"
+  | "volcano-cone"
+  | "caldera-lake"
+  | "giant-trees"
+  | "saguaro"
+  | "joshua-tree"
+  | "dunes"
+  | "lighthouse-coast"
+  | "reef-island"
+  | "fort-island"
+  | "marsh-heron"
+  | "misty-ridges"
+  | "cavern"
+  | "cliff-dwelling"
+  | "monolith-fold"
+  | "hot-springs"
+  | "glacier-fjord"
+
+export type ParkPhoto = {
+  readonly src: string
+  readonly alt: string
+  readonly caption?: string
+}
+
+export type ParkJournalEntry = {
+  readonly visitedDate?: string
+  readonly quote?: string
+  readonly liked?: readonly string[]
+  readonly notes?: string
+  readonly photos?: readonly ParkPhoto[]
+}
+
 export type NationalPark = {
   readonly code: string
   readonly name: string
   readonly states: readonly string[]
   readonly region: ParkRegion
   readonly biome: ParkBiome
+  readonly emblem: ParkEmblemKind
   readonly inset: ParkInset
   readonly coordinates: Coordinates
   readonly highPointFt: number
@@ -52,6 +92,7 @@ export type UsStateGeometry = {
 export type ProjectedPark = NationalPark & {
   readonly mapPoint: MapPoint
   readonly humboldtPoint: MapPoint
+  readonly journal?: ParkJournalEntry
 }
 
 export type ParkSurveySummary = {

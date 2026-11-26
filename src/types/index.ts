@@ -23,7 +23,10 @@ export type {
 export type {
   NationalPark,
   ParkBiome,
+  ParkEmblemKind,
   ParkInset,
+  ParkJournalEntry,
+  ParkPhoto,
   ParkRegion,
   ParkSurveySummary,
   ProjectedPark,

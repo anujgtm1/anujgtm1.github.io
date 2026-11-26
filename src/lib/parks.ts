@@ -8,6 +8,7 @@ import type {
   UsStateGeometry,
 } from "../types/index.ts"
 import { NATIONAL_PARKS } from "../data/nationalParks.ts"
+import { PARK_JOURNAL } from "../data/parkJournal.ts"
 import { US_ALBERS_VIEWBOX, US_STATES } from "../data/usStates.ts"
 
 const DEG_TO_RAD = Math.PI / 180
@@ -26,23 +27,23 @@ export const TERRITORY_INSETS = {
     id: "virgin-islands",
     label: "U.S. Virgin Islands",
     shortLabel: "USVI",
-    x: 786,
-    y: 506,
-    width: 78,
-    height: 76,
-    cx: 825,
-    cy: 548,
+    x: 856,
+    y: 418,
+    width: 96,
+    height: 78,
+    cx: 904,
+    cy: 462,
   },
   americanSamoa: {
     id: "american-samoa",
     label: "American Samoa",
     shortLabel: "AS",
-    x: 874,
-    y: 506,
-    width: 78,
-    height: 76,
-    cx: 913,
-    cy: 548,
+    x: 856,
+    y: 508,
+    width: 96,
+    height: 78,
+    cx: 904,
+    cy: 552,
   },
 } as const
 
@@ -184,7 +185,59 @@ export function getProjectedParks(
     ...park,
     mapPoint: projectParkToAlbersUsa(park),
     humboldtPoint: projectParkToHumboldt(park),
+    journal: PARK_JOURNAL[park.code],
   }))
+}
+
+export type ParkVisitFilter = "all" | "visited" | "unvisited"
+export type ParkSortOrder = "alpha" | "established" | "state" | "visited"
+
+const STATE_NAME_BY_ABBR: ReadonlyMap<string, string> = new Map(
+  US_STATES.map((s) => [s.abbr, s.name]),
+)
+
+export function filterAndSortParks(
+  parks: readonly ProjectedPark[],
+  visitFilter: ParkVisitFilter,
+  query: string,
+  sortOrder: ParkSortOrder = "alpha",
+): readonly ProjectedPark[] {
+  const normalizedQuery = query.trim().toLowerCase()
+  const upperQuery = query.trim().toUpperCase()
+  const isExactStateAbbr =
+    upperQuery.length === 2 &&
+    (STATE_NAME_BY_ABBR.has(upperQuery) || upperQuery === "VI" || upperQuery === "AS")
+
+  const filtered = parks.filter((park) => {
+    if (visitFilter === "visited" && !park.visited) return false
+    if (visitFilter === "unvisited" && park.visited) return false
+    if (normalizedQuery.length > 0) {
+      if (isExactStateAbbr) {
+        if (!park.states.includes(upperQuery)) return false
+      } else {
+        const stateNames = park.states
+          .map((abbr) => STATE_NAME_BY_ABBR.get(abbr) ?? abbr)
+          .join(" ")
+        const haystack =
+          `${park.name} ${park.code} ${park.states.join(" ")} ${stateNames} ${park.biome} ${park.region}`.toLowerCase()
+        if (!haystack.includes(normalizedQuery)) return false
+      }
+    }
+    return true
+  })
+
+  return [...filtered].sort((a, b) => {
+    switch (sortOrder) {
+      case "alpha":
+        return a.name.localeCompare(b.name)
+      case "established":
+        return a.established - b.established || a.name.localeCompare(b.name)
+      case "state":
+        return (a.states[0] ?? "").localeCompare(b.states[0] ?? "") || a.name.localeCompare(b.name)
+      case "visited":
+        return Number(b.visited) - Number(a.visited) || a.name.localeCompare(b.name)
+    }
+  })
 }
 
 export function computeParkSurveySummary(

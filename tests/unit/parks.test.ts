@@ -5,6 +5,7 @@ import { US_ALBERS_VIEWBOX, US_STATES } from "../../src/data/usStates.ts"
 import {
   computeParkSurveySummary,
   computeVisitedLower48Route,
+  filterAndSortParks,
   generateParkContourRings,
   getProjectedParks,
   projectParkToAlbersUsa,
@@ -102,4 +103,26 @@ test("contour ring generator and visited route produce deterministic geometry", 
   const route = computeVisitedLower48Route(projected)
   assert.equal(route.length, 49)
   assert.equal(new Set(route.map((p) => p.code)).size, 49)
+})
+
+test("filterAndSortParks filters by visit status and query and orders deterministically", () => {
+  const projected = getProjectedParks()
+
+  assert.equal(filterAndSortParks(projected, "all", "", "alpha").length, 63)
+  assert.equal(filterAndSortParks(projected, "visited", "", "alpha").length, 50)
+  assert.equal(filterAndSortParks(projected, "unvisited", "", "alpha").length, 13)
+
+  const utah = filterAndSortParks(projected, "all", "UT", "alpha")
+  assert.equal(utah.length, 5)
+  assert.equal(utah[0]?.code, "ARCH")
+  assert.equal(utah[4]?.code, "ZION")
+
+  const byYear = filterAndSortParks(projected, "all", "", "established")
+  assert.equal(byYear[0]?.code, "YELL")
+  assert.equal(byYear[byYear.length - 1]?.code, "NERI")
+
+  const visitedFirst = filterAndSortParks(projected, "all", "", "visited")
+  assert.equal(visitedFirst[0]?.visited, true)
+  assert.equal(visitedFirst[49]?.visited, true)
+  assert.equal(visitedFirst[50]?.visited, false)
 })
