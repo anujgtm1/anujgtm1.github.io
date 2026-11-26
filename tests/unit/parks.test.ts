@@ -4,7 +4,12 @@ import { NATIONAL_PARKS } from "../../src/data/nationalParks.ts"
 import { US_ALBERS_VIEWBOX, US_STATES } from "../../src/data/usStates.ts"
 import { US_STATES_WORLD } from "../../src/data/usStatesWorld.ts"
 import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "../../src/data/worldCountries.ts"
-import { projectNaturalEarth } from "../../src/lib/worldProjection.ts"
+import {
+  USA_ISO_ID,
+  buildNaturalEarthGraticule,
+  filterWorldCountries,
+  projectNaturalEarth,
+} from "../../src/lib/worldProjection.ts"
 import {
   computeParkSurveySummary,
   computeVisitedLower48Route,
@@ -151,4 +156,13 @@ test("Natural Earth I world countries and US states align with projected park co
       )
     }
   }
+
+  const graticule = buildNaturalEarthGraticule()
+  assert.ok(graticule.outlinePath.startsWith("M") && graticule.outlinePath.endsWith("Z"))
+  assert.equal(graticule.parallels.length, 4)
+  assert.equal(graticule.meridians.length, 11)
+
+  const visitedOnly = filterWorldCountries(WORLD_COUNTRIES, new Set([USA_ISO_ID]), "visited", "")
+  assert.equal(visitedOnly.length, 1)
+  assert.equal(visitedOnly[0]?.id, USA_ISO_ID)
 })

@@ -148,16 +148,17 @@ test("bookshelf renders warm empty state, native closedby dialog, and Bookbinder
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
 
-test("travel atlas renders National Parks Map/Poster Atlas, world projection, empty passport inspector, and Travel Planner companion link", async () => {
+test("travel atlas renders single unified World / U.S. atlas without duplicate maps or unrequested parks banner in World mode", async () => {
   const { body } = await fetchText("/travel/")
   assert.ok(body.includes("Field Atlas · Ready for Stamps"))
-  assert.ok(body.includes("50 of 63 National Parks"))
-  assert.ok(body.includes("48/48 Lower States"))
+  assert.ok(body.includes("World Atlas"))
+  assert.ok(body.includes(">World<"))
+  assert.ok(body.includes(">U.S.<"))
   assert.ok(body.includes("Map Mode"))
   assert.ok(body.includes("Poster Mode"))
   assert.ok(body.includes('closedby="any"'))
-  assert.ok(body.includes("Archival World Projection"))
-  assert.ok(body.includes("No stamps logged yet"))
+  assert.ok(!body.includes("Archival World Projection"), "Should not render duplicate old World map")
+  assert.ok(!body.includes("50/63 U.S. Parks"), "Should not show 50/63 U.S. Parks banner while World is active")
   assert.ok(body.includes("https://travel.anujgtm.com"))
 })
 
