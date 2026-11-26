@@ -1,4 +1,6 @@
-import type { PhotoAspectRatio, PhotoItem } from "../types/domain.ts"
+import type { PhotoAlbum, PhotoAspectRatio, PhotoItem } from "../types/domain.ts"
+
+export const DEFAULT_ALBUM_NAME = "Field Notes"
 
 export const PHOTO_ASPECT_RATIOS: Readonly<Record<PhotoAspectRatio, string>> = {
   landscape: "4 / 3",
@@ -12,8 +14,30 @@ export type PhotoAlbumSummary = {
   readonly count: number
 }
 
-export function buildPhotoHref(slug: string): string {
-  return `/photos/#photo-${slug}`
+export function slugifyAlbumName(name: string): string {
+  const normalized = name
+    .trim()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+
+  return normalized.length > 0 ? normalized : "field-notes"
+}
+
+export function resolvePhotoAlbumName(album: string | undefined): string {
+  const trimmed = album?.trim()
+  return trimmed && trimmed.length > 0 ? trimmed : DEFAULT_ALBUM_NAME
+}
+
+export function buildAlbumHref(albumSlug: string): string {
+  return `/photos/${albumSlug}/`
+}
+
+export function buildPhotoHref(slug: string, album?: string): string {
+  const albumSlug = slugifyAlbumName(resolvePhotoAlbumName(album))
+  return `/photos/${albumSlug}/#photo-${slug}`
 }
 
 export function resolvePhotoThumbnail(
@@ -37,6 +61,146 @@ export function sortPhotos(photos: readonly PhotoItem[]): readonly PhotoItem[] {
       return dateDiff
     }
     return a.title.localeCompare(b.title)
+  })
+}
+
+function formatAlbumDateRange(photos: readonly PhotoItem[]): string {
+  const chronological = [...photos].sort((a, b) => a.dateIso.localeCompare(b.dateIso))
+  const oldest = chronological[0]
+  const newest = chronological[chronological.length - 1]
+  if (!oldest || !newest) {
+    return ""
+  }
+  if (oldest.date === newest.date) {
+    return oldest.date
+  }
+  const oldestYear = oldest.dateIso.slice(0, 4)
+  const newestYear = newest.dateIso.slice(0, 4)
+  if (/^\d{4}$/.test(oldestYear) && /^\d{4}$/.test(newestYear) && oldestYear !== newestYear) {
+    return `${oldestYear} – ${newestYear}`
+  }
+  return `${oldest.date} – ${newest.date}`
+}
+
+export function buildPhotoAlbums(photos: readonly PhotoItem[]): readonly PhotoAlbum[] {
+  if (photos.length === 0) {
+    return []
+  }
+
+  const sorted = sortPhotos(photos)
+  const groups = new Map<
+    string,
+    {
+      readonly slug: string
+      readonly name: string
+      readonly photos: PhotoItem[]
+    }
+  >()
+
+  for (const photo of sorted) {
+    const name = resolvePhotoAlbumName(photo.album)
+    const slug = slugifyAlbumName(name)
+    const existing = groups.get(slug)
+    if (existing) {
+      existing.photos.push(photo)
+    } else {
+      groups.set(slug, {
+        slug,
+        name,
+        photos: [photo],
+      })
+    }
+  }
+
+  const defaultSlug = slugifyAlbumName(DEFAULT_ALBUM_NAME)
+
+  const albumsWithSortMeta = [...groups.values()].flatMap((group) => {
+    const firstPhoto = group.photos[0]
+    if (!firstPhoto) {
+      return []
+    }
+    const coverPhoto = group.photos.find((photo) => photo.featured === true) ?? firstPhoto
+    const previewPhotos: readonly PhotoItem[] = [
+      coverPhoto,
+      ...group.photos.filter((photo) => photo.slug !== coverPhoto.slug).slice(0, 2),
+    ]
+
+    const locationSet = new Set<string>()
+    for (const photo of group.photos) {
+      const trimmedLocation = photo.location?.trim()
+      if (trimmedLocation && trimmedLocation.length > 0) {
+        locationSet.add(trimmedLocation)
+        if (locationSet.size >= 3) {
+          break
+        }
+      }
+    }
+
+    let newestDateIso = firstPhoto.dateIso
+    for (const photo of group.photos) {
+      if (photo.dateIso.localeCompare(newestDateIso) > 0) {
+        newestDateIso = photo.dateIso
+      }
+    }
+
+    const album: PhotoAlbum = {
+      slug: group.slug,
+      name: group.name,
+      count: group.photos.length,
+      coverPhoto,
+      previewPhotos,
+      dateRange: formatAlbumDateRange(group.photos),
+      locations: [...locationSet],
+      photos: group.photos,
+    }
+
+    return [
+      {
+        album,
+        newestDateIso,
+        isDefault: group.slug === defaultSlug,
+      },
+    ]
+  })
+
+  return albumsWithSortMeta
+    .sort((a, b) => {
+      const defaultDiff = Number(a.isDefault) - Number(b.isDefault)
+      if (defaultDiff !== 0) {
+        return defaultDiff
+      }
+      const dateDiff = b.newestDateIso.localeCompare(a.newestDateIso)
+      if (dateDiff !== 0) {
+        return dateDiff
+      }
+      return a.album.name.localeCompare(b.album.name)
+    })
+    .map((entry) => entry.album)
+}
+
+export function filterPhotoAlbums(
+  albums: readonly PhotoAlbum[],
+  query: string,
+): readonly PhotoAlbum[] {
+  const normalizedQuery = query.trim().toLowerCase()
+  if (normalizedQuery.length === 0) {
+    return albums
+  }
+
+  return albums.filter((album) => {
+    const haystackParts: string[] = [
+      album.name,
+      album.dateRange,
+      ...album.locations,
+      ...album.photos.flatMap((photo) => [
+        photo.title,
+        photo.caption ?? "",
+        photo.location ?? "",
+        photo.camera ?? "",
+        ...photo.tags,
+      ]),
+    ]
+    return haystackParts.join(" ").toLowerCase().includes(normalizedQuery)
   })
 }
 

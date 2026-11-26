@@ -529,6 +529,10 @@ dialog::backdrop {
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
 
+.album-stack-sheet {
+  transition: border-color 180ms ease;
+}
+
 @media (prefers-reduced-motion: no-preference) {
   .book-spine-btn {
     transition:
@@ -574,7 +578,9 @@ dialog::backdrop {
   }
 
   .photo-card:hover,
-  .photo-card:focus-visible {
+  .photo-card:focus-visible,
+  .group:hover .photo-card,
+  .group:focus-visible .photo-card {
     transform: translateY(-2px);
     box-shadow: 0 18px 32px -18px rgb(19 18 16 / 0.36);
   }
@@ -584,8 +590,21 @@ dialog::backdrop {
   }
 
   .photo-card:hover .photo-card-img,
-  .photo-card:focus-visible .photo-card-img {
+  .photo-card:focus-visible .photo-card-img,
+  .group:hover .photo-card .photo-card-img,
+  .group:focus-visible .photo-card .photo-card-img {
     transform: scale(1.025);
+  }
+
+  .album-stack-sheet {
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 180ms ease;
+  }
+
+  .group:hover .album-stack-sheet,
+  .group:focus-visible .album-stack-sheet {
+    transform: translateY(-2px) rotate(-0.8deg);
   }
 }
 

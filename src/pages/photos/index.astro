@@ -3,9 +3,9 @@ import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
-import PhotoGallery from "@components/PhotoGallery"
+import PhotoAlbums from "@components/PhotoAlbums"
 import { PHOTOS } from "@consts"
-import { sortPhotos } from "@lib/photos"
+import { buildPhotoAlbums, sortPhotos } from "@lib/photos"
 import { formatShortDate } from "@lib/utils"
 import type { PhotoItem } from "@types"
 
@@ -29,6 +29,8 @@ const photos: readonly PhotoItem[] = sortPhotos(
     tags: entry.data.tags,
   })),
 )
+
+const albums = buildPhotoAlbums(photos)
 ---
 
 <PageLayout title={PHOTOS.TITLE} description={PHOTOS.DESCRIPTION}>
@@ -37,7 +39,7 @@ const photos: readonly PhotoItem[] = sortPhotos(
       <p class="editorial-kicker">
         {
           photos.length > 0
-            ? `Darkroom · ${photos.length} ${photos.length === 1 ? "Frame" : "Frames"}`
+            ? `Darkroom · ${albums.length} ${albums.length === 1 ? "Album" : "Albums"} · ${photos.length} ${photos.length === 1 ? "Frame" : "Frames"}`
             : "Darkroom · Contact Sheets on the Way"
         }
       </p>
@@ -46,7 +48,7 @@ const photos: readonly PhotoItem[] = sortPhotos(
         {PHOTOS.DESCRIPTION}
         {
           photos.length > 0
-            ? " Select any frame to open the full-resolution lightbox."
+            ? " Open an album to browse its contact sheet and full-resolution lightbox."
             : ""
         }
       </p>
@@ -54,6 +56,6 @@ const photos: readonly PhotoItem[] = sortPhotos(
   </TopLayout>
 
   <BottomLayout>
-    <PhotoGallery client:load photos={photos} />
+    <PhotoAlbums client:load albums={albums} photos={photos} />
   </BottomLayout>
 </PageLayout>

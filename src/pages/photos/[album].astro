@@ -1,0 +1,88 @@
+---
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import PhotoGallery from "@components/PhotoGallery"
+import { buildPhotoAlbums, sortPhotos } from "@lib/photos"
+import { formatShortDate } from "@lib/utils"
+import type { PhotoAlbum, PhotoItem } from "@types"
+
+export async function getStaticPaths() {
+  const rawPhotos = (await getCollection("photos")).filter((entry) => !entry.data.draft)
+
+  const sortedPhotos: readonly PhotoItem[] = sortPhotos(
+    rawPhotos.map((entry) => ({
+      slug: entry.slug,
+      title: entry.data.title,
+      imageUrl: entry.data.imageUrl,
+      thumbnailUrl: entry.data.thumbnailUrl,
+      alt: entry.data.alt,
+      caption: entry.data.caption,
+      date: formatShortDate(entry.data.date),
+      dateIso: entry.data.date.toISOString(),
+      location: entry.data.location,
+      album: entry.data.album,
+      camera: entry.data.camera,
+      aspectRatio: entry.data.aspectRatio,
+      featured: entry.data.featured,
+      tags: entry.data.tags,
+    })),
+  )
+
+  const albums = buildPhotoAlbums(sortedPhotos)
+
+  return albums.map((album) => ({
+    params: { album: album.slug },
+    props: { album, totalAlbums: albums.length },
+  }))
+}
+
+type Props = {
+  readonly album: PhotoAlbum
+  readonly totalAlbums: number
+}
+
+const { album } = Astro.props
+
+const frameLabel = `${album.count} ${album.count === 1 ? "Frame" : "Frames"}`
+const description =
+  album.locations.length > 0
+    ? `${album.name} photo album (${frameLabel.toLowerCase()}) — ${album.locations.join(", ")}.`
+    : `${album.name} photo album — ${frameLabel.toLowerCase()}${album.dateRange ? `, ${album.dateRange}` : ""}.`
+---
+
+<PageLayout title={`${album.name} — Photos`} description={description}>
+  <TopLayout>
+    <div class="space-y-5 border-b border-border pb-8">
+      <a
+        href="/photos/"
+        class="inline-flex w-fit items-center gap-2 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        <span>All Albums</span>
+      </a>
+
+      <div class="space-y-3">
+        <p class="editorial-kicker">
+          Photo Album · {frameLabel}{album.dateRange ? ` · ${album.dateRange}` : ""}
+        </p>
+        <h1 class="editorial-title text-ink">{album.name}</h1>
+        {
+          album.locations.length > 0 && (
+            <p class="text-sm font-mono text-ink-muted">
+              {album.locations.join(" · ")}
+            </p>
+          )
+        }
+        <p class="max-w-2xl text-base text-ink-muted leading-relaxed">
+          Select any frame to open the full-resolution lightbox.
+        </p>
+      </div>
+    </div>
+  </TopLayout>
+
+  <BottomLayout>
+    <PhotoGallery client:load photos={album.photos} hideAlbumFilter={true} />
+  </BottomLayout>
+</PageLayout>

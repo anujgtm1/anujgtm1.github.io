@@ -11,6 +11,7 @@ import {
 
 type Props = {
   readonly photos: readonly PhotoItem[]
+  readonly hideAlbumFilter?: boolean
 }
 
 function formatFrameNumber(index: number): string {
@@ -28,7 +29,9 @@ export default function PhotoGallery(props: Props) {
 
   const sortedPhotos = createMemo(() => sortPhotos(props.photos))
   const albums = createMemo(() => getPhotoAlbums(sortedPhotos()))
-  const visiblePhotos = createMemo(() => filterPhotos(sortedPhotos(), albumFilter(), query()))
+  const visiblePhotos = createMemo(() =>
+    filterPhotos(sortedPhotos(), props.hideAlbumFilter ? "all" : albumFilter(), query()),
+  )
 
   const lightboxList = createMemo(() => {
     const slug = selectedSlug()
@@ -162,46 +165,56 @@ export default function PhotoGallery(props: Props) {
       >
         {/* Filter bar */}
         <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 rounded-xl border border-border bg-surface/75 p-4 sm:p-5">
-          <div
-            class="filter-pill-row"
-            role="group"
-            aria-label="Filter photos by album"
+          <Show
+            when={!props.hideAlbumFilter}
+            fallback={
+              <p class="text-xs font-mono uppercase tracking-wider text-ink-muted">
+                Showing {visiblePhotos().length} of {props.photos.length}{" "}
+                {props.photos.length === 1 ? "frame" : "frames"}
+              </p>
+            }
           >
-            <button
-              type="button"
-              aria-pressed={albumFilter() === "all"}
-              onClick={() => setAlbumFilter("all")}
-              class={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
-                albumFilter() === "all"
-                  ? "border-accent bg-accent text-bg font-semibold"
-                  : "border-border bg-surface-elevated text-ink-muted hover:border-accent hover:text-ink"
-              }`}
+            <div
+              class="filter-pill-row"
+              role="group"
+              aria-label="Filter photos by album"
             >
-              <span>All Frames</span>
-              <span class="opacity-75">({props.photos.length})</span>
-            </button>
+              <button
+                type="button"
+                aria-pressed={albumFilter() === "all"}
+                onClick={() => setAlbumFilter("all")}
+                class={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                  albumFilter() === "all"
+                    ? "border-accent bg-accent text-bg font-semibold"
+                    : "border-border bg-surface-elevated text-ink-muted hover:border-accent hover:text-ink"
+                }`}
+              >
+                <span>All Frames</span>
+                <span class="opacity-75">({props.photos.length})</span>
+              </button>
 
-            <For each={albums()}>
-              {(album) => {
-                const isActive = () => albumFilter() === album.name
-                return (
-                  <button
-                    type="button"
-                    aria-pressed={isActive()}
-                    onClick={() => setAlbumFilter(album.name)}
-                    class={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
-                      isActive()
-                        ? "border-accent bg-accent text-bg font-semibold"
-                        : "border-border bg-surface-elevated text-ink-muted hover:border-accent hover:text-ink"
-                    }`}
-                  >
-                    <span>{album.name}</span>
-                    <span class="opacity-75">({album.count})</span>
-                  </button>
-                )
-              }}
-            </For>
-          </div>
+              <For each={albums()}>
+                {(album) => {
+                  const isActive = () => albumFilter() === album.name
+                  return (
+                    <button
+                      type="button"
+                      aria-pressed={isActive()}
+                      onClick={() => setAlbumFilter(album.name)}
+                      class={`inline-flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
+                        isActive()
+                          ? "border-accent bg-accent text-bg font-semibold"
+                          : "border-border bg-surface-elevated text-ink-muted hover:border-accent hover:text-ink"
+                      }`}
+                    >
+                      <span>{album.name}</span>
+                      <span class="opacity-75">({album.count})</span>
+                    </button>
+                  )
+                }}
+              </For>
+            </div>
+          </Show>
 
           <label class="relative w-full lg:w-64 shrink-0">
             <span class="sr-only">Filter photos by title, location, camera, or tag</span>
@@ -222,7 +235,9 @@ export default function PhotoGallery(props: Props) {
             <div class="rounded-xl border border-dashed border-border bg-surface/50 px-6 py-12 text-center space-y-2">
               <p class="font-serif text-xl text-ink">No photographs match that filter.</p>
               <p class="text-sm text-ink-muted">
-                Try clearing the search query or switching back to all albums.
+                {props.hideAlbumFilter
+                  ? "Try clearing the search query to see every frame in this album."
+                  : "Try clearing the search query or switching back to all albums."}
               </p>
             </div>
           }
@@ -282,12 +297,15 @@ export default function PhotoGallery(props: Props) {
 
                       <div class="space-y-1.5 p-4">
                         <div class="flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-                          <Show when={photo.album} fallback={<span>{photo.date}</span>}>
+                          <Show
+                            when={!props.hideAlbumFilter && photo.album}
+                            fallback={<span>{photo.date}</span>}
+                          >
                             <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
                               {photo.album}
                             </span>
                           </Show>
-                          <Show when={photo.album}>
+                          <Show when={!props.hideAlbumFilter && photo.album}>
                             <span>{photo.date}</span>
                           </Show>
                         </div>

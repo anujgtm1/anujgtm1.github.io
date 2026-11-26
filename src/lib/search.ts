@@ -107,7 +107,7 @@ export function normalizePhotoToSearchItem(
     title: item.title,
     subtitle: subtitleParts.length > 0 ? subtitleParts.join(" · ") : "Photograph",
     summary: item.caption?.trim() || item.alt,
-    href: buildPhotoHref(item.slug),
+    href: buildPhotoHref(item.slug, item.album),
     date: item.date,
     tags: [...tagSet],
     album: item.album,

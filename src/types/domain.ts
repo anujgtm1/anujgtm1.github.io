@@ -136,6 +136,17 @@ export type PhotoItem = {
   readonly tags: readonly string[]
 }
 
+export type PhotoAlbum = {
+  readonly slug: string
+  readonly name: string
+  readonly count: number
+  readonly coverPhoto: PhotoItem
+  readonly previewPhotos: readonly PhotoItem[]
+  readonly dateRange: string
+  readonly locations: readonly string[]
+  readonly photos: readonly PhotoItem[]
+}
+
 export type SearchItem =
   | {
       readonly kind: "blog"

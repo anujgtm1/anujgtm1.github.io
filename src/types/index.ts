@@ -9,6 +9,7 @@ export type {
   NavLink,
   NowSnapshot,
   Page,
+  PhotoAlbum,
   PhotoAspectRatio,
   PhotoItem,
   ProjectItem,
