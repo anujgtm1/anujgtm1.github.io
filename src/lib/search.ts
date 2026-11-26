@@ -5,6 +5,7 @@ import type {
   SearchItem,
   TravelItem,
 } from "../types/domain.ts"
+import { buildBookHref } from "./bookshelf.ts"
 
 export type SearchKindMeta = {
   readonly label: string
@@ -54,7 +55,7 @@ export function normalizeBookToSearchItem(item: BookItem): Extract<SearchItem, {
     title: item.title,
     subtitle: item.author,
     summary: item.summary,
-    href: `/books/#book-${item.slug}`,
+    href: buildBookHref(item.slug),
     date: item.dateRead,
     tags: item.tags,
     status: item.status,

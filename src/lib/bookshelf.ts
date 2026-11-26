@@ -320,6 +320,107 @@ function formatInlineMarkdown(text: string): string {
     .replace(/`([^`]+)`/g, "<code>$1</code>")
 }
 
+export function buildBookHref(slug: string): string {
+  return `/books/#book-${slug}`
+}
+
+export type BookShelfLayer = {
+  readonly index: number
+  readonly label: string
+  readonly books: readonly BookItem[]
+}
+
+export type BookcasePartition = {
+  readonly layers: readonly BookShelfLayer[]
+  readonly totalLayers: number
+  readonly hiddenBookCount: number
+}
+
+export function partitionBookcaseLayers(
+  books: readonly BookItem[],
+  options?: {
+    readonly booksPerShelf?: number
+    readonly maxVisibleLayers?: number
+  },
+): BookcasePartition {
+  if (books.length === 0) {
+    return {
+      layers: [],
+      totalLayers: 0,
+      hiddenBookCount: 0,
+    }
+  }
+
+  const rawPerShelf = options?.booksPerShelf ?? 8
+  const booksPerShelf = Number.isFinite(rawPerShelf)
+    ? Math.max(1, Math.floor(rawPerShelf))
+    : 8
+
+  const rawMaxVisible = options?.maxVisibleLayers ?? 3
+  const maxVisibleLayers =
+    rawMaxVisible === Number.POSITIVE_INFINITY
+      ? Number.POSITIVE_INFINITY
+      : Number.isFinite(rawMaxVisible)
+        ? Math.max(0, Math.floor(rawMaxVisible))
+        : 3
+
+  let totalLayers: number
+  if (booksPerShelf >= 6 && books.length <= 5) {
+    totalLayers = 1
+  } else if (booksPerShelf >= 6 && books.length <= 12) {
+    totalLayers = 2
+  } else {
+    totalLayers = Math.ceil(books.length / booksPerShelf)
+  }
+
+  const allLayers: BookShelfLayer[] = []
+  let cursor = 0
+
+  for (let i = 0; i < totalLayers; i += 1) {
+    const remainingBooks = books.length - cursor
+    const remainingLayers = totalLayers - i
+    const count = Math.ceil(remainingBooks / remainingLayers)
+    const slice = books.slice(cursor, cursor + count)
+    cursor += count
+    allLayers.push({
+      index: i,
+      label: `Shelf ${String(i + 1).padStart(2, "0")}`,
+      books: slice,
+    })
+  }
+
+  const layers =
+    maxVisibleLayers === Number.POSITIVE_INFINITY
+      ? allLayers
+      : allLayers.slice(0, maxVisibleLayers)
+
+  const visibleBookCount = layers.reduce((sum, layer) => sum + layer.books.length, 0)
+  const hiddenBookCount = books.length - visibleBookCount
+
+  return {
+    layers,
+    totalLayers,
+    hiddenBookCount,
+  }
+}
+
+export function formatRating(rating: number | undefined): string {
+  if (!rating || rating < 1) {
+    return ""
+  }
+  const clamped = Math.min(5, Math.max(1, Math.round(rating)))
+  return "★".repeat(clamped) + "☆".repeat(5 - clamped)
+}
+
+export function getAuthorInitials(author: string): string {
+  const parts = author.trim().split(/\s+/).filter(Boolean)
+  if (parts.length === 0) return ""
+  if (parts.length === 1) return parts[0].slice(0, 3).toUpperCase()
+  const first = parts[0][0] ?? ""
+  const last = parts[parts.length - 1][0] ?? ""
+  return `${first}.${last}.`.toUpperCase()
+}
+
 export function renderBookNotesHtml(markdown: string): string {
   const trimmed = markdown.trim()
   if (trimmed.length === 0) {
