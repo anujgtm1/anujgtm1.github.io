@@ -1,0 +1,400 @@
+---
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import { PHOTOS } from "@consts"
+import { sortPhotos } from "@lib/photos"
+import { formatShortDate } from "@lib/utils"
+import type { PhotoItem } from "@types"
+
+const rawPhotos = await getCollection("photos")
+
+const photos: readonly PhotoItem[] = sortPhotos(
+  rawPhotos
+    .filter((entry) => !entry.data.draft)
+    .map((entry) => ({
+      slug: entry.slug,
+      title: entry.data.title,
+      image: entry.data.image,
+      alt: entry.data.alt,
+      date: formatShortDate(entry.data.date),
+      dateMs: entry.data.date.getTime(),
+      location: entry.data.location,
+      camera: entry.data.camera,
+      caption: entry.data.caption,
+      category: entry.data.category,
+      featured: entry.data.featured,
+      linkedHref: entry.data.linkedHref,
+      linkedLabel: entry.data.linkedLabel,
+      draft: entry.data.draft,
+    })),
+)
+
+const SLOT_PATTERNS = [
+  { colSpanClass: "md:col-span-7", aspectClass: "aspect-[4/3]" },
+  { colSpanClass: "md:col-span-5", aspectClass: "aspect-[4/5]" },
+  { colSpanClass: "md:col-span-5", aspectClass: "aspect-[4/3]" },
+  { colSpanClass: "md:col-span-7", aspectClass: "aspect-[16/10]" },
+] as const
+
+function toRoman(num: number): string {
+  const numerals: readonly (readonly [number, string])[] = [
+    [100, "C"],
+    [90, "XC"],
+    [50, "L"],
+    [40, "XL"],
+    [10, "X"],
+    [9, "IX"],
+    [5, "V"],
+    [4, "IV"],
+    [1, "I"],
+  ]
+  let remaining = Math.max(1, num)
+  let out = ""
+  for (const [value, symbol] of numerals) {
+    while (remaining >= value) {
+      out += symbol
+      remaining -= value
+    }
+  }
+  return out
+}
+---
+
+<PageLayout title={PHOTOS.TITLE} description={PHOTOS.DESCRIPTION}>
+  <TopLayout>
+    <div class="space-y-3 border-b border-border pb-8">
+      <p class="editorial-kicker">
+        {photos.length > 0
+          ? `Through the Lens · PL. I – ${toRoman(photos.length)}`
+          : "Through the Lens · Photo Archive"}
+      </p>
+      <h1 class="editorial-title text-ink">{PHOTOS.TITLE}</h1>
+      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
+        {PHOTOS.DESCRIPTION}{photos.length > 0 ? " Select any standalone plate to inspect it at full size." : ""}
+      </p>
+    </div>
+  </TopLayout>
+
+  <BottomLayout>
+    <div class="pb-10">
+      {
+        photos.length > 0 ? (
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+            {photos.map((photo, idx) => {
+              const slot = SLOT_PATTERNS[idx % SLOT_PATTERNS.length] ?? SLOT_PATTERNS[0]
+              const plateLabel = `PL. ${toRoman(idx + 1)}`
+              const isLcp = idx === 0
+              const isBelowFold = idx >= 2
+
+              return (
+                <figure
+                  id={`plate-${photo.slug}`}
+                  class={`${slot.colSpanClass} scroll-mt-24 space-y-3 target:outline target:outline-2 target:outline-accent target:outline-offset-4`}
+                >
+                  {photo.linkedHref ? (
+                    <a
+                      href={photo.linkedHref}
+                      aria-label={`${plateLabel}: ${photo.title} — ${photo.linkedLabel ?? "Open linked entry"}`}
+                      class="group block w-full text-start"
+                    >
+                      <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                        <img
+                          src={photo.image}
+                          alt={photo.alt}
+                          fetchpriority={isLcp ? "high" : undefined}
+                          loading={isBelowFold ? "lazy" : undefined}
+                          decoding="async"
+                          class={`editorial-photo ${slot.aspectClass} w-full object-cover`}
+                        />
+                      </span>
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      data-lightbox-trigger
+                      data-plate-label={plateLabel}
+                      data-plate-src={photo.image}
+                      data-plate-alt={photo.alt}
+                      data-plate-title={photo.title}
+                      data-plate-location={photo.location ?? ""}
+                      data-plate-date={photo.date}
+                      data-plate-camera={photo.camera ?? ""}
+                      data-plate-caption={photo.caption ?? ""}
+                      aria-label={`Inspect ${plateLabel}: ${photo.title} in full-size lightbox`}
+                      class="group block w-full text-start cursor-zoom-in"
+                    >
+                      <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                        <img
+                          src={photo.image}
+                          alt={photo.alt}
+                          fetchpriority={isLcp ? "high" : undefined}
+                          loading={isBelowFold ? "lazy" : undefined}
+                          decoding="async"
+                          class={`editorial-photo ${slot.aspectClass} w-full object-cover`}
+                        />
+                      </span>
+                    </button>
+                  )}
+
+                  <figcaption class="space-y-1.5 border-t border-border pt-2.5">
+                    <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em]">
+                      <span class="text-ink font-medium">
+                        {plateLabel} · {photo.title}
+                      </span>
+                      <span class="text-ink-muted">
+                        {[photo.location, photo.date].filter(Boolean).join(" · ")}
+                      </span>
+                    </div>
+
+                    {(photo.caption || photo.camera) && (
+                      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        {photo.caption && (
+                          <p class="text-sm text-ink-muted leading-relaxed">
+                            {photo.caption}
+                          </p>
+                        )}
+                        {photo.camera && (
+                          <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted shrink-0">
+                            {photo.camera}
+                          </span>
+                        )}
+                      </div>
+                    )}
+
+                    {photo.linkedHref && (
+                      <p class="pt-0.5">
+                        <a
+                          href={photo.linkedHref}
+                          class="font-mono text-[11px] uppercase tracking-[0.12em] text-accent underline decoration-accent/40 underline-offset-4 hover:decoration-accent transition-colors"
+                        >
+                          {photo.linkedLabel ?? "Open linked entry →"}
+                        </a>
+                      </p>
+                    )}
+                  </figcaption>
+                </figure>
+              )
+            })}
+          </div>
+        ) : (
+          <section
+            aria-labelledby="photos-empty-heading"
+            class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center border-t border-b border-border py-10 sm:py-12"
+          >
+            <div class="lg:col-span-7 overflow-hidden rounded-none border border-border bg-surface">
+              <svg
+                viewBox="0 0 800 460"
+                class="block w-full h-auto select-none"
+                role="img"
+                aria-label="Archival contact sheet grid ready for first photographic plates"
+              >
+                <defs>
+                  <pattern id="photo-empty-grid" width="32" height="32" patternUnits="userSpaceOnUse">
+                    <path
+                      d="M 32 0 L 0 0 0 32"
+                      fill="none"
+                      stroke="var(--border)"
+                      stroke-width="0.6"
+                      opacity="0.7"
+                    />
+                  </pattern>
+                </defs>
+
+                <rect width="800" height="460" fill="var(--surface)" />
+                <rect width="800" height="460" fill="url(#photo-empty-grid)" />
+
+                {/* Contact sheet 3x2 empty frames */}
+                <g fill="var(--surface-elevated)" stroke="var(--border)" stroke-width="1">
+                  <rect x="52" y="54" width="212" height="148" />
+                  <rect x="294" y="54" width="212" height="148" />
+                  <rect x="536" y="54" width="212" height="148" />
+                  <rect x="52" y="238" width="212" height="148" />
+                  <rect x="294" y="238" width="212" height="148" />
+                  <rect x="536" y="238" width="212" height="148" />
+                </g>
+
+                {/* Accent crop marks on Plate I */}
+                <g stroke="var(--accent)" stroke-width="1.5" fill="none">
+                  <path d="M 64 80 L 64 66 L 78 66" />
+                  <path d="M 238 66 L 252 66 L 252 80" />
+                  <path d="M 64 176 L 64 190 L 78 190" />
+                  <path d="M 238 190 L 252 190 L 252 176" />
+                </g>
+
+                {/* Frame numbers */}
+                <g
+                  fill="var(--ink-muted)"
+                  font-family="JetBrains Mono, monospace"
+                  font-size="10"
+                  letter-spacing="1.4"
+                >
+                  <text x="52" y="44">01A</text>
+                  <text x="294" y="44">02A</text>
+                  <text x="536" y="44">03A</text>
+                  <text x="52" y="228">04A</text>
+                  <text x="294" y="228">05A</text>
+                  <text x="536" y="228">06A</text>
+                </g>
+
+                <text
+                  x="400"
+                  y="428"
+                  text-anchor="middle"
+                  fill="var(--ink-muted)"
+                  font-family="JetBrains Mono, monospace"
+                  font-size="10.5"
+                  letter-spacing="1.8"
+                >
+                  CONTACT SHEET · 35MM ARCHIVAL SLEEVE
+                </text>
+              </svg>
+            </div>
+
+            <div class="lg:col-span-5 space-y-4">
+              <p class="editorial-kicker text-accent">Photo Archive</p>
+              <h2 id="photos-empty-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+                Photo Archive · Ready for First Plates
+              </h2>
+              <p class="text-sm sm:text-base text-ink-muted leading-relaxed">
+                Travel stills, workshop plates, and everyday 35mm frames will appear here as photographs are published to the archive.
+              </p>
+              <div class="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 font-mono text-xs uppercase tracking-[0.12em]">
+                <a
+                  href="/travel"
+                  class="text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+                >
+                  Travel Atlas →
+                </a>
+                <a
+                  href="/projects"
+                  class="text-ink-muted underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+                >
+                  Workshop dossiers →
+                </a>
+              </div>
+            </div>
+          </section>
+        )
+      }
+    </div>
+  </BottomLayout>
+
+  <!-- Native <dialog> Swiss Photo Lightbox (closedby="any" — NO role="dialog", NO aria-modal, NO manual focus trap) -->
+  <dialog
+    id="swiss-photo-lightbox"
+    closedby="any"
+    aria-labelledby="swiss-lightbox-title"
+    class="swiss-lightbox rounded-none border border-border bg-surface-elevated"
+  >
+    <div class="flex flex-col overflow-y-auto">
+      <div class="border-b border-border bg-surface flex items-center justify-center overflow-hidden">
+        <img
+          id="swiss-lightbox-img"
+          alt=""
+          decoding="async"
+          class="max-h-[72dvh] w-full object-contain bg-surface"
+        />
+      </div>
+
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-5 py-4 bg-surface-elevated">
+        <div class="min-w-0 space-y-1">
+          <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+            <h2 id="swiss-lightbox-title" class="font-serif text-lg sm:text-xl font-medium text-ink">
+              Photo Plate
+            </h2>
+            <span
+              id="swiss-lightbox-meta"
+              class="font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted"
+            ></span>
+          </div>
+          <p id="swiss-lightbox-caption" class="text-sm text-ink-muted leading-relaxed"></p>
+        </div>
+
+        <form method="dialog" class="shrink-0">
+          <button
+            type="submit"
+            autofocus
+            class="inline-flex items-center justify-center rounded-none border border-border bg-surface px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink hover:border-accent hover:text-accent transition-colors"
+          >
+            Close
+          </button>
+        </form>
+      </div>
+    </div>
+  </dialog>
+</PageLayout>
+
+<script>
+  const lightboxEl = document.getElementById("swiss-photo-lightbox")
+  const lightboxImg = document.getElementById("swiss-lightbox-img")
+  const lightboxTitle = document.getElementById("swiss-lightbox-title")
+  const lightboxMeta = document.getElementById("swiss-lightbox-meta")
+  const lightboxCaption = document.getElementById("swiss-lightbox-caption")
+
+  if (
+    lightboxEl instanceof HTMLDialogElement &&
+    lightboxImg instanceof HTMLImageElement &&
+    lightboxTitle instanceof HTMLElement &&
+    lightboxMeta instanceof HTMLElement &&
+    lightboxCaption instanceof HTMLElement
+  ) {
+    const triggers = document.querySelectorAll("[data-lightbox-trigger]")
+
+    for (const trigger of triggers) {
+      if (!(trigger instanceof HTMLButtonElement)) continue
+      trigger.addEventListener("click", () => {
+        const src = trigger.dataset.plateSrc ?? ""
+        if (!src) return
+
+        const plateLabel = trigger.dataset.plateLabel ?? ""
+        const title = trigger.dataset.plateTitle ?? ""
+        const location = trigger.dataset.plateLocation ?? ""
+        const date = trigger.dataset.plateDate ?? ""
+        const camera = trigger.dataset.plateCamera ?? ""
+        const caption = trigger.dataset.plateCaption ?? ""
+        const alt = trigger.dataset.plateAlt ?? title
+
+        lightboxImg.src = src
+        lightboxImg.alt = alt
+
+        lightboxTitle.textContent =
+          plateLabel && title ? `${plateLabel} · ${title}` : title || plateLabel
+        const metaParts = [location, date, camera].filter((part) => part.length > 0)
+        lightboxMeta.textContent = metaParts.join(" · ")
+        lightboxCaption.textContent = caption
+
+        if (!lightboxEl.open) {
+          lightboxEl.showModal()
+        }
+      })
+    }
+
+    lightboxEl.addEventListener("close", () => {
+      lightboxEl.returnValue = ""
+    })
+
+    if (!("closedBy" in HTMLDialogElement.prototype)) {
+      let pressedOutside = false
+      const isOutside = (event: PointerEvent): boolean => {
+        const rect = lightboxEl.getBoundingClientRect()
+        return (
+          event.clientX < rect.left ||
+          event.clientX > rect.right ||
+          event.clientY < rect.top ||
+          event.clientY > rect.bottom
+        )
+      }
+      lightboxEl.addEventListener("pointerdown", (event) => {
+        pressedOutside = isOutside(event)
+      })
+      lightboxEl.addEventListener("pointerup", (event) => {
+        if (pressedOutside && isOutside(event)) {
+          lightboxEl.close()
+        }
+        pressedOutside = false
+      })
+    }
+  }
+</script>

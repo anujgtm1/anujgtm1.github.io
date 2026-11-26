@@ -434,6 +434,12 @@ dialog::backdrop {
   backdrop-filter: blur(3px);
 }
 
+dialog.swiss-lightbox:modal {
+  border-radius: 0;
+  inline-size: min(94dvw, 64rem);
+  max-block-size: min(92dvh, 58rem);
+}
+
 /* Editorial Reading Progress Bar (scroll-driven animation + fallback) */
 .reading-progress {
   position: fixed;
@@ -468,6 +474,25 @@ dialog::backdrop {
 /* Motion opt-in for tactile book spines, pins, and editorial cards */
 .book-spine-btn {
   transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.editorial-card {
+  transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.editorial-photo-frame {
+  background-color: var(--surface-elevated);
+  border: 1px solid var(--border);
+  box-shadow: 0 12px 30px -24px rgb(19 18 16 / 0.32);
+}
+
+.editorial-plate {
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.group:hover .editorial-plate,
+.editorial-plate:hover {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--border));
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -506,10 +531,28 @@ dialog::backdrop {
   .editorial-card:hover {
     transform: translateY(-2px);
   }
-}
 
-.editorial-card {
-  transition: border-color 180ms ease, background-color 180ms ease;
+  .editorial-photo {
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .group:hover .editorial-photo,
+  .editorial-photo:hover {
+    transform: scale(1.028);
+  }
+
+  .editorial-plate {
+    transition:
+      transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+      box-shadow 260ms ease,
+      border-color 180ms ease;
+  }
+
+  .group:hover .editorial-plate,
+  .editorial-plate:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 22px 38px -24px rgb(19 18 16 / 0.36);
+  }
 }
 
 /* Code block copy button */
@@ -538,4 +581,84 @@ dialog::backdrop {
   block-size: 1.1rem;
   color: #F2ECE1;
   opacity: 0.8;
+}
+
+/* National Parks Map & Poster Emblems (dual-theme light-dark() + fallbacks) */
+.park-map-pin,
+.park-emblem {
+  --park-pigment: var(--park-light, var(--atlas-light));
+}
+
+@media (prefers-color-scheme: dark) {
+  .park-map-pin,
+  .park-emblem {
+    --park-pigment: var(--park-dark, var(--atlas-dark));
+  }
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-map-pin,
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem {
+  --park-pigment: var(--park-dark, var(--atlas-dark));
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-map-pin,
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem {
+  --park-pigment: var(--park-light, var(--atlas-light));
+}
+
+@supports (color: light-dark(white, black)) {
+  .park-map-pin,
+  .park-emblem {
+    --park-pigment: light-dark(
+      var(--park-light, var(--atlas-light)),
+      var(--park-dark, var(--atlas-dark))
+    );
+  }
+}
+
+.park-emblem {
+  --emblem-ink: var(--park-pigment);
+  --emblem-mid: color-mix(in srgb, var(--park-pigment) 62%, var(--surface));
+  --emblem-sky: color-mix(in srgb, var(--park-pigment) 14%, var(--surface-elevated));
+  --emblem-sun: var(--accent);
+  --emblem-paper: var(--surface-elevated);
+  --emblem-frame: var(--surface-elevated);
+  --emblem-border: color-mix(in srgb, var(--park-pigment) 38%, var(--border));
+}
+
+.park-emblem--unvisited {
+  --emblem-ink: var(--ink-muted);
+  --emblem-mid: color-mix(in srgb, var(--ink-muted) 45%, var(--surface));
+  --emblem-sky: var(--surface);
+  --emblem-sun: color-mix(in srgb, var(--ink-muted) 40%, var(--surface));
+  --emblem-border: var(--border);
+  filter: grayscale(1);
+  opacity: 0.46;
+}
+
+.park-map-pin {
+  min-inline-size: 24px;
+  min-block-size: 24px;
+}
+
+@media (pointer: coarse) {
+  .park-map-pin {
+    min-inline-size: 30px;
+    min-block-size: 30px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .park-poster-tile {
+    transition:
+      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
+      border-color 180ms ease,
+      box-shadow 180ms ease;
+  }
+
+  .park-poster-tile:hover,
+  .park-poster-tile:focus-visible {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 24px -14px rgb(19 18 16 / 0.32);
+  }
 }
