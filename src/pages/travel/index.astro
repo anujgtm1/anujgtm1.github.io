@@ -4,6 +4,7 @@ import PageLayout from "@layouts/PageLayout.astro"
 import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
 import TravelAtlas from "@components/TravelAtlas"
+import NationalParksAtlas from "@components/NationalParksAtlas"
 import { TRAVEL } from "@consts"
 import { formatShortDate } from "@lib/utils"
 import type { TravelItem } from "@types"
@@ -43,8 +44,18 @@ const trips: readonly TravelItem[] = rawTrips.map((entry) => ({
   </TopLayout>
 
   <BottomLayout>
-    <div class="space-y-12">
-      <TravelAtlas client:load trips={trips} />
+    <div class="space-y-14">
+      <NationalParksAtlas client:load />
+
+      <div class="space-y-4 border-t border-border pt-12">
+        <div class="space-y-1">
+          <p class="editorial-kicker">International &amp; Field Logs</p>
+          <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+            World Passport Stamps
+          </h2>
+        </div>
+        <TravelAtlas client:load trips={trips} />
+      </div>
 
       <aside
         aria-label="Companion project"
