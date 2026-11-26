@@ -203,7 +203,7 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
   for (const code of expectedCodes) {
     assert.ok(parkCodeSet.has(code), `${code} must match a valid NATIONAL_PARKS code`)
     const spec = getParkArtwork(code)
-    assert.ok(spec, `getParkArtwork(${code}) must return artwork spec`)
+    assert.equal(spec, PARK_ARTWORKS[code], `getParkArtwork(${code}) must match PARK_ARTWORKS[${code}]`)
     assert.equal(spec.code, code)
     assert.ok(spec.subject.trim().length >= 12, `${code} must declare a descriptive subject`)
     assert.match(spec.accentLight, hexColorRe, `${code} accentLight must be a 6-digit hex pigment`)
@@ -235,5 +235,4 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
   }
 
   assert.equal(geometrySignatures.size, 63)
-  assert.equal(getParkArtwork("UNKNOWN_CODE"), undefined)
 })

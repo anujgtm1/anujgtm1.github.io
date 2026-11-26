@@ -33,7 +33,7 @@ export type {
   ParkArtworkSkyMood,
   ParkArtworkSpec,
   ParkBiome,
-  ParkEmblemKind,
+  ParkCode,
   ParkInset,
   ParkJournalEntry,
   ParkPhoto,

@@ -20,30 +20,70 @@ export type ParkRegion =
 
 export type ParkInset = "lower48" | "alaska" | "hawaii" | "virgin-islands" | "american-samoa"
 
-export type ParkEmblemKind =
-  | "arch"
-  | "gateway-arch"
-  | "half-dome"
-  | "geyser"
-  | "canyon"
-  | "hoodoos"
-  | "cathedral-peaks"
-  | "volcano-cone"
-  | "caldera-lake"
-  | "giant-trees"
-  | "saguaro"
-  | "joshua-tree"
-  | "dunes"
-  | "lighthouse-coast"
-  | "reef-island"
-  | "fort-island"
-  | "marsh-heron"
-  | "misty-ridges"
-  | "cavern"
-  | "cliff-dwelling"
-  | "monolith-fold"
-  | "hot-springs"
-  | "glacier-fjord"
+export type ParkCode =
+  | "ACAD"
+  | "ARCH"
+  | "BADL"
+  | "BIBE"
+  | "BISC"
+  | "BLCA"
+  | "BRCA"
+  | "CANY"
+  | "CARE"
+  | "CAVE"
+  | "CHIS"
+  | "CONG"
+  | "CRLA"
+  | "CUVA"
+  | "DENA"
+  | "DEVA"
+  | "DRTO"
+  | "EVER"
+  | "GAAR"
+  | "GLAC"
+  | "GLBA"
+  | "GRBA"
+  | "GRCA"
+  | "GRSA"
+  | "GRSM"
+  | "GRTE"
+  | "GUMO"
+  | "HALE"
+  | "HAVO"
+  | "HOSP"
+  | "INDU"
+  | "ISRO"
+  | "JEFF"
+  | "JOTR"
+  | "KATM"
+  | "KEFJ"
+  | "KICA"
+  | "KOVA"
+  | "LACL"
+  | "LAVO"
+  | "MACA"
+  | "MEVE"
+  | "MORA"
+  | "NERI"
+  | "NOCA"
+  | "NPSA"
+  | "OLYM"
+  | "PEFO"
+  | "PINN"
+  | "REDW"
+  | "ROMO"
+  | "SAGU"
+  | "SEQU"
+  | "SHEN"
+  | "THRO"
+  | "VIIS"
+  | "VOYA"
+  | "WHSA"
+  | "WICA"
+  | "WRST"
+  | "YELL"
+  | "YOSE"
+  | "ZION"
 
 export type ParkArtworkInk =
   | "sky-top"
@@ -108,7 +148,7 @@ export type ParkArtworkNode =
     })
 
 export type ParkArtworkSpec = {
-  readonly code: string
+  readonly code: ParkCode
   readonly subject: string
   readonly accentLight: string
   readonly accentDark: string
@@ -131,12 +171,11 @@ export type ParkJournalEntry = {
 }
 
 export type NationalPark = {
-  readonly code: string
+  readonly code: ParkCode
   readonly name: string
   readonly states: readonly string[]
   readonly region: ParkRegion
   readonly biome: ParkBiome
-  readonly emblem: ParkEmblemKind
   readonly inset: ParkInset
   readonly coordinates: Coordinates
   readonly highPointFt: number
