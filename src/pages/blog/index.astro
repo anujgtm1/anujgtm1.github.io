@@ -3,16 +3,12 @@ import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import TopLayout from "@layouts/TopLayout.astro"
 import BottomLayout from "@layouts/BottomLayout.astro"
-import SearchCollection from "@components/SearchCollection"
 import { BLOG } from "@consts"
+import { formatDate, readingTime } from "@lib/utils"
 
 const posts = (await getCollection("blog"))
   .filter((post) => !post.data.draft)
   .sort((a, b) => b.data.date.getTime() - a.data.date.getTime())
-
-const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =>
-  a.localeCompare(b),
-)
 ---
 
 <PageLayout title={BLOG.TITLE} description={BLOG.DESCRIPTION}>
@@ -27,34 +23,95 @@ const tags = [...new Set(posts.flatMap((post) => post.data.tags))].sort((a, b) =
       </p>
     </div>
   </TopLayout>
+
   <BottomLayout>
     {
       posts.length > 0 ? (
-        <SearchCollection client:load entry_name="posts" tags={tags} data={posts} />
+        <ol class="border-t border-border divide-y divide-border pb-8">
+          {posts.map((post, idx) => (
+            <li>
+              <a
+                href={`/blog/${post.slug}/`}
+                class="group grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-start py-7 sm:py-8 hover:bg-surface/40 -mx-3 px-3 transition-colors"
+              >
+                <div class="md:col-span-3 flex flex-wrap md:flex-col gap-x-3 gap-y-1 font-mono text-xs uppercase tracking-[0.12em] text-ink-muted pt-1">
+                  <time datetime={post.data.date.toISOString()}>
+                    {formatDate(post.data.date)}
+                  </time>
+                  <span aria-hidden="true" class="md:hidden">·</span>
+                  <span>{readingTime(post.body)}</span>
+                </div>
+
+                <div class={post.data.heroImage ? "md:col-span-6 space-y-2.5" : "md:col-span-9 space-y-2.5"}>
+                  <h2 class="font-serif text-2xl sm:text-[1.75rem] font-medium text-ink leading-snug group-hover:text-accent transition-colors">
+                    {post.data.title}
+                  </h2>
+
+                  <p class="text-sm sm:text-base text-ink-muted leading-relaxed max-w-2xl">
+                    {post.data.summary}
+                  </p>
+
+                  {post.data.tags.length > 0 && (
+                    <p class="pt-1 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
+                      {post.data.tags.join(" · ")}
+                    </p>
+                  )}
+                </div>
+
+                {post.data.heroImage && (
+                  <div class="md:col-span-3 w-full max-w-[240px] md:max-w-none md:justify-self-end">
+                    <div class="overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                      <img
+                        src={post.data.heroImage}
+                        alt={post.data.heroImageAlt ?? post.data.title}
+                        width="240"
+                        height="180"
+                        loading={idx > 0 ? "lazy" : undefined}
+                        decoding="async"
+                        class="editorial-photo aspect-[4/3] w-full object-cover"
+                      />
+                    </div>
+                  </div>
+                )}
+              </a>
+            </li>
+          ))}
+        </ol>
       ) : (
-        <div class="rounded-xl border border-dashed border-border bg-surface/55 px-6 py-12 sm:px-10 sm:py-14 text-center space-y-3">
-          <p class="editorial-kicker text-accent">Notes Desk</p>
-          <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-            First dispatches on the desk
-          </h2>
-          <p class="mx-auto max-w-xl text-sm sm:text-base text-ink-muted leading-relaxed">
-            Short notes on books, software, and places worth remembering are on the way. Meanwhile, browse{" "}
-            <a
-              href="/projects"
-              class="text-accent underline decoration-border underline-offset-4 hover:decoration-accent transition-colors"
-            >
-              engineering projects
-            </a>{" "}
-            or see what is on my desk on{" "}
-            <a
-              href="/now"
-              class="text-accent underline decoration-border underline-offset-4 hover:decoration-accent transition-colors"
-            >
-              /now
-            </a>
-            .
-          </p>
-        </div>
+        <section
+          aria-labelledby="blog-empty-heading"
+          class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 border-t border-b border-border py-12"
+        >
+          <div class="md:col-span-4 space-y-1.5">
+            <p class="editorial-kicker text-accent">Notes Desk</p>
+            <p class="font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
+              0 Published Entries
+            </p>
+          </div>
+
+          <div class="md:col-span-8 space-y-4">
+            <h2 id="blog-empty-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+              First dispatches on the desk
+            </h2>
+            <p class="max-w-xl text-sm sm:text-base text-ink-muted leading-relaxed">
+              First dispatches on the desk — short notes on books, software, and places coming soon.
+            </p>
+            <div class="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 font-mono text-xs uppercase tracking-[0.12em]">
+              <a
+                href="/projects"
+                class="text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+              >
+                Engineering projects →
+              </a>
+              <a
+                href="/about"
+                class="text-ink-muted underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+              >
+                About &amp; currently →
+              </a>
+            </div>
+          </div>
+        </section>
       )
     }
   </BottomLayout>

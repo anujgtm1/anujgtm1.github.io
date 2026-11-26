@@ -18,6 +18,8 @@ const blog = defineCollection({
     summary: z.string(),
     date: z.coerce.date(),
     tags: z.array(z.string()),
+    heroImage: z.string().optional(),
+    heroImageAlt: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 })
@@ -73,6 +75,8 @@ const travel = defineCollection({
     lng: z.number().min(-180).max(180),
     summary: z.string(),
     highlights: z.array(z.string()),
+    coverImage: z.string().optional(),
+    coverImageAlt: z.string().optional(),
     draft: z.boolean().optional(),
   }),
 })
@@ -105,4 +109,22 @@ const now = defineCollection({
   }),
 })
 
-export const collections = { work, blog, books, travel, projects, now }
+const photos = defineCollection({
+  type: "content",
+  schema: z.object({
+    title: z.string(),
+    image: z.string(),
+    alt: z.string(),
+    date: z.coerce.date(),
+    location: z.string().optional(),
+    camera: z.string().optional(),
+    caption: z.string().optional(),
+    category: z.enum(["travel", "craft", "everyday", "portrait"]).default("travel"),
+    featured: z.boolean().optional(),
+    linkedHref: z.string().optional(),
+    linkedLabel: z.string().optional(),
+    draft: z.boolean().optional(),
+  }),
+})
+
+export const collections = { work, blog, books, travel, projects, now, photos }

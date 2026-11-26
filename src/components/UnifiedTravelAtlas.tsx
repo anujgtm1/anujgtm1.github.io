@@ -1,5 +1,11 @@
 import { For, Show, createMemo, createSignal, onCleanup, onMount } from "solid-js"
-import type { ProjectedPark, TravelItem, UsStateGeometry, WorldCountryGeometry } from "@types"
+import type {
+  ProjectedPark,
+  TravelItem,
+  TravelThumbnailItem,
+  UsStateGeometry,
+  WorldCountryGeometry,
+} from "@types"
 import { US_ALBERS_VIEWBOX, US_STATES } from "@data/usStates"
 import { VISITED_COUNTRY_IDS } from "@data/visitedCountries"
 import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "@data/worldCountries"
@@ -23,6 +29,7 @@ import ParkEmblem from "./ParkEmblem"
 
 type Props = {
   readonly trips: readonly TravelItem[]
+  readonly thumbnails?: readonly TravelThumbnailItem[]
 }
 
 type AtlasScope = "world" | "us"
@@ -1426,6 +1433,156 @@ export default function UnifiedTravelAtlas(props: Props) {
           </figure>
         </Show>
       </Show>
+
+      {/* ================================================================ */}
+      {/* PLACES & VISUAL NOTES (SWISS NOTEBOOK PHOTO + TRAVEL LEDGER)     */}
+      {/* ================================================================ */}
+      <section class="border-t border-border pt-10 space-y-6" aria-labelledby="travel-dispatches-heading">
+        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
+          <div class="space-y-1">
+            <p class="editorial-kicker">Dispatches &amp; Frames</p>
+            <h2 id="travel-dispatches-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+              Places &amp; Visual Notes
+            </h2>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.12em]">
+            <span class="inline-flex items-center gap-1.5 border border-atlas/25 bg-atlas-soft px-2 py-0.5 text-atlas">
+              TRAVEL LOG →
+            </span>
+            <span class="inline-flex items-center gap-1.5 border border-accent/25 bg-accent-soft px-2 py-0.5 text-accent">
+              PHOTO GALLERY ↗
+            </span>
+          </div>
+        </div>
+
+        <Show
+          when={(props.thumbnails ?? []).length > 0}
+          fallback={
+            <div class="border-t border-b border-border py-10 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-baseline">
+              <p class="md:col-span-4 font-mono text-xs uppercase tracking-[0.12em] text-atlas">
+                Field Ledger · Empty
+              </p>
+              <p class="md:col-span-8 text-sm sm:text-base text-ink-muted leading-relaxed">
+                No stamps logged yet — add a travel entry or travel photograph to populate the field ledger.
+              </p>
+            </div>
+          }
+        >
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <For each={props.thumbnails ?? []}>
+              {(item) => {
+                const isGallery = item.destination === "gallery"
+                const tripSlug = isGallery ? "" : item.id.replace(/^travel-/, "")
+                return (
+                  <article class="flex flex-col justify-between border border-border bg-surface-elevated hover:border-accent/70 transition-colors">
+                    <a href={item.href} class="group flex flex-1 flex-col">
+                      <Show
+                        when={item.imageSrc}
+                        fallback={
+                          <div class="aspect-[4/3] border-b border-border bg-surface p-5 flex flex-col justify-between">
+                            <div class="flex items-center justify-between gap-2">
+                              <span class="rounded-none border border-atlas/25 bg-atlas-soft px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-atlas">
+                                TRAVEL LOG →
+                              </span>
+                              <span class="font-mono text-[11px] text-ink-muted">
+                                {item.dateLabel}
+                              </span>
+                            </div>
+
+                            <div class="space-y-1">
+                              <Show when={item.stampCode}>
+                                {(code) => (
+                                  <p class="font-mono text-2xl font-semibold tracking-widest text-ink/85">
+                                    {code()}
+                                  </p>
+                                )}
+                              </Show>
+                              <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+                                {item.subtitle}
+                              </p>
+                            </div>
+                          </div>
+                        }
+                      >
+                        {(src) => (
+                          <div class="overflow-hidden border-b border-border bg-surface">
+                            <img
+                              src={src()}
+                              alt={item.imageAlt ?? item.title}
+                              loading="lazy"
+                              decoding="async"
+                              class="editorial-photo aspect-[4/3] w-full object-cover"
+                            />
+                          </div>
+                        )}
+                      </Show>
+
+                      <div class="flex flex-1 flex-col gap-2.5 p-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                          <span
+                            class={`rounded-none border px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] ${
+                              isGallery
+                                ? "border-accent/25 bg-accent-soft text-accent"
+                                : "border-atlas/25 bg-atlas-soft text-atlas"
+                            }`}
+                          >
+                            {isGallery ? "PHOTO GALLERY ↗" : "TRAVEL LOG →"}
+                          </span>
+                          <span class="font-mono text-[11px] text-ink-muted">
+                            {item.dateLabel}
+                          </span>
+                        </div>
+
+                        <div class="space-y-1">
+                          <h3 class="font-serif text-xl font-medium text-ink group-hover:text-accent transition-colors leading-snug">
+                            {item.title}
+                          </h3>
+                          <p class="font-mono text-[11px] uppercase tracking-[0.1em] text-ink-muted">
+                            {item.subtitle}
+                          </p>
+                          <Show when={item.summary}>
+                            {(summary) => (
+                              <p class="pt-0.5 text-sm text-ink-muted leading-relaxed line-clamp-2">
+                                {summary()}
+                              </p>
+                            )}
+                          </Show>
+                        </div>
+                      </div>
+                    </a>
+
+                    <Show when={!isGallery && tripSlug.length > 0}>
+                      <div class="flex items-center justify-between gap-3 border-t border-border px-4 py-2.5 font-mono text-[11px]">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const matched = props.trips.find((t) => t.slug === tripSlug)
+                            if (matched) {
+                              setScope("world")
+                              setViewMode("map")
+                              setWorldSelection({ kind: "trip", trip: matched })
+                            }
+                          }}
+                          class="text-atlas hover:text-accent underline decoration-border underline-offset-4 transition-colors"
+                        >
+                          Focus on map
+                        </button>
+                        <a
+                          href={item.href}
+                          class="text-ink hover:text-accent transition-colors"
+                        >
+                          Open log →
+                        </a>
+                      </div>
+                    </Show>
+                  </article>
+                )
+              }}
+            </For>
+          </div>
+        </Show>
+      </section>
 
       {/* ================================================================ */}
       {/* SHARED NATIVE <dialog closedby="any"> FIELD CARD MODAL           */}

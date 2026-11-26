@@ -84,6 +84,8 @@ export type TravelItem = {
   readonly coordinates: Coordinates
   readonly summary: string
   readonly highlights: readonly string[]
+  readonly coverImage?: string
+  readonly coverImageAlt?: string
 }
 
 export type ProjectItem = {
@@ -106,6 +108,56 @@ export type BlogItem = {
   readonly date: string
   readonly tags: readonly string[]
   readonly readingMinutes?: number
+  readonly heroImage?: string
+  readonly heroImageAlt?: string
+}
+
+export type PhotoCategory = "travel" | "craft" | "everyday" | "portrait"
+
+export type PhotoItem = {
+  readonly slug: string
+  readonly title: string
+  readonly image: string
+  readonly alt: string
+  readonly date: string
+  readonly dateMs: number
+  readonly location?: string
+  readonly camera?: string
+  readonly caption?: string
+  readonly category: PhotoCategory
+  readonly featured?: boolean
+  readonly linkedHref?: string
+  readonly linkedLabel?: string
+  readonly draft?: boolean
+}
+
+export type RecentJournalKind = "blog" | "project" | "travel" | "book"
+
+export type RecentJournalEntry = {
+  readonly kind: RecentJournalKind
+  readonly slug: string
+  readonly title: string
+  readonly href: string
+  readonly dateLabel: string
+  readonly dateMs: number
+  readonly thumbnailSrc?: string
+  readonly thumbnailAlt?: string
+}
+
+export type TravelThumbnailDestination = "travel" | "gallery"
+
+export type TravelThumbnailItem = {
+  readonly id: string
+  readonly title: string
+  readonly subtitle: string
+  readonly dateLabel: string
+  readonly dateMs: number
+  readonly destination: TravelThumbnailDestination
+  readonly href: string
+  readonly imageSrc?: string
+  readonly imageAlt?: string
+  readonly stampCode?: string
+  readonly summary?: string
 }
 
 export type NowSnapshot = {

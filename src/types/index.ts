@@ -9,8 +9,12 @@ export type {
   NavLink,
   NowSnapshot,
   Page,
+  PhotoCategory,
+  PhotoItem,
   ProjectItem,
   ProjectStatus,
+  RecentJournalEntry,
+  RecentJournalKind,
   RssFeedEntry,
   RssFeedItem,
   SearchItem,
@@ -19,6 +23,8 @@ export type {
   Socials,
   TravelItem,
   TravelRegion,
+  TravelThumbnailDestination,
+  TravelThumbnailItem,
 } from "./domain.ts"
 export type {
   NationalPark,

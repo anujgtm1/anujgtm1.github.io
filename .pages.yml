@@ -33,6 +33,14 @@ content:
         type: string
         list: true
         default: []
+      - name: heroImage
+        label: Hero Image (optional)
+        type: image
+        required: false
+      - name: heroImageAlt
+        label: Hero Image Alt Text (optional)
+        type: string
+        required: false
       - name: draft
         label: Draft
         type: boolean
@@ -177,6 +185,14 @@ content:
         label: Highlights
         type: string
         list: true
+      - name: coverImage
+        label: Cover Image (optional)
+        type: image
+        required: false
+      - name: coverImageAlt
+        label: Cover Image Alt Text (optional)
+        type: string
+        required: false
       - name: draft
         label: Draft
         type: boolean
@@ -309,4 +325,72 @@ content:
         required: true
       - name: body
         label: Full /now Notes
+        type: rich-text
+
+  - name: photos
+    label: Photo Gallery
+    type: collection
+    path: src/content/photos
+    filename: "{year}-{month}-{day}-{primary}.md"
+    view:
+      fields: [title, category, date, featured, draft]
+      primary: title
+      sort: [date]
+      default:
+        sort: date
+        order: desc
+    fields:
+      - name: title
+        label: Title
+        type: string
+        required: true
+      - name: image
+        label: Photograph
+        type: image
+        required: true
+      - name: alt
+        label: Alt Text
+        type: string
+        required: true
+      - name: date
+        label: Date Taken
+        type: date
+        required: true
+      - name: location
+        label: Location (optional)
+        type: string
+        required: false
+      - name: camera
+        label: Camera / Film Note (optional)
+        type: string
+        required: false
+      - name: caption
+        label: Caption (optional)
+        type: text
+        required: false
+      - name: category
+        label: Category
+        type: select
+        required: false
+        default: travel
+        options:
+          values: [travel, craft, everyday, portrait]
+      - name: featured
+        label: Featured Plate
+        type: boolean
+        default: false
+      - name: linkedHref
+        label: Linked Entry URL (optional)
+        type: string
+        required: false
+      - name: linkedLabel
+        label: Linked Entry Label (optional)
+        type: string
+        required: false
+      - name: draft
+        label: Draft
+        type: boolean
+        default: false
+      - name: body
+        label: Extended Notes
         type: rich-text

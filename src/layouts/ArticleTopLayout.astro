@@ -25,6 +25,12 @@ const repoUrl = collection === "projects" ? data.repoUrl : null
 const projectStatus = collection === "projects" ? data.status : null
 const projectRole = collection === "projects" ? data.role : null
 const tags = collection === "travel" ? data.highlights : data.tags
+const heroMedia =
+  collection === "blog" && data.heroImage
+    ? { src: data.heroImage, alt: data.heroImageAlt ?? title }
+    : collection === "travel" && data.coverImage
+      ? { src: data.coverImage, alt: data.coverImageAlt ?? title }
+      : null
 const travelMeta =
   collection === "travel"
     ? {
@@ -121,5 +127,19 @@ const travelMeta =
         </a>
       )}
     </div>
+  )}
+
+  {heroMedia && (
+    <figure class="pt-2">
+      <div class="overflow-hidden rounded-none border border-border bg-surface">
+        <img
+          src={heroMedia.src}
+          alt={heroMedia.alt}
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-[16/9] w-full object-cover"
+        />
+      </div>
+    </figure>
   )}
 </header>
