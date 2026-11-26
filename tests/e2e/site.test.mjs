@@ -88,6 +88,7 @@ const HTML_ROUTES = [
   "/blog/",
   "/books/",
   "/travel/",
+  "/photos/",
   "/projects/",
   "/projects/bookbinder-studio/",
   "/projects/travel-planner/",
@@ -163,6 +164,17 @@ test("travel atlas renders world projection, empty passport inspector, and Trave
   assert.ok(body.includes("https://travel.anujgtm.com"))
 })
 
+test("photo gallery renders graceful empty state, native closedby lightbox dialog, and nav link", async () => {
+  const { body } = await fetchText("/photos/")
+  assert.ok(body.includes("Darkroom · Contact Sheets on the Way"))
+  assert.ok(body.includes("Field photographs and travel contact sheets will appear here soon."))
+  assert.ok(body.includes('closedby="any"'))
+  assert.ok(body.includes('aria-labelledby="photo-lightbox-title"'))
+  assert.ok(!body.includes('role="dialog"'))
+  assert.ok(!body.includes('aria-modal='))
+  assert.ok(body.includes('href="/photos"'))
+})
+
 test("projects, project dossiers, work, and /now showcase Anuj's real engineering history and builds", async () => {
   const projectsRes = await fetchText("/projects/")
   assert.ok(projectsRes.body.includes("Bookbinder Studio"))
@@ -210,6 +222,7 @@ test("Pages CMS config (.pages.yml) exists and configures all collections", () =
     "src/content/blog",
     "src/content/books",
     "src/content/travel",
+    "src/content/photos",
     "src/content/projects",
     "src/content/work",
     "src/content/now/current.md",
