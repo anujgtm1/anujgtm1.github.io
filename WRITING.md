@@ -14,7 +14,7 @@ This repository already ships with a preconfigured [`.pages.yml`](./.pages.yml) 
    - **Bookshelf & Marginalia** — Only `title`, `author`, `status`, and `summary` are required. Add an `isbn` (10 or 13 digits) to auto-fetch the book cover via Open Library, and optionally drop a 2–4 sentence quick note in the body.
    - **Blog & Short Notes** — Write a quick dispatch or longer essay.
    - **Travel Atlas** — Drop in a city, 3-letter `stampCode`, `lat`/`lng`, and highlights to pin it on the world map.
-   - **Photo Gallery** — Upload a photo directly (or paste an external CDN URL), add `alt` text, optional `album`, `location`, `camera`, and `aspectRatio`, and publish straight to `/photos`.
+   - **Photo Gallery** — Upload a photo directly (or paste an external CDN URL), add `alt` text, optional `album`, `location`, `camera`, and `aspectRatio`, and publish straight to `/photos`. Each distinct `album` automatically gets its own album card on `/photos/` and a dedicated `/photos/<album>/` gallery page.
    - **Now Page (`/now`)** — Update what you are reading, building, or planning next; the homepage Field Desk strip updates automatically.
 4. Tap **Save**. Pages CMS commits directly to GitHub, and GitHub Actions rebuilds the live site automatically.
 
@@ -66,7 +66,7 @@ The Photo Gallery (`/photos`) accepts **both local repo paths** and **external H
 4. **Flickr Direct `live.staticflickr.com` URLs**
    - If your photos already live on Flickr, paste the direct static image URLs (`_c.jpg` / `_z.jpg` for `thumbnailUrl`, `_b.jpg` / `_k.jpg` for `imageUrl`).
 
-> **Tip:** Set `aspectRatio` (`landscape`, `portrait`, `square`, or `wide`) whenever you know the frame orientation so the masonry grid reserves exact space before images load and avoids layout shift.
+> **Tip:** Set `album` (e.g. `"Japan"`, `"Mountains"`, `"Street Walk"`) to group photographs into archival album cards on `/photos/` — clicking any album opens its dedicated `/photos/<album>/` gallery and lightbox. Photos without an explicit `album` group automatically into `"Field Notes"`. Set `featured: true` on a frame to choose it as that album's cover image, and set `aspectRatio` (`landscape`, `portrait`, `square`, or `wide`) whenever you know the frame orientation so the masonry grid reserves exact space before images load and avoids layout shift.
 
 ---
 
@@ -137,10 +137,10 @@ alt: "Warm sunrise breaking through mist over a forested mountain ridge"
 caption: "First five minutes after the fog lifted along the overlook." # optional
 date: "2026-04-18"
 location: "Smoky Mountains, TN" # optional
-album: "Mountains" # optional — powers album filter pills
+album: "Mountains" # optional — groups into an album card on /photos/ and builds /photos/mountains/ (defaults to "Field Notes")
 camera: "Fujifilm X100VI" # optional
 aspectRatio: "landscape" # optional: landscape | portrait | square | wide
-featured: false # optional — pins frame first in the gallery
+featured: false # optional — selects the album cover & pins frame first in the gallery
 tags: ["Mountains", "Sunrise"] # optional
 draft: false # optional
 ---
