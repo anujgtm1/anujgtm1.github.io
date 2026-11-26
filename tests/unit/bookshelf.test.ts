@@ -6,8 +6,10 @@ import {
   computeSpineMetrics,
   deriveYearRead,
   filterBooks,
+  formatSpineTitle,
   getAvailableYears,
   groupBooksByYear,
+  packBooksIntoShelves,
   renderBookNotesHtml,
   resolveBookCoverUrl,
   sortBooks,
@@ -61,16 +63,137 @@ const sampleBooks: readonly BookItem[] = [
   },
 ]
 
-test("computeSpineMetrics produces deterministic clamped geometry", () => {
-  const thin = computeSpineMetrics(120, "Short")
-  const thick = computeSpineMetrics(1200, "A Remarkably Long Archival Volume About Systems")
+test("computeSpineMetrics produces deterministic non-linear thickness and title-length-independent height variance", () => {
+  const novella = computeSpineMetrics(86, "Animal Farm")
+  const medium = computeSpineMetrics(318, "1984")
+  const thick = computeSpineMetrics(928, "The Brothers Karamazov")
+  const doorstopper = computeSpineMetrics(1796, "Complete Works")
   const fallback = computeSpineMetrics(undefined, "Untitled")
+  const hugeTitle = computeSpineMetrics(
+    300,
+    "A Remarkably Exhaustive Multi-Volume Archival Treatise on Distributed Systems, Consensus, and Modern Computing Infrastructure",
+  )
 
-  assert.deepEqual(thin, computeSpineMetrics(120, "Short"))
-  assert.ok(thin.widthPx >= 44 && thin.widthPx <= 68)
-  assert.ok(thick.widthPx >= 44 && thick.widthPx <= 68)
-  assert.ok(thick.widthPx > thin.widthPx)
-  assert.ok(fallback.heightPx >= 198 && fallback.heightPx <= 264)
+  assert.deepEqual(novella, computeSpineMetrics(86, "Animal Farm"))
+  assert.ok(novella.widthPx >= 34 && novella.widthPx <= 74)
+  assert.ok(medium.widthPx > novella.widthPx)
+  assert.ok(thick.widthPx > medium.widthPx)
+  assert.ok(doorstopper.widthPx >= thick.widthPx && doorstopper.widthPx <= 74)
+
+  // Diminishing marginal width per page (sqrt curve keeps novellas readable without making epics absurd)
+  const smallGrowthPerPage = (medium.widthPx - novella.widthPx) / (318 - 86)
+  const largeGrowthPerPage = (thick.widthPx - medium.widthPx) / (928 - 318)
+  assert.ok(smallGrowthPerPage > largeGrowthPerPage)
+
+  // Realistic height variance across distinct books, never inflated by long subtitles
+  const heights = new Set(
+    [
+      computeSpineMetrics(250, "Dune"),
+      computeSpineMetrics(250, "Sapiens"),
+      computeSpineMetrics(250, "Snow Crash"),
+      computeSpineMetrics(250, "Piranesi"),
+      computeSpineMetrics(250, "The Overstory"),
+    ].map((m) => m.heightPx),
+  )
+  assert.ok(heights.size >= 3)
+  assert.ok(fallback.heightPx >= 192 && fallback.heightPx <= 254)
+  assert.ok(hugeTitle.heightPx >= 192 && hugeTitle.heightPx <= 254)
+  assert.ok(novella.bandOffsetPx >= 14 && novella.bandOffsetPx <= 25)
+})
+
+test("formatSpineTitle keeps short titles intact and prunes long titles cleanly at word boundaries", () => {
+  assert.equal(formatSpineTitle("1984", 192), "1984")
+  assert.equal(formatSpineTitle("  Invisible Cities  ", 220), "Invisible Cities")
+
+  const longTitle =
+    "Designing Data-Intensive Applications: The Big Ideas Behind Reliable, Scalable, and Maintainable Systems"
+  const shortSpine = formatSpineTitle(longTitle, 192)
+  const tallSpine = formatSpineTitle(longTitle, 254)
+
+  assert.ok(shortSpine.endsWith("…"))
+  assert.ok(shortSpine.length <= 19)
+  assert.ok(tallSpine.endsWith("…"))
+  assert.ok(tallSpine.length <= 29)
+  assert.ok(tallSpine.length >= shortSpine.length)
+
+  const subtitleBoundary = formatSpineTitle("Sapiens: A Brief History of Humankind", 220)
+  assert.ok(subtitleBoundary.endsWith("…"))
+  assert.ok(!/[:,\-–—/(\s]…$/.test(subtitleBoundary))
+  assert.ok(subtitleBoundary.length <= 24)
+
+  const punctuationOnly = formatSpineTitle(":::::-----:::::-----:::::", 192)
+  assert.ok(punctuationOnly.endsWith("…"))
+  assert.ok(punctuationOnly.length > 1 && punctuationOnly.length <= 19)
+})
+
+test("packBooksIntoShelves separates Currently Reading and packs rows dynamically by container width", () => {
+  const libraryFixture: readonly BookItem[] = [
+    ...sampleBooks,
+    ...Array.from({ length: 12 }, (_, idx) => ({
+      slug: `fixture-${idx + 1}`,
+      title: `Archival Volume ${idx + 1}`,
+      author: "A. Reader",
+      status: "finished" as const,
+      yearRead: 2024,
+      pages: 220 + idx * 70,
+      tags: ["Fiction"],
+      spineTheme: "slate" as const,
+      summary: "Fixture volume for shelf packing tests.",
+      notesHtml: "",
+    })),
+  ]
+
+  const wide = packBooksIntoShelves(libraryFixture, 900, 8)
+  const narrow = packBooksIntoShelves(libraryFixture, 260, 8)
+
+  assert.equal(wide[0]?.kind, "reading")
+  assert.equal(wide[0]?.label, "Currently Reading")
+  assert.deepEqual(
+    wide[0]?.books.map((b) => b.slug),
+    ["invisible-cities"],
+  )
+  assert.equal(wide[1]?.kind, "library")
+  assert.equal(wide[1]?.label, "Shelf 01")
+
+  const wideLibraryCount = wide.filter((s) => s.kind === "library").length
+  const narrowLibraryCount = narrow.filter((s) => s.kind === "library").length
+  assert.ok(narrowLibraryCount > wideLibraryCount)
+
+  // Every packed row with 2+ books must fit within its shelf width budget
+  for (const section of [...wide, ...narrow]) {
+    assert.ok(section.books.length >= 1)
+    const budget = section === wide.find((s) => s === section) ? 900 : 260
+    const rowWidth =
+      section.books.reduce((sum, b) => sum + computeSpineMetrics(b.pages, b.title).widthPx, 0) +
+      Math.max(0, section.books.length - 1) * 8
+    if (section.books.length > 1) {
+      assert.ok(rowWidth <= budget, `${section.label} overflowed ${budget}px (${rowWidth}px)`)
+    }
+  }
+
+  // Always places at least 1 book per shelf even on very narrow widths
+  const ultraNarrow = packBooksIntoShelves(libraryFixture, 120, 8)
+  assert.ok(ultraNarrow.every((section) => section.books.length >= 1))
+  const totalPacked = ultraNarrow.reduce((sum, s) => sum + s.books.length, 0)
+  assert.equal(totalPacked, libraryFixture.length)
+
+  // Multiple reading books across rows get numbered Currently Reading labels
+  const manyReading: readonly BookItem[] = Array.from({ length: 6 }, (_, idx) => ({
+    slug: `reading-${idx + 1}`,
+    title: `Current Read ${idx + 1}`,
+    author: "B. Author",
+    status: "reading" as const,
+    yearRead: null,
+    pages: 800,
+    tags: ["Reading"],
+    spineTheme: "forest" as const,
+    summary: "Currently reading fixture.",
+    notesHtml: "",
+  }))
+  const readingSections = packBooksIntoShelves(manyReading, 200, 8)
+  assert.ok(readingSections.length > 1)
+  assert.equal(readingSections[0]?.label, "Currently Reading · 01")
+  assert.equal(readingSections[1]?.label, "Currently Reading · 02")
 })
 
 test("sortBooks orders reading first, then favorites, then finished by dateRead", () => {
