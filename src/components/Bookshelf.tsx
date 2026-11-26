@@ -1,12 +1,14 @@
-import { For, Show, createMemo, createSignal, onCleanup, onMount } from "solid-js"
+import { For, Show, createEffect, createMemo, createSignal, onCleanup, onMount } from "solid-js"
 import type { BookItem, BookStatus } from "@types"
 import {
   BOOK_STATUS_META,
   SPINE_PALETTES,
   computeSpineMetrics,
   filterBooks,
+  formatSpineTitle,
   getAvailableYears,
   groupBooksByYear,
+  packBooksIntoShelves,
   resolveBookCoverUrl,
   sortBooks,
 } from "@lib/bookshelf"
@@ -137,6 +139,8 @@ export default function Bookshelf(props: Props) {
   const [query, setQuery] = createSignal("")
   const [viewMode, setViewMode] = createSignal<ViewMode>("covers")
   const [selectedBook, setSelectedBook] = createSignal<BookItem | null>(null)
+  const [shelfInnerWidth, setShelfInnerWidth] = createSignal(880)
+  const [shelfContainerEl, setShelfContainerEl] = createSignal<HTMLDivElement | null>(null)
 
   let dialogRef: HTMLDialogElement | undefined
 
@@ -225,15 +229,39 @@ export default function Bookshelf(props: Props) {
     }
   })
 
-  const shelfRows = createMemo(() => {
-    const list = visibleBooks()
-    const rows: BookItem[][] = []
-    const chunkSize = 5
-    for (let i = 0; i < list.length; i += chunkSize) {
-      rows.push(list.slice(i, i + chunkSize))
+  createEffect(() => {
+    if (viewMode() !== "shelf") {
+      return
     }
-    return rows
+    const container = shelfContainerEl()
+    if (!container || typeof ResizeObserver === "undefined") {
+      return
+    }
+
+    const updateWidth = (rawWidth: number) => {
+      if (rawWidth > 0) {
+        setShelfInnerWidth(Math.max(200, Math.floor(rawWidth - 32)))
+      }
+    }
+
+    updateWidth(container.getBoundingClientRect().width)
+
+    const observer = new ResizeObserver((entries) => {
+      const entry = entries[0]
+      if (entry) {
+        updateWidth(entry.contentRect.width)
+      }
+    })
+    observer.observe(container)
+
+    onCleanup(() => {
+      observer.disconnect()
+    })
   })
+
+  const shelfSections = createMemo(() =>
+    packBooksIntoShelves(visibleBooks(), shelfInnerWidth(), 8),
+  )
 
   return (
     <div class="space-y-8">
@@ -449,12 +477,12 @@ export default function Bookshelf(props: Props) {
 
         {/* SHELF VIEW: Standing archival book spines on tactile wood/brass ledges */}
         <Show when={viewMode() === "shelf"}>
-          <div class="space-y-10">
-            <For each={shelfRows()}>
-              {(row, rowIndex) => (
+          <div ref={(el) => setShelfContainerEl(el)} class="space-y-10">
+            <For each={shelfSections()}>
+              {(section) => (
                 <div class="space-y-0">
-                  <div class="flex items-end justify-start sm:justify-center gap-2.5 sm:gap-3.5 overflow-x-auto px-4 pt-8 pb-0">
-                    <For each={row}>
+                  <div class="flex items-end justify-start gap-2 overflow-x-auto px-4 pt-6 pb-0">
+                    <For each={section.books}>
                       {(book) => {
                         const palette = SPINE_PALETTES[book.spineTheme]
                         const metrics = computeSpineMetrics(book.pages, book.title)
@@ -462,15 +490,16 @@ export default function Bookshelf(props: Props) {
                           <button
                             type="button"
                             id={`book-${book.slug}`}
+                            title={book.title}
                             onClick={() => openBookModal(book)}
                             aria-label={`${book.title} by ${book.author} (${BOOK_STATUS_META[book.status].label}) — open quick notes`}
-                            class="book-spine-btn relative shrink-0 flex flex-col items-center justify-between rounded-t-md border px-2 py-3 text-center select-none cursor-pointer"
+                            class="book-spine-btn relative flex flex-col items-center justify-between rounded-t-md border px-1.5 py-2.5 text-center select-none cursor-pointer"
                             style={{
                               "background-color": palette.bg,
                               color: palette.text,
                               "border-color": palette.border,
-                              "min-inline-size": `${metrics.widthPx}px`,
-                              "min-block-size": `${metrics.heightPx}px`,
+                              flex: `0 0 ${metrics.widthPx}px`,
+                              "block-size": `${metrics.heightPx}px`,
                               "box-shadow":
                                 "inset 4px 0 6px rgb(255 255 255 / 0.14), inset -4px 0 8px rgb(0 0 0 / 0.28)",
                             }}
@@ -488,26 +517,30 @@ export default function Bookshelf(props: Props) {
 
                             <span
                               aria-hidden="true"
-                              class="w-full h-1 rounded-full opacity-75"
+                              class="w-full h-1 shrink-0 rounded-full opacity-75"
                               style={{ "background-color": palette.band }}
                             />
 
                             <span
-                              class="my-2 font-serif text-sm font-medium tracking-tight leading-snug"
+                              class="my-1.5 font-serif text-[13px] font-medium tracking-tight leading-none"
                               style={{
                                 "writing-mode": "vertical-rl",
                                 "text-orientation": "mixed",
-                                "max-block-size": `${metrics.heightPx - 64}px`,
+                                "white-space": "nowrap",
                                 overflow: "hidden",
                                 "text-overflow": "ellipsis",
+                                "min-block-size": "0",
+                                "max-block-size": `${metrics.heightPx - 76}px`,
+                                "min-inline-size": "0",
+                                "max-inline-size": `${metrics.heightPx - 76}px`,
                               }}
                             >
-                              {book.title}
+                              {formatSpineTitle(book.title, metrics.heightPx)}
                             </span>
 
-                            <div class="flex flex-col items-center gap-1.5 w-full">
+                            <div class="flex flex-col items-center gap-1.5 w-full shrink-0">
                               <span
-                                class="font-mono text-[10px] uppercase tracking-wider opacity-85"
+                                class="max-w-full overflow-hidden font-mono text-[9px] uppercase tracking-wider opacity-85"
                                 style={{ "writing-mode": "horizontal-tb" }}
                               >
                                 {getAuthorInitials(book.author)}
@@ -528,9 +561,14 @@ export default function Bookshelf(props: Props) {
                     aria-hidden="true"
                     class="h-3.5 w-full rounded-sm border-t border-b-4 border-border bg-surface shadow-sm"
                   />
-                  <div class="pt-1.5 flex justify-between text-[11px] font-mono uppercase tracking-widest text-ink-muted px-1">
-                    <span>Shelf 0{rowIndex() + 1}</span>
-                    <span>Click any spine for quick notes</span>
+                  <div class="pt-1.5 flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono uppercase tracking-widest text-ink-muted px-1">
+                    <span class={section.kind === "reading" ? "text-accent font-medium" : ""}>
+                      {section.label}
+                    </span>
+                    <span>
+                      {section.books.length}{" "}
+                      {section.books.length === 1 ? "volume" : "volumes"} · Click any spine for notes
+                    </span>
                   </div>
                 </div>
               )}
