@@ -338,65 +338,66 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       {
         kind: "path",
         d: "M11 136 L169 136 L169 229 L11 229 Z",
-        fill: "deep",
-        opacity: 0.62,
+        fill: "mid",
+        opacity: 0.42,
       },
       { kind: "line", x1: 11, y1: 124, x2: 68, y2: 124, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.74 },
       { kind: "line", x1: 132, y1: 124, x2: 169, y2: 124, stroke: "accent-soft", strokeWidth: 1.6, opacity: 0.74 },
 
-      // Plane 4: Dramatic sweeping gooseneck / horseshoe river (Green/Colorado River) cutting deep through the flat floor
-      // Deep shadowed inner gorge cut hugging the sweeping horseshoe bend
+      // Plane 4: Subtle sculpted gooseneck river-canyon trench carved deep into the flat sandstone floor
+      // Warm rim-lit outer canyon wall lip tracing the sinuous gooseneck cut
       {
         kind: "path",
-        d: "M98 118 C116 122 126 128 116 136 C102 146 42 140 36 160 C30 182 140 166 146 190 C150 206 106 212 74 229",
-        stroke: "deep",
-        strokeWidth: 22,
-        strokeLinecap: "round",
-        strokeLinejoin: "round",
-      },
-      // Sunlit terraced inner canyon wall lip catching golden rim light around the gooseneck
-      {
-        kind: "path",
-        d: "M98 118 C116 122 126 128 116 136 C102 146 42 140 36 160 C30 182 140 166 146 190 C150 206 106 212 74 229",
+        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
         stroke: "accent",
-        strokeWidth: 14.5,
+        strokeWidth: 18,
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        opacity: 0.56,
+        opacity: 0.44,
       },
-      // Luminous sweeping river water channel
+      // Deep shadowed inner gorge walls carving the gooseneck canyon trench
       {
         kind: "path",
-        d: "M98 118 C116 122 126 128 116 136 C102 146 42 140 36 160 C30 182 140 166 146 190 C150 206 106 212 74 229",
-        stroke: "accent-soft",
-        strokeWidth: 10,
+        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
+        stroke: "deep",
+        strokeWidth: 14,
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        opacity: 0.94,
       },
+      // Subtle recessed inner canyon floor channel (no bright whitish river ribbon)
       {
         kind: "path",
-        d: "M98 118 C116 122 126 128 116 136 C102 146 42 140 36 160 C30 182 140 166 146 190 C150 206 106 212 74 229",
-        stroke: "paper",
-        strokeWidth: 4.4,
+        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
+        stroke: "ink",
+        strokeWidth: 5.5,
         strokeLinecap: "round",
         strokeLinejoin: "round",
-        opacity: 0.94,
+        opacity: 0.88,
       },
-      // Sculpted flat-topped gooseneck peninsula headland enclosed inside the river bend
+      // Quiet, thin recessed river trace tucked deep in the shadowed gorge bottom
+      {
+        kind: "path",
+        d: "M98 120 C116 124 125 130 115 137 C101 147 43 142 37 161 C31 182 139 167 145 190 C149 206 106 212 75 229",
+        stroke: "mid",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+        strokeLinejoin: "round",
+        opacity: 0.62,
+      },
+      // Sculpted flat-topped gooseneck peninsula headland enclosed inside the river canyon bend
       {
         kind: "path",
         d: "M58 156 L112 152 L124 162 L72 167 Z",
         fill: "mid",
       },
-      { kind: "line", x1: 60, y1: 156, x2: 112, y2: 152, stroke: "paper", strokeWidth: 1.6, opacity: 0.8 },
+      { kind: "line", x1: 60, y1: 156, x2: 112, y2: 152, stroke: "paper", strokeWidth: 1.5, opacity: 0.72 },
       // Subtle sunlit flat horizontal terrace rim above the foreground bend
       {
         kind: "path",
         d: "M14 186 L68 186 L76 196 L14 198 Z",
         fill: "ink",
       },
-      { kind: "line", x1: 14, y1: 186, x2: 68, y2: 186, stroke: "accent-soft", strokeWidth: 1.5, opacity: 0.72 },
+      { kind: "line", x1: 14, y1: 186, x2: 68, y2: 186, stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.68 },
 
       // Plane 5: Grounded dark flat overlook rim framing the bottom corners
       {
@@ -1311,136 +1312,184 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
       { kind: "circle", cx: 90, cy: 76, r: 18, fill: "paper", opacity: 0.56 },
       { kind: "circle", cx: 90, cy: 76, r: 11, fill: "paper", opacity: 0.98 },
 
-      // Dune Layer 1 (Farthest horizon gypsum swell directly beneath the sun, y=78..100)
+      // Dune Layer 1 (Farthest horizon gypsum swell directly beneath the sun, continuous x=11..169)
       {
         kind: "path",
-        d: "M11 84 Q48 77 90 83 Q132 89 169 80 L169 108 L11 108 Z",
-        fill: "paper",
-        opacity: 0.94,
-      },
-      {
-        kind: "path",
-        d: "M74 82 Q124 89 169 80 L169 102 L106 102 Z",
-        fill: "accent-soft",
-        opacity: 0.48,
-      },
-
-      // Dune Layer 2 (Distant undulating white wave cresting left-of-center, y=88..118)
-      {
-        kind: "path",
-        d: "M11 94 Q54 84 102 96 Q140 105 169 94 L169 124 L11 124 Z",
+        d: "M11 84 C44 77 72 86 102 82 C130 78 150 85 169 81 L169 108 L11 108 Z",
         fill: "paper",
         opacity: 0.96,
       },
       {
         kind: "path",
-        d: "M11 94 Q54 84 102 96 C84 102 68 110 56 120 L11 120 Z",
-        fill: "far",
+        d: "M11 89 C44 83 72 91 102 88 C130 84 150 90 169 87 L169 108 L11 108 Z",
+        fill: "accent-soft",
         opacity: 0.48,
       },
-      { kind: "path", d: "M11 94 Q54 84 102 96", stroke: "paper", strokeWidth: 1.4, strokeLinecap: "round" },
 
-      // Dune Layer 3 (Sweeping mid-far S-curve gypsum ridge cresting right, y=104..138)
+      // Dune Layer 2 (Distant undulating white gypsum wave, continuous x=11..169)
       {
         kind: "path",
-        d: "M11 114 Q52 122 104 104 Q142 93 169 106 L169 144 L11 144 Z",
+        d: "M11 96 C46 86 82 100 118 93 C142 88 158 92 169 96 L169 126 L11 126 Z",
         fill: "paper",
         opacity: 0.97,
       },
       {
         kind: "path",
-        d: "M104 104 Q142 93 169 106 L169 140 L114 140 C114 124 110 112 104 104 Z",
-        fill: "accent",
-        opacity: 0.24,
+        d: "M11 102 C46 93 82 106 118 99 C142 94 158 98 169 102 L169 126 L11 126 Z",
+        fill: "far",
+        opacity: 0.44,
       },
-      { kind: "path", d: "M104 104 Q142 93 169 106", stroke: "paper", strokeWidth: 1.5, strokeLinecap: "round" },
-
-      // Dune Layer 4 (Mid undulating dune ridge rolling across the heart of the basin, y=122..160)
       {
         kind: "path",
-        d: "M11 130 Q58 112 106 130 Q144 144 169 126 L169 166 L11 166 Z",
+        d: "M11 96 C46 86 82 100 118 93 C142 88 158 92 169 96",
+        stroke: "paper",
+        strokeWidth: 1.4,
+        strokeLinecap: "round",
+      },
+
+      // Dune Layer 3 (Sweeping mid-far S-curve gypsum ridge, continuous x=11..169)
+      {
+        kind: "path",
+        d: "M11 114 C48 122 86 102 126 108 C148 111 158 106 169 108 L169 146 L11 146 Z",
         fill: "paper",
         opacity: 0.98,
       },
       {
         kind: "path",
-        d: "M11 130 Q58 112 106 130 C86 138 72 150 62 164 L11 164 Z",
-        fill: "accent-soft",
-        opacity: 0.62,
+        d: "M11 121 C48 129 86 110 126 116 C148 119 158 114 169 116 L169 146 L11 146 Z",
+        fill: "accent",
+        opacity: 0.24,
       },
       {
         kind: "path",
-        d: "M11 130 Q58 112 106 130 C92 136 80 146 72 160 L11 154 Z",
-        fill: "far",
-        opacity: 0.42,
+        d: "M11 114 C48 122 86 102 126 108 C148 111 158 106 169 108",
+        stroke: "paper",
+        strokeWidth: 1.5,
+        strokeLinecap: "round",
       },
-      { kind: "path", d: "M11 130 Q58 112 106 130", stroke: "paper", strokeWidth: 1.7, strokeLinecap: "round" },
 
-      // Dune Layer 5 (Broad luminous barchan crest sweeping diagonally right-to-left, y=144..188)
+      // Dune Layer 4 (Mid undulating gypsum ridge rolling continuously across the basin, x=11..169)
       {
         kind: "path",
-        d: "M11 158 Q60 172 114 144 Q146 130 169 144 L169 194 L11 194 Z",
+        d: "M11 130 C46 116 84 136 122 128 C146 123 158 126 169 132 L169 168 L11 168 Z",
         fill: "paper",
         opacity: 0.99,
       },
       {
         kind: "path",
-        d: "M114 144 Q146 130 169 144 L169 190 L98 190 C106 172 110 156 114 144 Z",
+        d: "M11 138 C46 125 84 144 122 136 C146 131 158 134 169 140 L169 168 L11 168 Z",
+        fill: "accent-soft",
+        opacity: 0.56,
+      },
+      {
+        kind: "path",
+        d: "M11 144 C46 132 84 150 122 142 C146 138 158 140 169 146 L169 168 L11 168 Z",
+        fill: "far",
+        opacity: 0.36,
+      },
+      {
+        kind: "path",
+        d: "M11 130 C46 116 84 136 122 128 C146 123 158 126 169 132",
+        stroke: "paper",
+        strokeWidth: 1.7,
+        strokeLinecap: "round",
+      },
+
+      // Dune Layer 5 (Broad luminous barchan crest sweeping edge-to-edge, x=11..169)
+      {
+        kind: "path",
+        d: "M11 156 C52 168 92 140 132 148 C150 152 160 146 169 144 L169 194 L11 194 Z",
+        fill: "paper",
+        opacity: 0.99,
+      },
+      {
+        kind: "path",
+        d: "M11 165 C52 176 92 150 132 158 C150 162 160 156 169 154 L169 194 L11 194 Z",
+        fill: "accent",
+        opacity: 0.26,
+      },
+      {
+        kind: "path",
+        d: "M11 172 C52 182 92 158 132 165 C150 169 160 164 169 162 L169 194 L11 194 Z",
+        fill: "mid",
+        opacity: 0.3,
+      },
+      {
+        kind: "path",
+        d: "M11 156 C52 168 92 140 132 148 C150 152 160 146 169 144",
+        stroke: "paper",
+        strokeWidth: 1.8,
+        strokeLinecap: "round",
+      },
+
+      // Dune Layer 6 (Near sculptural gypsum dune with continuous S-ridge & cool shadow band, x=11..169)
+      {
+        kind: "path",
+        d: "M11 178 C48 160 88 186 128 176 C148 171 160 174 169 180 L169 229 L11 229 Z",
+        fill: "paper",
+      },
+      {
+        kind: "path",
+        d: "M11 188 C48 171 88 196 128 186 C148 181 160 184 169 190 L169 229 L11 229 Z",
         fill: "accent",
         opacity: 0.28,
       },
       {
         kind: "path",
-        d: "M114 144 Q146 130 169 144 L169 186 L118 186 C120 170 118 156 114 144 Z",
+        d: "M11 195 C48 179 88 203 128 193 C148 189 160 192 169 198 L169 229 L11 229 Z",
         fill: "mid",
         opacity: 0.34,
       },
-      { kind: "path", d: "M114 144 Q146 130 169 144", stroke: "paper", strokeWidth: 1.8, strokeLinecap: "round" },
-
-      // Dune Layer 6 (Near sculptural gypsum dune with crisp S-ridge & cool leeward shadow, y=168..214)
       {
         kind: "path",
-        d: "M11 180 Q54 156 102 180 Q140 198 169 178 L169 229 L11 229 Z",
+        d: "M11 178 C48 160 88 186 128 176 C148 171 160 174 169 180",
+        stroke: "paper",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+      },
+
+      // Dune Layer 7 (Foreground sweeping bone-white wave & continuous wind-sculpted ripples, x=11..169)
+      {
+        kind: "path",
+        d: "M11 208 C54 220 96 192 138 200 C154 203 162 198 169 196 L169 229 L11 229 Z",
         fill: "paper",
-        opacity: 0.99,
       },
       {
         kind: "path",
-        d: "M11 180 Q54 156 102 180 C82 192 66 208 54 229 L11 229 Z",
+        d: "M11 218 C54 228 96 203 138 211 C154 214 162 210 169 208 L169 229 L11 229 Z",
         fill: "accent",
         opacity: 0.3,
       },
       {
         kind: "path",
-        d: "M11 180 Q54 156 102 180 C88 190 76 204 68 222 L11 214 Z",
+        d: "M11 224 C54 232 96 211 138 218 C154 221 162 217 169 216 L169 229 L11 229 Z",
         fill: "mid",
         opacity: 0.36,
       },
-      { kind: "path", d: "M11 180 Q54 156 102 180", stroke: "paper", strokeWidth: 2, strokeLinecap: "round" },
-
-      // Dune Layer 7 (Foreground sweeping bone-white wave & fine wind-sculpted gypsum ripples, y=194..229)
       {
         kind: "path",
-        d: "M11 212 Q64 222 118 196 Q146 184 169 194 L169 229 L11 229 Z",
-        fill: "paper",
+        d: "M11 208 C54 220 96 192 138 200 C154 203 162 198 169 196",
+        stroke: "paper",
+        strokeWidth: 2,
+        strokeLinecap: "round",
+      },
+      // Delicate continuous edge-to-edge wind-ripple contours across the sunlit foreground gypsum slopes
+      {
+        kind: "path",
+        d: "M11 183 C48 166 88 191 128 181 C148 176 160 179 169 185",
+        stroke: "far",
+        strokeWidth: 1.1,
+        strokeLinecap: "round",
+        opacity: 0.44,
       },
       {
         kind: "path",
-        d: "M118 196 Q146 184 169 194 L169 229 L104 229 C110 216 114 205 118 196 Z",
-        fill: "accent",
-        opacity: 0.32,
+        d: "M11 213 C54 224 96 198 138 206 C154 209 162 204 169 202",
+        stroke: "far",
+        strokeWidth: 1.1,
+        strokeLinecap: "round",
+        opacity: 0.5,
       },
-      {
-        kind: "path",
-        d: "M118 196 Q146 184 169 194 L169 229 L124 229 C124 216 122 206 118 196 Z",
-        fill: "mid",
-        opacity: 0.38,
-      },
-      { kind: "path", d: "M118 196 Q146 184 169 194", stroke: "paper", strokeWidth: 2, strokeLinecap: "round" },
-      // Delicate wind-ripple contours across the sunlit foreground gypsum slopes
-      { kind: "path", d: "M114 176 Q138 172 162 176", stroke: "far", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.56 },
-      { kind: "path", d: "M20 218 Q56 213 92 218", stroke: "mid", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.42 },
-      { kind: "path", d: "M34 225 Q68 221 98 225", stroke: "accent", strokeWidth: 1.1, strokeLinecap: "round", opacity: 0.34 },
     ],
   },
 ] as const
