@@ -140,7 +140,16 @@ test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/boo
   assert.ok(body.includes('href="/books/#book-'))
   assert.ok(body.includes("TRAVEL ATLAS"))
   assert.ok(body.includes("Places &amp; Field Coordinates"))
+  assert.ok(body.includes('viewBox="0 0 1000 520"'), "Homepage should render the 1000x520 Natural Earth map")
+  assert.ok(body.includes("NATURAL EARTH I · 48/48 LOWER STATES · 50/63 PARKS"))
+  assert.ok(body.includes("Lower 48 States"))
+  assert.ok(body.includes("48 / 48"))
+  assert.ok(body.includes("National Parks"))
+  assert.ok(body.includes("50 / 63"))
   assert.ok(body.includes("Ready for Stamps"))
+  assert.ok(!body.includes("swiss-home-atlas-ocean"), "Homepage should no longer render the rough equirectangular ocean pattern")
+  assert.ok(!body.includes("EQUIRECTANGULAR PROJECTION"), "Homepage should no longer label the old rough projection")
+  assert.ok(!body.includes("<astro-island"), "Homepage static travel map must ship zero framework JS islands")
   assert.ok(body.includes("WORKSHOP · SELECTED PROJECTS"))
   assert.ok(body.includes("Bookbinder Studio"))
   assert.ok(body.includes("Travel Planner"))
@@ -191,6 +200,90 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   assert.ok(body.includes("PHOTO GALLERY"))
   assert.ok(body.includes("No stamps logged yet"))
   assert.ok(body.includes("https://travel.anujgtm.com"))
+
+  // Verify upgraded 3:4 WPA poster stylesheet and client island bundle are emitted cleanly
+  const cssMatch = body.match(/href="(\/_astro\/[^"]+\.css)"/)
+  assert.ok(cssMatch?.[1], "Travel page should link built Astro CSS stylesheet")
+  const cssRes = await fetchText(cssMatch[1])
+  assert.equal(cssRes.status, 200)
+  assert.ok(cssRes.body.includes("park-emblem--sky-night"), "Built CSS should include sky-mood classes")
+  assert.ok(cssRes.body.includes("color-mix(in oklab"), "Built CSS should use oklab 6-ink color mixing")
+
+  const islandMatch = body.match(/component-url="(\/_astro\/UnifiedTravelAtlas\.[^"]+\.js)"/)
+  assert.ok(islandMatch?.[1], "Travel page should hydrate UnifiedTravelAtlas island")
+  const islandRes = await fetchText(islandMatch[1])
+  assert.equal(islandRes.status, 200)
+  assert.ok(islandRes.body.includes("0 0 180 240"), "UnifiedTravelAtlas bundle should emit 3:4 WPA poster viewBox")
+  for (const bespokeCode of [
+    "ACAD",
+    "ARCH",
+    "BADL",
+    "BIBE",
+    "BISC",
+    "BLCA",
+    "BRCA",
+    "CANY",
+    "CARE",
+    "CAVE",
+    "CHIS",
+    "CONG",
+    "CRLA",
+    "CUVA",
+    "DENA",
+    "DEVA",
+    "DRTO",
+    "EVER",
+    "GAAR",
+    "GLAC",
+    "GLBA",
+    "GRBA",
+    "GRCA",
+    "GRSA",
+    "GRSM",
+    "GRTE",
+    "GUMO",
+    "HALE",
+    "HAVO",
+    "HOSP",
+    "INDU",
+    "ISRO",
+    "JEFF",
+    "JOTR",
+    "KATM",
+    "KEFJ",
+    "KICA",
+    "KOVA",
+    "LACL",
+    "LAVO",
+    "MACA",
+    "MEVE",
+    "MORA",
+    "NERI",
+    "NOCA",
+    "NPSA",
+    "OLYM",
+    "PEFO",
+    "PINN",
+    "REDW",
+    "ROMO",
+    "SAGU",
+    "SEQU",
+    "SHEN",
+    "THRO",
+    "VIIS",
+    "VOYA",
+    "WHSA",
+    "WICA",
+    "WRST",
+    "YELL",
+    "YOSE",
+    "ZION",
+  ]) {
+    assert.ok(
+      islandRes.body.includes(bespokeCode),
+      `UnifiedTravelAtlas bundle should include bespoke artwork "${bespokeCode}"`,
+    )
+  }
 })
 
 test("projects, blueprint plates, dossiers, about, work, and /now showcase Anuj's real engineering history and builds", async () => {

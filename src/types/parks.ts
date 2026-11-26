@@ -20,30 +20,145 @@ export type ParkRegion =
 
 export type ParkInset = "lower48" | "alaska" | "hawaii" | "virgin-islands" | "american-samoa"
 
-export type ParkEmblemKind =
-  | "arch"
-  | "gateway-arch"
-  | "half-dome"
-  | "geyser"
-  | "canyon"
-  | "hoodoos"
-  | "cathedral-peaks"
-  | "volcano-cone"
-  | "caldera-lake"
-  | "giant-trees"
-  | "saguaro"
-  | "joshua-tree"
-  | "dunes"
-  | "lighthouse-coast"
-  | "reef-island"
-  | "fort-island"
-  | "marsh-heron"
-  | "misty-ridges"
-  | "cavern"
-  | "cliff-dwelling"
-  | "monolith-fold"
-  | "hot-springs"
-  | "glacier-fjord"
+export type ParkCode =
+  | "ACAD"
+  | "ARCH"
+  | "BADL"
+  | "BIBE"
+  | "BISC"
+  | "BLCA"
+  | "BRCA"
+  | "CANY"
+  | "CARE"
+  | "CAVE"
+  | "CHIS"
+  | "CONG"
+  | "CRLA"
+  | "CUVA"
+  | "DENA"
+  | "DEVA"
+  | "DRTO"
+  | "EVER"
+  | "GAAR"
+  | "GLAC"
+  | "GLBA"
+  | "GRBA"
+  | "GRCA"
+  | "GRSA"
+  | "GRSM"
+  | "GRTE"
+  | "GUMO"
+  | "HALE"
+  | "HAVO"
+  | "HOSP"
+  | "INDU"
+  | "ISRO"
+  | "JEFF"
+  | "JOTR"
+  | "KATM"
+  | "KEFJ"
+  | "KICA"
+  | "KOVA"
+  | "LACL"
+  | "LAVO"
+  | "MACA"
+  | "MEVE"
+  | "MORA"
+  | "NERI"
+  | "NOCA"
+  | "NPSA"
+  | "OLYM"
+  | "PEFO"
+  | "PINN"
+  | "REDW"
+  | "ROMO"
+  | "SAGU"
+  | "SEQU"
+  | "SHEN"
+  | "THRO"
+  | "VIIS"
+  | "VOYA"
+  | "WHSA"
+  | "WICA"
+  | "WRST"
+  | "YELL"
+  | "YOSE"
+  | "ZION"
+
+export type ParkArtworkInk =
+  | "sky-top"
+  | "sky-bottom"
+  | "far"
+  | "mid"
+  | "ink"
+  | "deep"
+  | "accent"
+  | "accent-soft"
+  | "tertiary"
+  | "tertiary-soft"
+  | "paper"
+  | "none"
+
+export type ParkArtworkSkyMood = "dawn" | "noon" | "dusk" | "night" | "mist"
+
+type ParkArtworkPaint = {
+  readonly fill?: ParkArtworkInk
+  readonly stroke?: ParkArtworkInk
+  readonly strokeWidth?: number
+  readonly strokeLinecap?: "round" | "butt" | "square"
+  readonly strokeLinejoin?: "round" | "miter" | "bevel"
+  readonly strokeDasharray?: string
+  readonly opacity?: number
+}
+
+export type ParkArtworkNode =
+  | (ParkArtworkPaint & {
+      readonly kind: "path"
+      readonly d: string
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "circle"
+      readonly cx: number
+      readonly cy: number
+      readonly r: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "ellipse"
+      readonly cx: number
+      readonly cy: number
+      readonly rx: number
+      readonly ry: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "rect"
+      readonly x: number
+      readonly y: number
+      readonly width: number
+      readonly height: number
+      readonly rx?: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "line"
+      readonly x1: number
+      readonly y1: number
+      readonly x2: number
+      readonly y2: number
+    })
+  | (ParkArtworkPaint & {
+      readonly kind: "polygon"
+      readonly points: string
+    })
+
+export type ParkArtworkSpec = {
+  readonly code: ParkCode
+  readonly subject: string
+  readonly accentLight: string
+  readonly accentDark: string
+  readonly tertiaryLight?: string
+  readonly tertiaryDark?: string
+  readonly skyMood: ParkArtworkSkyMood
+  readonly nodes: readonly ParkArtworkNode[]
+}
 
 export type ParkPhoto = {
   readonly src: string
@@ -60,12 +175,11 @@ export type ParkJournalEntry = {
 }
 
 export type NationalPark = {
-  readonly code: string
+  readonly code: ParkCode
   readonly name: string
   readonly states: readonly string[]
   readonly region: ParkRegion
   readonly biome: ParkBiome
-  readonly emblem: ParkEmblemKind
   readonly inset: ParkInset
   readonly coordinates: Coordinates
   readonly highPointFt: number
