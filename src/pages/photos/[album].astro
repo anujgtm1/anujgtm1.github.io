@@ -1,0 +1,83 @@
+---
+import { getCollection } from "astro:content"
+import PageLayout from "@layouts/PageLayout.astro"
+import TopLayout from "@layouts/TopLayout.astro"
+import BottomLayout from "@layouts/BottomLayout.astro"
+import PhotoGallery from "@components/PhotoGallery"
+import { buildPhotoAlbums, sortPhotos } from "@lib/photos"
+import { formatShortDate } from "@lib/utils"
+import type { PhotoAlbum, PhotoItem } from "@types"
+
+export async function getStaticPaths() {
+  const rawPhotos = (await getCollection("photos")).filter((entry) => !entry.data.draft)
+
+  const sortedPhotos: readonly PhotoItem[] = sortPhotos(
+    rawPhotos.map((entry) => ({
+      slug: entry.slug,
+      title: entry.data.title,
+      imageUrl: entry.data.imageUrl,
+      thumbnailUrl: entry.data.thumbnailUrl,
+      alt: entry.data.alt,
+      caption: entry.data.caption,
+      date: formatShortDate(entry.data.date),
+      dateIso: entry.data.date.toISOString(),
+      dateMs: entry.data.date.getTime(),
+      location: entry.data.location,
+      album: entry.data.album,
+      category: entry.data.category,
+      camera: entry.data.camera,
+      aspectRatio: entry.data.aspectRatio,
+      featured: entry.data.featured,
+      tags: entry.data.tags,
+      linkedHref: entry.data.linkedHref,
+      linkedLabel: entry.data.linkedLabel,
+      draft: entry.data.draft,
+    })),
+  )
+
+  const albums = buildPhotoAlbums(sortedPhotos)
+
+  return albums.map((album) => ({
+    params: { album: album.slug },
+    props: { album, totalAlbums: albums.length },
+  }))
+}
+
+type Props = {
+  readonly album: PhotoAlbum
+  readonly totalAlbums: number
+}
+
+const { album } = Astro.props
+
+const frameLabel = `${album.count} ${album.count === 1 ? "Frame" : "Frames"}`
+const description =
+  album.locations.length > 0
+    ? `${album.name} photo album (${frameLabel.toLowerCase()}) — ${album.locations.join(", ")}.`
+    : `${album.name} photo album — ${frameLabel.toLowerCase()}${album.dateRange ? `, ${album.dateRange}` : ""}.`
+---
+
+<PageLayout title={`${album.name} — Photos`} description={description}>
+  <TopLayout>
+    <div class="space-y-4 pb-4">
+      <a
+        href="/photos/"
+        class="inline-flex w-fit items-center gap-2 text-xs font-mono uppercase tracking-wider text-ink-muted hover:text-accent transition-colors"
+      >
+        <span aria-hidden="true">←</span>
+        <span>All Albums</span>
+      </a>
+
+      <div class="space-y-2">
+        <h1 class="editorial-title text-ink">{album.name}</h1>
+        <p class="font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
+          {[frameLabel, album.dateRange, ...album.locations].filter(Boolean).join(" · ")}
+        </p>
+      </div>
+    </div>
+  </TopLayout>
+
+  <BottomLayout>
+    <PhotoGallery client:load photos={album.photos} hideAlbumFilter={true} />
+  </BottomLayout>
+</PageLayout>

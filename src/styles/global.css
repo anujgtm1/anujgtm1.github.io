@@ -438,6 +438,57 @@ dialog.swiss-lightbox:modal {
   max-block-size: min(92dvh, 58rem);
 }
 
+.lightbox-dialog:modal {
+  inline-size: min(95dvw, 72rem);
+  max-block-size: min(92dvh, 58rem);
+}
+
+/* Balanced wrapping pill row (modern-web-guidance css-layout) */
+.filter-pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  flex-wrap: balance;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Editorial photo masonry (modern-web-guidance css-layout) */
+.photo-masonry {
+  columns: 1;
+  column-gap: 1.25rem;
+}
+
+@media (min-width: 640px) {
+  .photo-masonry {
+    columns: 2;
+  }
+}
+
+@media (min-width: 1024px) {
+  .photo-masonry {
+    columns: 3;
+  }
+}
+
+.photo-masonry-item {
+  break-inside: avoid;
+  margin-block-end: 1.25rem;
+}
+
+@supports (grid-template-rows: masonry) {
+  .photo-masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr));
+    grid-template-rows: masonry;
+    gap: 1.25rem;
+    columns: unset;
+  }
+
+  .photo-masonry-item {
+    margin-block-end: 0;
+  }
+}
+
 /* Editorial Reading Progress Bar (scroll-driven animation + fallback) */
 .reading-progress {
   position: fixed;
@@ -476,6 +527,14 @@ dialog.swiss-lightbox:modal {
 
 .editorial-card {
   transition: border-color 180ms ease, background-color 180ms ease;
+}
+
+.photo-card {
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+
+.album-stack-sheet {
+  transition: background-color 180ms ease;
 }
 
 .editorial-photo-frame {
@@ -522,6 +581,43 @@ dialog.swiss-lightbox:modal {
 
   .editorial-card:hover {
     transform: translateY(-2px);
+  }
+
+  .photo-card {
+    transition:
+      transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 180ms ease,
+      box-shadow 220ms ease;
+  }
+
+  .photo-card:hover,
+  .photo-card:focus-visible,
+  .group:hover .photo-card,
+  .group:focus-visible .photo-card {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 32px -18px rgb(19 18 16 / 0.36);
+  }
+
+  .photo-card .photo-card-img {
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .photo-card:hover .photo-card-img,
+  .photo-card:focus-visible .photo-card-img,
+  .group:hover .photo-card .photo-card-img,
+  .group:focus-visible .photo-card .photo-card-img {
+    transform: scale(1.025);
+  }
+
+  .album-stack-sheet {
+    transition:
+      transform 240ms cubic-bezier(0.22, 1, 0.36, 1),
+      background-color 180ms ease;
+  }
+
+  .group:hover .album-stack-sheet,
+  .group:focus-visible .album-stack-sheet {
+    transform: translateY(-2px) rotate(-0.8deg);
   }
 
   .editorial-photo {
