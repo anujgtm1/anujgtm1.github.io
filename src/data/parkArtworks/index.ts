@@ -38,6 +38,7 @@ export const PARK_ARTWORKS = {
   CANY: requireArtwork("CANY"),
   CARE: requireArtwork("CARE"),
   CAVE: requireArtwork("CAVE"),
+  CHIR: requireArtwork("CHIR"),
   CHIS: requireArtwork("CHIS"),
   CONG: requireArtwork("CONG"),
   CRLA: requireArtwork("CRLA"),

@@ -1,9 +1,9 @@
 import type { NationalPark } from "../types/parks.ts"
 
 /**
- * Complete catalog of all 63 U.S. National Parks with real geographic coordinates,
- * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (50/63 visited;
- * 49/51 in the Lower 48 + Virgin Islands).
+ * Complete catalog of all 64 U.S. National Parks with real geographic coordinates,
+ * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (50/64 visited;
+ * 50/52 in the Lower 48, 0/12 outside the Lower 48).
  */
 export const NATIONAL_PARKS: readonly NationalPark[] = [
   {
@@ -209,6 +209,23 @@ export const NATIONAL_PARKS: readonly NationalPark[] = [
     pigmentLight: "#2D6472",
     pigmentDark: "#74B4C4",
     landscapeNote: "Five isolated Pacific islands, kelp forests, and endemic island foxes.",
+  },
+  {
+    code: "CHIR",
+    name: "Chiricahua",
+    states: ["AZ"],
+    region: "Southwest",
+    biome: "Arid & Canyon",
+    inset: "lower48",
+    coordinates: { lat: 32.01, lng: -109.33 },
+    highPointFt: 7310,
+    lowPointFt: 5124,
+    acres: 12025,
+    established: 2026,
+    visited: true,
+    pigmentLight: "#9D573B",
+    pigmentDark: "#DA8F6E",
+    landscapeNote: "Wonderland of Rocks: rhyolite hoodoos and balanced spires in a Madrean sky island.",
   },
   {
     code: "CONG",
@@ -953,7 +970,7 @@ export const NATIONAL_PARKS: readonly NationalPark[] = [
     lowPointFt: 0,
     acres: 15053,
     established: 1956,
-    visited: true,
+    visited: false,
     pigmentLight: "#1F6D72",
     pigmentDark: "#69BFC4",
     landscapeNote: "Trunk Bay coral gardens, Taíno petroglyphs, and St. John hillside trails.",

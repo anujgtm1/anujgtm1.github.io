@@ -31,6 +31,7 @@ export type ParkCode =
   | "CANY"
   | "CARE"
   | "CAVE"
+  | "CHIR"
   | "CHIS"
   | "CONG"
   | "CRLA"
