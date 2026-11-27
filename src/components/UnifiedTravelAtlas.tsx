@@ -116,32 +116,34 @@ function VintageStampSeal(props: {
   )
 }
 
-function PostalCancelMark(props: { readonly code: string }) {
+function PostalCancelMark() {
   return (
     <svg
-      viewBox="0 0 84 44"
-      class="pointer-events-none absolute top-7 right-1.5 z-20 w-14 sm:w-16 -rotate-12 text-ink opacity-20 transition-opacity group-hover:opacity-35"
+      viewBox="0 0 88 44"
+      class="pointer-events-none absolute top-7 right-1.5 z-20 w-16 sm:w-[4.5rem] -rotate-12 text-ink opacity-25 transition-opacity group-hover:opacity-40"
       aria-hidden="true"
     >
-      <circle cx="20" cy="22" r="14.5" fill="none" stroke="currentColor" stroke-width="1.2" />
-      <circle cx="20" cy="22" r="11" fill="none" stroke="currentColor" stroke-width="0.65" stroke-dasharray="2 1.5" />
+      <circle cx="21" cy="22" r="16.5" fill="none" stroke="currentColor" stroke-width="1.2" />
+      <circle cx="21" cy="22" r="13.2" fill="none" stroke="currentColor" stroke-width="0.65" stroke-dasharray="2 1.5" />
+      <line x1="10" y1="17.2" x2="32" y2="17.2" stroke="currentColor" stroke-width="0.6" />
+      <line x1="10" y1="26.8" x2="32" y2="26.8" stroke="currentColor" stroke-width="0.6" />
       <text
-        x="20"
-        y="24.5"
+        x="21"
+        y="23.8"
         text-anchor="middle"
         fill="currentColor"
-        font-size="6.4"
+        font-size="4.8"
         font-weight="700"
         font-family="JetBrains Mono, monospace"
-        letter-spacing="0.6"
+        letter-spacing="0.35"
       >
-        {props.code}
+        VISITED
       </text>
       <g fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">
-        <path d="M38 12 Q45 9 52 12 T66 12 T80 12" />
-        <path d="M38 19 Q45 16 52 19 T66 19 T80 19" />
-        <path d="M38 26 Q45 23 52 26 T66 26 T80 26" />
-        <path d="M38 33 Q45 30 52 33 T66 33 T80 33" />
+        <path d="M41 12 Q48 9 55 12 T69 12 T83 12" />
+        <path d="M41 19 Q48 16 55 19 T69 19 T83 19" />
+        <path d="M41 26 Q48 23 55 26 T69 26 T83 26" />
+        <path d="M41 33 Q48 30 55 33 T69 33 T83 33" />
       </g>
     </svg>
   )
@@ -165,7 +167,7 @@ function ParkStampTile(props: {
         <span aria-hidden="true" class="park-stamp-paper" />
 
         <Show when={props.park.visited}>
-          <PostalCancelMark code={props.park.code} />
+          <PostalCancelMark />
         </Show>
 
         {/* Postage header strip inside stamp paper */}
