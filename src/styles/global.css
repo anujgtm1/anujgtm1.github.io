@@ -729,10 +729,43 @@ dialog.swiss-lightbox:modal {
   }
 }
 
-.park-emblem--stamp {
+.park-emblem--stamp,
+.park-stamp-card {
   --emblem-stamp-shadow: rgb(19 18 16 / 0.14);
   --emblem-stamp-shadow-hover: rgb(19 18 16 / 0.24);
   filter: drop-shadow(0 2px 6px var(--emblem-stamp-shadow));
+}
+
+/* Perforated postage-stamp paper backing (kept on decorative sibling so text is never masked/cropped) */
+.park-stamp-paper {
+  --stamp-r: 4px;
+  --stamp-step: 13px;
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-color: var(--surface-elevated);
+  -webkit-mask-image:
+    radial-gradient(circle at 50% 0, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 50% 100%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 0 50%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 100% 50%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px));
+  -webkit-mask-position: top left, bottom left, top left, top right;
+  -webkit-mask-size: var(--stamp-step) 100%, var(--stamp-step) 100%, 100% var(--stamp-step), 100% var(--stamp-step);
+  -webkit-mask-repeat: round no-repeat, round no-repeat, no-repeat round, no-repeat round;
+  -webkit-mask-composite: source-in, source-in, source-in;
+  mask-image:
+    radial-gradient(circle at 50% 0, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 50% 100%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 0 50%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px)),
+    radial-gradient(circle at 100% 50%, transparent var(--stamp-r), #000 calc(var(--stamp-r) + 0.5px));
+  mask-position: top left, bottom left, top left, top right;
+  mask-size: var(--stamp-step) 100%, var(--stamp-step) 100%, 100% var(--stamp-step), 100% var(--stamp-step);
+  mask-repeat: round no-repeat, round no-repeat, no-repeat round, no-repeat round;
+  mask-composite: intersect;
+}
+
+.park-stamp-card--unvisited .park-stamp-paper {
+  opacity: 0.78;
 }
 
 .park-emblem--unvisited {
@@ -746,18 +779,21 @@ dialog.swiss-lightbox:modal {
 }
 
 @media (prefers-color-scheme: dark) {
-  .park-emblem--stamp {
+  .park-emblem--stamp,
+  .park-stamp-card {
     --emblem-stamp-shadow: rgb(0 0 0 / 0.36);
     --emblem-stamp-shadow-hover: rgb(0 0 0 / 0.52);
   }
 }
 
-:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem--stamp {
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem--stamp,
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-stamp-card {
   --emblem-stamp-shadow: rgb(0 0 0 / 0.36);
   --emblem-stamp-shadow-hover: rgb(0 0 0 / 0.52);
 }
 
-:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem--stamp {
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem--stamp,
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-stamp-card {
   --emblem-stamp-shadow: rgb(19 18 16 / 0.14);
   --emblem-stamp-shadow-hover: rgb(19 18 16 / 0.24);
 }
@@ -784,8 +820,15 @@ dialog.swiss-lightbox:modal {
   }
 
   .park-emblem--stamp,
+  .park-stamp-card,
   .park-emblem--unvisited.park-emblem--stamp {
     filter: none;
+  }
+
+  .park-stamp-paper {
+    -webkit-mask: none;
+    mask: none;
+    border: 1px solid CanvasText;
   }
 
   .park-emblem--unvisited {
@@ -816,13 +859,26 @@ dialog.swiss-lightbox:modal {
     transform: translateY(-3px);
   }
 
-  .park-emblem--stamp {
-    transition: filter 180ms ease;
+  .park-emblem--stamp,
+  .park-stamp-card {
+    transition: filter 180ms ease, transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  .park-stamp-card:hover,
+  .park-stamp-card:focus-visible,
   .park-poster-tile:hover .park-emblem--stamp,
   .park-poster-tile:focus-visible .park-emblem--stamp {
-    filter: drop-shadow(0 6px 12px var(--emblem-stamp-shadow-hover));
+    filter: drop-shadow(0 8px 14px var(--emblem-stamp-shadow-hover));
+  }
+
+  .park-stamp-item:nth-child(odd) .park-stamp-card:hover,
+  .park-stamp-item:nth-child(odd) .park-stamp-card:focus-visible {
+    transform: translateY(-4px) rotate(-1.1deg);
+  }
+
+  .park-stamp-item:nth-child(even) .park-stamp-card:hover,
+  .park-stamp-item:nth-child(even) .park-stamp-card:focus-visible {
+    transform: translateY(-4px) rotate(1.1deg);
   }
 
   .park-poster-tile:hover .park-emblem--unvisited.park-emblem--stamp,

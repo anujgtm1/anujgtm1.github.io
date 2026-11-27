@@ -116,6 +116,102 @@ function VintageStampSeal(props: {
   )
 }
 
+function PostalCancelMark(props: { readonly code: string }) {
+  return (
+    <svg
+      viewBox="0 0 84 44"
+      class="pointer-events-none absolute top-7 right-1.5 z-20 w-14 sm:w-16 -rotate-12 text-ink opacity-20 transition-opacity group-hover:opacity-35"
+      aria-hidden="true"
+    >
+      <circle cx="20" cy="22" r="14.5" fill="none" stroke="currentColor" stroke-width="1.2" />
+      <circle cx="20" cy="22" r="11" fill="none" stroke="currentColor" stroke-width="0.65" stroke-dasharray="2 1.5" />
+      <text
+        x="20"
+        y="24.5"
+        text-anchor="middle"
+        fill="currentColor"
+        font-size="6.4"
+        font-weight="700"
+        font-family="JetBrains Mono, monospace"
+        letter-spacing="0.6"
+      >
+        {props.code}
+      </text>
+      <g fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">
+        <path d="M38 12 Q45 9 52 12 T66 12 T80 12" />
+        <path d="M38 19 Q45 16 52 19 T66 19 T80 19" />
+        <path d="M38 26 Q45 23 52 26 T66 26 T80 26" />
+        <path d="M38 33 Q45 30 52 33 T66 33 T80 33" />
+      </g>
+    </svg>
+  )
+}
+
+function ParkStampTile(props: {
+  readonly park: ProjectedPark
+  readonly idPrefix: string
+  readonly hasNotes: boolean
+  readonly onSelect: (park: ProjectedPark) => void
+}) {
+  return (
+    <li class="park-stamp-item">
+      <button
+        type="button"
+        onClick={() => props.onSelect(props.park)}
+        class={`park-poster-tile park-stamp-card group relative w-full h-full flex flex-col items-center text-center px-4 pt-3.5 pb-3.5 sm:px-5 sm:pt-4 sm:pb-4 ${
+          props.park.visited ? "" : "park-stamp-card--unvisited"
+        }`}
+      >
+        <span aria-hidden="true" class="park-stamp-paper" />
+
+        <Show when={props.park.visited}>
+          <PostalCancelMark code={props.park.code} />
+        </Show>
+
+        {/* Postage header strip inside stamp paper */}
+        <div class="relative z-10 mb-1.5 flex w-full items-baseline justify-between font-mono text-[8.5px] uppercase tracking-[0.2em]">
+          <span class={props.park.visited ? "text-ink opacity-75 font-semibold" : "text-ink-muted opacity-65"}>
+            USA
+          </span>
+          <span class="text-ink-muted opacity-70">{props.park.code}</span>
+        </div>
+
+        {/* Framed WPA artwork inset */}
+        <div class="relative z-10 w-full aspect-[152/212]">
+          <ParkEmblem
+            park={props.park}
+            idPrefix={props.idPrefix}
+            variant="inset"
+            decorative={true}
+          />
+          <Show when={props.hasNotes}>
+            <span
+              class="absolute top-1.5 right-1.5 size-2 rounded-full bg-accent ring-2 ring-surface-elevated"
+              aria-hidden="true"
+            />
+          </Show>
+        </div>
+
+        {/* Park name & state inside stamp paper (no dates) */}
+        <div class="relative z-10 mt-2.5 flex flex-1 flex-col justify-center gap-1 w-full">
+          <p
+            class={`font-serif text-[13px] sm:text-sm font-medium leading-tight line-clamp-2 ${
+              props.park.visited
+                ? "text-ink group-hover:text-accent transition-colors"
+                : "text-ink-muted"
+            }`}
+          >
+            {props.park.name}
+          </p>
+          <p class="font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink-muted">
+            {props.park.states.join(" / ")}
+          </p>
+        </div>
+      </button>
+    </li>
+  )
+}
+
 export default function UnifiedTravelAtlas(props: Props) {
   const allParks = getProjectedParks()
   const summary = computeParkSurveySummary(allParks, US_STATES)
@@ -449,7 +545,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   value={query()}
                   onInput={(e) => setQuery(e.currentTarget.value)}
                   placeholder="Filter park or state…"
-                  class="w-full sm:w-52 rounded-md bg-surface/80 px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-muted/75 focus:outline-none focus:ring-2 focus:ring-accent"
+                  class="w-full sm:w-56 rounded-md bg-surface/80 px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-muted/75 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
@@ -1134,46 +1230,16 @@ export default function UnifiedTravelAtlas(props: Props) {
                       >
                         <ul
                           role="list"
-                          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 sm:gap-6"
+                          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6"
                         >
                           <For each={selectedStateParks()}>
                             {(park) => (
-                              <li>
-                                <button
-                                  type="button"
-                                  onClick={() => openParkModal(park)}
-                                  class="park-poster-tile group w-full h-full flex flex-col items-center text-center p-1"
-                                >
-                                  <div class="relative w-full aspect-[3/4] max-w-[144px]">
-                                    <ParkEmblem
-                                      park={park}
-                                      idPrefix="state-tray"
-                                      variant="stamp"
-                                      decorative={true}
-                                    />
-                                    <Show when={hasPersonalNotes(park)}>
-                                      <span
-                                        class="absolute top-2 right-2 size-2 rounded-full bg-accent ring-2 ring-bg"
-                                        aria-hidden="true"
-                                      />
-                                    </Show>
-                                  </div>
-                                  <div class="mt-2.5 space-y-0.5 w-full">
-                                    <p
-                                      class={`font-serif text-sm font-medium leading-snug ${
-                                        park.visited
-                                          ? "text-ink group-hover:text-accent transition-colors"
-                                          : "text-ink-muted"
-                                      }`}
-                                    >
-                                      {park.name}
-                                    </p>
-                                    <p class="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
-                                      {`${park.states.join("/")} · ${park.established}`}
-                                    </p>
-                                  </div>
-                                </button>
-                              </li>
+                              <ParkStampTile
+                                park={park}
+                                idPrefix="state-tray"
+                                hasNotes={hasPersonalNotes(park)}
+                                onSelect={openParkModal}
+                              />
                             )}
                           </For>
                         </ul>
@@ -1208,47 +1274,16 @@ export default function UnifiedTravelAtlas(props: Props) {
           >
             <ul
               role="list"
-              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 sm:gap-6"
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6"
             >
               <For each={visibleParks()}>
                 {(park) => (
-                  <li>
-                    <button
-                      type="button"
-                      onClick={() => openParkModal(park)}
-                      class="park-poster-tile group w-full h-full flex flex-col items-center text-center p-1"
-                    >
-                      <div class="relative w-full aspect-[3/4]">
-                        <ParkEmblem
-                          park={park}
-                          idPrefix="poster"
-                          variant="stamp"
-                          decorative={true}
-                        />
-                        <Show when={hasPersonalNotes(park)}>
-                          <span
-                            class="absolute top-2 right-2 size-2 rounded-full bg-accent ring-2 ring-bg"
-                            aria-hidden="true"
-                          />
-                        </Show>
-                      </div>
-
-                      <div class="mt-2.5 space-y-0.5 w-full">
-                        <p
-                          class={`font-serif text-sm font-medium leading-snug line-clamp-2 ${
-                            park.visited
-                              ? "text-ink group-hover:text-accent transition-colors"
-                              : "text-ink-muted"
-                          }`}
-                        >
-                          {park.name}
-                        </p>
-                        <p class="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
-                          {`${park.states.join("/")} · ${park.established}`}
-                        </p>
-                      </div>
-                    </button>
-                  </li>
+                  <ParkStampTile
+                    park={park}
+                    idPrefix="poster"
+                    hasNotes={hasPersonalNotes(park)}
+                    onSelect={openParkModal}
+                  />
                 )}
               </For>
             </ul>

@@ -7,7 +7,7 @@ type Props = {
   readonly class?: string
   readonly decorative?: boolean
   readonly idPrefix?: string
-  readonly variant?: "plate" | "stamp"
+  readonly variant?: "plate" | "stamp" | "inset"
 }
 
 const STAMP_TOP_BOTTOM_PERFS: readonly number[] = [
@@ -145,7 +145,9 @@ export default function ParkEmblem(props: Props) {
   const clipId = () => `${prefix()}-clip-${props.park.code}`
   const skyGradId = () => `${prefix()}-sky-${props.park.code}`
   const stampMaskId = () => `${prefix()}-stamp-${props.park.code}`
-  const isStamp = () => (props.variant ?? "plate") === "stamp"
+  const variant = () => props.variant ?? "plate"
+  const isStamp = () => variant() === "stamp"
+  const isInset = () => variant() === "inset"
 
   const skyClass = () => `park-emblem--sky-${artwork().skyMood}`
 
@@ -163,7 +165,7 @@ export default function ParkEmblem(props: Props) {
 
   return (
     <svg
-      viewBox="0 0 180 240"
+      viewBox={isInset() ? "14 14 152 212" : "0 0 180 240"}
       class={`park-emblem block h-full w-full ${skyClass()} ${
         isStamp() ? "park-emblem--stamp" : ""
       } ${props.park.visited ? "" : "park-emblem--unvisited"} ${props.class ?? ""}`}
@@ -174,7 +176,7 @@ export default function ParkEmblem(props: Props) {
     >
       <defs>
         <clipPath id={clipId()}>
-          <rect x="14" y="14" width="152" height="212" rx={isStamp() ? 4 : 6} />
+          <rect x="14" y="14" width="152" height="212" rx={isInset() ? 2 : isStamp() ? 4 : 6} />
         </clipPath>
         <linearGradient id={skyGradId()} x1="0" y1="0" x2="0" y2="1">
           <stop offset="0%" stop-color="var(--emblem-sky-top)" />
@@ -207,31 +209,35 @@ export default function ParkEmblem(props: Props) {
       </defs>
 
       <g mask={isStamp() ? `url(#${stampMaskId()})` : undefined}>
-        {/* Outer archival WPA poster mat frame or perforated postage-stamp paper */}
-        <rect
-          x="4"
-          y="4"
-          width="172"
-          height="232"
-          rx={isStamp() ? 0 : 10}
-          fill="var(--emblem-frame)"
-          stroke={isStamp() ? "none" : "var(--emblem-border)"}
-          stroke-width={isStamp() ? undefined : "1.5"}
-          stroke-dasharray={isStamp() || props.park.visited ? undefined : "5 3"}
-        />
+        {!isInset() && (
+          <>
+            {/* Outer archival WPA poster mat frame or perforated postage-stamp paper */}
+            <rect
+              x="4"
+              y="4"
+              width="172"
+              height="232"
+              rx={isStamp() ? 0 : 10}
+              fill="var(--emblem-frame)"
+              stroke={isStamp() ? "none" : "var(--emblem-border)"}
+              stroke-width={isStamp() ? undefined : "1.5"}
+              stroke-dasharray={isStamp() || props.park.visited ? undefined : "5 3"}
+            />
 
-        {/* Subtle outer letterpress groove */}
-        <rect
-          x="9.5"
-          y="9.5"
-          width="161"
-          height="221"
-          rx={isStamp() ? 3 : 8}
-          fill="none"
-          stroke="var(--emblem-border)"
-          stroke-width="0.65"
-          opacity="0.38"
-        />
+            {/* Subtle outer letterpress groove */}
+            <rect
+              x="9.5"
+              y="9.5"
+              width="161"
+              height="221"
+              rx={isStamp() ? 3 : 8}
+              fill="none"
+              stroke="var(--emblem-border)"
+              stroke-width="0.65"
+              opacity="0.38"
+            />
+          </>
+        )}
 
         {/* Clipped inner artwork plate */}
         <g clip-path={`url(#${clipId()})`}>
@@ -241,15 +247,15 @@ export default function ParkEmblem(props: Props) {
 
         {/* Inner hairline mat impression */}
         <rect
-          x="14"
-          y="14"
-          width="152"
-          height="212"
-          rx={isStamp() ? 4 : 6}
+          x={isInset() ? "14.5" : "14"}
+          y={isInset() ? "14.5" : "14"}
+          width={isInset() ? "151" : "152"}
+          height={isInset() ? "211" : "212"}
+          rx={isInset() ? 2 : isStamp() ? 4 : 6}
           fill="none"
           stroke="var(--emblem-border)"
           stroke-width="1"
-          stroke-dasharray={isStamp() && !props.park.visited ? "4 3" : undefined}
+          stroke-dasharray={(isStamp() || isInset()) && !props.park.visited ? "4 3" : undefined}
           opacity="0.78"
         />
       </g>

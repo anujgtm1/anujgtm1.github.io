@@ -206,6 +206,7 @@ test("travel atlas renders lean, borderless World / U.S. atlas with perforated s
   const cssRes = await fetchText(cssMatch[1])
   assert.equal(cssRes.status, 200)
   assert.ok(cssRes.body.includes("park-emblem--stamp"), "Built CSS should include stamp poster frame styling")
+  assert.ok(cssRes.body.includes("park-stamp-paper"), "Built CSS should include perforated stamp paper styling")
   assert.ok(cssRes.body.includes("park-emblem--sky-night"), "Built CSS should include sky-mood classes")
   assert.ok(cssRes.body.includes("color-mix(in oklab"), "Built CSS should use oklab 6-ink color mixing")
 
@@ -214,7 +215,7 @@ test("travel atlas renders lean, borderless World / U.S. atlas with perforated s
   const islandRes = await fetchText(islandMatch[1])
   assert.equal(islandRes.status, 200)
   assert.ok(islandRes.body.includes("0 0 180 240"), "UnifiedTravelAtlas bundle should emit 3:4 WPA poster viewBox")
-  assert.ok(islandRes.body.includes("stamp"), "UnifiedTravelAtlas bundle should emit stamp poster variant")
+  assert.ok(islandRes.body.includes("park-stamp-card"), "UnifiedTravelAtlas bundle should render postal stamp cards")
   for (const bespokeCode of [
     "ACAD",
     "ARCH",
