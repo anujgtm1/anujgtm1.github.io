@@ -14,12 +14,8 @@ const projects = (await getCollection("projects"))
 
 <PageLayout title={PROJECTS.TITLE} description={PROJECTS.DESCRIPTION}>
   <TopLayout>
-    <div class="space-y-3 pb-2">
-      <p class="editorial-kicker">Engineering Dossiers · {projects.length} Builds</p>
+    <div class="pb-2">
       <h1 class="editorial-title text-ink">{PROJECTS.TITLE}</h1>
-      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {PROJECTS.DESCRIPTION}
-      </p>
     </div>
   </TopLayout>
 
@@ -29,7 +25,7 @@ const projects = (await getCollection("projects"))
         projects.map((project, idx) => {
           const isReversed = idx % 2 === 1
           return (
-            <li class="border-t border-border pt-10 pb-12 last:pb-2">
+            <li class="pt-6 pb-14 last:pb-2">
               <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
                 <a
                   href={`/projects/${project.slug}/`}
@@ -51,14 +47,12 @@ const projects = (await getCollection("projects"))
                       {String(idx + 1).padStart(2, "0")}
                     </span>
                     <span aria-hidden="true" class="h-px w-6 bg-border self-center" />
-                    <span class="text-atlas font-medium">{project.data.status}</span>
                     {project.data.role && (
                       <>
-                        <span aria-hidden="true">·</span>
                         <span>{project.data.role}</span>
+                        <span aria-hidden="true">·</span>
                       </>
                     )}
-                    <span aria-hidden="true">·</span>
                     <time datetime={project.data.date.toISOString()}>
                       {formatShortDate(project.data.date)}
                     </time>
@@ -81,34 +75,38 @@ const projects = (await getCollection("projects"))
                     {project.data.tags.join(" · ")}
                   </p>
 
-                  <div class="flex flex-wrap items-center gap-6 pt-2">
-                    <a
-                      href={`/projects/${project.slug}/`}
-                      class="text-sm font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
-                    >
-                      Read dossier →
-                    </a>
-                    {project.data.demoUrl && (
-                      <a
-                        href={project.data.demoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="font-mono text-xs uppercase tracking-wider text-atlas hover:text-accent transition-colors"
-                      >
-                        Live app ↗
-                      </a>
-                    )}
-                    {project.data.repoUrl && (
-                      <a
-                        href={project.data.repoUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="font-mono text-xs uppercase tracking-wider text-ink-muted hover:text-accent transition-colors"
-                      >
-                        GitHub ↗
-                      </a>
-                    )}
-                  </div>
+                  {(project.data.demoUrl || project.data.repoUrl) && (
+                    <div class="flex flex-wrap items-center gap-3 pt-2">
+                      {project.data.demoUrl && (
+                        <a
+                          href={project.data.demoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${project.data.title} live app`}
+                          title="Live app"
+                          class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-atlas hover:text-accent transition-colors"
+                        >
+                          <svg class="size-4 fill-current" aria-hidden="true">
+                            <use href="/ui.svg#globe"></use>
+                          </svg>
+                        </a>
+                      )}
+                      {project.data.repoUrl && (
+                        <a
+                          href={project.data.repoUrl}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          aria-label={`${project.data.title} on GitHub`}
+                          title="GitHub"
+                          class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-ink-muted hover:text-accent transition-colors"
+                        >
+                          <svg class="size-4 fill-current" aria-hidden="true">
+                            <use href="/social.svg#github"></use>
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               </div>
             </li>

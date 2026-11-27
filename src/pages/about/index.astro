@@ -2,7 +2,7 @@
 import { getCollection, getEntry } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
-import { ABOUT, SOCIALS } from "@consts"
+import { ABOUT } from "@consts"
 import { pickPortraitPhoto } from "@lib/photos"
 import { formatDate, formatShortDate } from "@lib/utils"
 import type { PhotoItem } from "@types"
@@ -68,11 +68,10 @@ const currentLedger = nowEntry
 
 <PageLayout title={ABOUT.TITLE} description={ABOUT.DESCRIPTION}>
   <!-- Top Intro Spread (7/5) -->
-  <section class="border-b border-border py-12 sm:py-16">
+  <section class="py-12 sm:py-16">
     <Container size="lg">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-start">
         <div class="lg:col-span-7 space-y-6">
-          <p class="editorial-kicker">ABOUT · ANUJ GAUTAM</p>
           <h1 class="editorial-display text-ink">
             Engineer, researcher, reader, and occasional bookbinder.
           </h1>
@@ -84,14 +83,11 @@ const currentLedger = nowEntry
             <p>
               Outside of work, I like building small, opinionated tools I genuinely use — from browser-based bookbinding templates and map-first trip planners to quiet personal software. When I step away from the keyboard, I'm usually reading with a pencil in hand, sewing paper signatures at the bench, or wandering new cities with a camera and a folded map.
             </p>
-            <p>
-              This site is a calm notebook for all of those threads: short essays, book marginalia, photographs, travel coordinates, and engineering dossiers.
-            </p>
           </div>
         </div>
 
         <figure class="lg:col-span-5 space-y-2.5 max-w-md lg:max-w-none">
-          <div class="overflow-hidden rounded-none border border-border bg-surface">
+          <div class="overflow-hidden rounded-lg bg-surface">
             {
               portraitPhoto ? (
                 <img
@@ -152,18 +148,7 @@ const currentLedger = nowEntry
                     <path d="M 410 546 L 426 546 L 426 530" />
                   </g>
 
-                  {/* Top specimen header */}
-                  <text
-                    x="240"
-                    y="92"
-                    text-anchor="middle"
-                    fill="var(--ink-muted)"
-                    font-family="JetBrains Mono, monospace"
-                    font-size="10"
-                    letter-spacing="2.2"
-                  >
-                    ARCHIVAL SPECIMEN · VOL. 2026
-                  </text>
+                  {/* Top divider */}
                   <line x1="96" y1="112" x2="384" y2="112" stroke="var(--border)" stroke-width="0.9" />
 
                   {/* Concentric geometric medallion */}
@@ -205,11 +190,11 @@ const currentLedger = nowEntry
                     </text>
                   </g>
 
-                  {/* Bottom specimen colophon */}
+                  {/* Bottom divider */}
                   <line x1="96" y1="472" x2="384" y2="472" stroke="var(--border)" stroke-width="0.9" />
                   <text
                     x="240"
-                    y="502"
+                    y="508"
                     text-anchor="middle"
                     fill="var(--ink)"
                     font-family="Newsreader, Georgia, serif"
@@ -218,50 +203,37 @@ const currentLedger = nowEntry
                   >
                     Anuj Gautam
                   </text>
-                  <text
-                    x="240"
-                    y="526"
-                    text-anchor="middle"
-                    fill="var(--atlas)"
-                    font-family="JetBrains Mono, monospace"
-                    font-size="9.5"
-                    letter-spacing="1.8"
-                  >
-                    SOFTWARE · RESEARCH · MARGINALIA
-                  </text>
                 </svg>
               )
             }
           </div>
-          <figcaption class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
-            <span>
-              {portraitPhoto ? `FIG. 01 · ${portraitPhoto.title}` : "FIG. 01 · MONOGRAM SPECIMEN"}
-            </span>
-            <span>{portraitPhoto?.location ?? "UNITED STATES"}</span>
-          </figcaption>
+          {
+            portraitPhoto && (
+              <figcaption class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted">
+                <span>{portraitPhoto.title}</span>
+                {portraitPhoto.location && <span>{portraitPhoto.location}</span>}
+              </figcaption>
+            )
+          }
         </figure>
       </div>
     </Container>
   </section>
 
   <!-- Experience & Background -->
-  <section class="border-b border-border py-12 sm:py-14" aria-labelledby="experience-heading">
+  <section class="py-12 sm:py-14" aria-labelledby="experience-heading">
     <Container size="lg">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
-        <div class="lg:col-span-4 space-y-2">
-          <p class="editorial-kicker">Experience &amp; Background</p>
+        <div class="lg:col-span-4">
           <h2 id="experience-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-            Engineering &amp; Research Chapters
+            Experience
           </h2>
-          <p class="text-sm text-ink-muted leading-relaxed">
-            Infrastructure engineering, privacy assurance, and usable security research across industry and academia.
-          </p>
         </div>
 
-        <ol class="lg:col-span-8 border-t border-border divide-y divide-border">
+        <ol class="lg:col-span-8 space-y-2">
           {
             workEntries.map((entry) => (
-              <li class="py-6 first:pt-5 last:pb-0 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-6">
+              <li class="py-5 first:pt-1 last:pb-0 grid grid-cols-1 sm:grid-cols-12 gap-3 sm:gap-6">
                 <div class="sm:col-span-4 space-y-1 font-mono text-xs uppercase tracking-[0.1em] text-ink-muted pt-1">
                   <p>
                     {formatWorkDate(entry.data.dateStart)} — {formatWorkDate(entry.data.dateEnd)}
@@ -291,13 +263,12 @@ const currentLedger = nowEntry
   <!-- Currently (Lightweight Inline Ledger) -->
   {
     currentLedger.length > 0 && (
-      <section class="border-b border-border bg-surface/35 py-12 sm:py-14" aria-labelledby="currently-heading">
+      <section class="bg-surface/35 py-12 sm:py-14" aria-labelledby="currently-heading">
         <Container size="lg">
           <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             <div class="lg:col-span-4 space-y-2">
-              <p class="editorial-kicker text-accent">Currently</p>
               <h2 id="currently-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-                On the Desk
+                Currently
               </h2>
               {nowEntry && (
                 <p class="font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
@@ -306,9 +277,9 @@ const currentLedger = nowEntry
               )}
             </div>
 
-            <dl class="lg:col-span-8 border-t border-border divide-y divide-border">
+            <dl class="lg:col-span-8 space-y-1">
               {currentLedger.map((item) => (
-                <div class="py-4 grid grid-cols-1 sm:grid-cols-12 gap-1.5 sm:gap-6 items-baseline">
+                <div class="py-3.5 grid grid-cols-1 sm:grid-cols-12 gap-1.5 sm:gap-6 items-baseline">
                   <dt class="sm:col-span-4 font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
                     {item.label}
                   </dt>
@@ -323,55 +294,4 @@ const currentLedger = nowEntry
       </section>
     )
   }
-
-  <!-- Elsewhere / Contact -->
-  <section class="py-12 sm:py-14" aria-labelledby="contact-heading">
-    <Container size="lg">
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-baseline">
-        <div class="lg:col-span-4 space-y-2">
-          <p class="editorial-kicker">Elsewhere &amp; Contact</p>
-          <h2 id="contact-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-            Correspondence
-          </h2>
-        </div>
-
-        <div class="lg:col-span-8 space-y-5">
-          <p class="text-base text-ink-muted leading-relaxed max-w-xl">
-            Always glad to hear from people interested in systems engineering, security research, bookbinding, or trading travel and reading notes.
-          </p>
-
-          <div class="flex flex-wrap items-center gap-x-7 gap-y-3 border-t border-border pt-5 text-sm">
-            {
-              SOCIALS.map((social) => (
-                <a
-                  href={social.HREF}
-                  target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
-                  rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                  class="group inline-flex items-center gap-2 font-medium text-ink hover:text-accent transition-colors"
-                >
-                  <svg class="size-4 fill-current text-ink-muted group-hover:text-accent transition-colors" aria-hidden="true">
-                    <use href={`/social.svg#${social.ICON}`}></use>
-                  </svg>
-                  <span class="underline decoration-border underline-offset-[6px] group-hover:decoration-accent transition-colors">
-                    {social.NAME}
-                  </span>
-                </a>
-              ))
-            }
-            <a
-              href="/rss.xml"
-              class="group inline-flex items-center gap-2 font-medium text-ink hover:text-accent transition-colors"
-            >
-              <svg class="size-4 stroke-current text-ink-muted group-hover:text-accent transition-colors" aria-hidden="true">
-                <use href="/ui.svg#rss"></use>
-              </svg>
-              <span class="underline decoration-border underline-offset-[6px] group-hover:decoration-accent transition-colors">
-                RSS Feed
-              </span>
-            </a>
-          </div>
-        </div>
-      </div>
-    </Container>
-  </section>
 </PageLayout>

@@ -31,16 +31,16 @@ function isCurrentPath(href: string): boolean {
       <nav class="site-nav" aria-label="Primary">
         <button
           id="menu-button"
-          class="menu-button inline-flex items-center gap-1.5 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          class="menu-button inline-flex min-h-9 min-w-9 items-center justify-center rounded-md bg-transparent p-2 text-ink hover:bg-surface hover:text-accent transition-colors"
           type="button"
           popovertarget="site-menu"
           popovertargetaction="toggle"
           aria-controls="site-menu"
+          aria-label="Menu"
         >
           <svg class="size-4 stroke-current" aria-hidden="true">
             <use href="/ui.svg#menu"></use>
           </svg>
-          <span>Menu</span>
         </button>
 
         <ul id="site-menu" class="site-menu" popover="auto">
@@ -68,7 +68,7 @@ function isCurrentPath(href: string): boolean {
           href="/search"
           aria-label={`Search ${SITE.TITLE}`}
           aria-current={isCurrentPath("/search") ? "page" : undefined}
-          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-border bg-surface-elevated p-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
+          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md bg-transparent p-2 text-ink-muted hover:bg-surface hover:text-ink transition-colors"
         >
           <svg class="size-4 stroke-current" aria-hidden="true">
             <use href="/ui.svg#search"></use>
@@ -78,7 +78,7 @@ function isCurrentPath(href: string): boolean {
         <button
           id="theme-toggle"
           type="button"
-          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md border border-border bg-surface-elevated p-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
+          class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md bg-transparent p-2 text-ink-muted hover:bg-surface hover:text-ink transition-colors"
         >
           <span class="theme-toggle-to-dark">
             <svg class="size-4 stroke-current" aria-hidden="true">

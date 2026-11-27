@@ -26,7 +26,7 @@ export default function SearchBar(props: Props) {
         spellcheck={false}
         placeholder={props.placeholderText}
         aria-label={props.placeholderText}
-        class="w-full rounded-lg border border-border bg-surface-elevated py-2.5 pl-10 pr-10 text-sm text-ink placeholder:text-ink-muted focus:border-accent [&::-webkit-search-cancel-button]:appearance-none"
+        class="w-full rounded-lg bg-surface-elevated py-2.5 pl-10 pr-10 text-sm text-ink placeholder:text-ink-muted [&::-webkit-search-cancel-button]:appearance-none"
       />
 
       {props.query().length > 0 && (
