@@ -16,6 +16,7 @@ const KIND_FILTERS: readonly { readonly value: KindFilter; readonly label: strin
   { value: "project", label: SEARCH_KIND_META.project.plural },
   { value: "book", label: SEARCH_KIND_META.book.plural },
   { value: "travel", label: SEARCH_KIND_META.travel.plural },
+  { value: "photo", label: SEARCH_KIND_META.photo.plural },
 ]
 
 export default function Search(props: Props) {
@@ -51,6 +52,7 @@ export default function Search(props: Props) {
       project: 0,
       book: 0,
       travel: 0,
+      photo: 0,
     }
     for (const item of props.items) {
       map[item.kind] += 1
@@ -65,7 +67,7 @@ export default function Search(props: Props) {
           onSearchInput={(e) => setQuery(e.currentTarget.value)}
           query={query}
           setQuery={setQuery}
-          placeholderText="Search..."
+          placeholderText="Search essays, projects, books, photos, and travel..."
         />
 
         <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter results by category">

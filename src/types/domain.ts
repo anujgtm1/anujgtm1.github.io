@@ -233,6 +233,18 @@ export type SearchItem =
       readonly region: TravelRegion
       readonly stampCode: string
     }
+  | {
+      readonly kind: "photo"
+      readonly id: string
+      readonly title: string
+      readonly subtitle: string
+      readonly summary: string
+      readonly href: string
+      readonly date?: string
+      readonly tags: readonly string[]
+      readonly album?: string
+      readonly location?: string
+    }
 
 export type RssFeedEntry =
   | {
