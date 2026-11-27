@@ -22,7 +22,6 @@ const backLabels: Readonly<Record<Props["entry"]["collection"], string>> = {
 
 const demoUrl = collection === "projects" ? data.demoUrl : null
 const repoUrl = collection === "projects" ? data.repoUrl : null
-const projectStatus = collection === "projects" ? data.status : null
 const projectRole = collection === "projects" ? data.role : null
 const tags = collection === "travel" ? data.highlights : data.tags
 const heroMedia =
@@ -43,13 +42,16 @@ const travelMeta =
     : null
 ---
 
-<header class="space-y-6 border-b border-border pb-8">
+<header class="space-y-6 pb-8">
   <a
     href={`/${collection}`}
-    class="inline-flex w-fit items-center gap-2 rounded-md border border-border bg-surface-elevated px-3 py-1.5 text-xs font-mono uppercase tracking-wider text-ink-muted hover:border-accent hover:text-ink transition-colors"
+    aria-label={backLabels[collection]}
+    title={backLabels[collection]}
+    class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md bg-surface/80 p-2 text-ink-muted hover:bg-surface hover:text-ink transition-colors"
   >
-    <span aria-hidden="true">←</span>
-    <span>{backLabels[collection]}</span>
+    <svg class="size-4 stroke-current rotate-180" aria-hidden="true">
+      <use href="/ui.svg#arrow-right"></use>
+    </svg>
   </a>
 
   <div class="space-y-4">
@@ -57,14 +59,6 @@ const travelMeta =
       <time datetime={date.toISOString()}>{formatDate(date)}</time>
       <span aria-hidden="true">·</span>
       <span>{readingTime(body)}</span>
-      {projectStatus && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span class="rounded bg-atlas-soft px-2 py-0.5 text-atlas font-medium">
-            {projectStatus}
-          </span>
-        </>
-      )}
       {travelMeta && (
         <>
           <span aria-hidden="true">·</span>
@@ -95,7 +89,7 @@ const travelMeta =
   {tags.length > 0 && (
     <ul class="flex flex-wrap gap-2" aria-label="Topics">
       {tags.map((tag) => (
-        <li class="rounded-full border border-border bg-surface px-3 py-1 text-xs font-mono text-ink-muted">
+        <li class="rounded-full bg-surface px-3 py-1 text-xs font-mono text-ink-muted">
           {tag}
         </li>
       ))}
@@ -109,10 +103,13 @@ const travelMeta =
           href={demoUrl}
           target="_blank"
           rel="noopener noreferrer"
+          aria-label={`Open ${title} live site`}
           class="inline-flex items-center gap-2 rounded-md bg-ink px-4 py-2 text-sm font-medium text-bg hover:bg-accent transition-colors"
         >
-          <span>Live site</span>
-          <span aria-hidden="true">↗</span>
+          <svg class="size-4 fill-current" aria-hidden="true">
+            <use href="/ui.svg#globe"></use>
+          </svg>
+          <span>Live</span>
         </a>
       )}
       {repoUrl && (
@@ -120,10 +117,13 @@ const travelMeta =
           href={repoUrl}
           target="_blank"
           rel="noopener noreferrer"
-          class="inline-flex items-center gap-2 rounded-md border border-border bg-surface-elevated px-4 py-2 text-sm font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+          aria-label={`${title} on GitHub`}
+          class="inline-flex items-center gap-2 rounded-md bg-surface px-4 py-2 text-sm font-medium text-ink hover:bg-surface-elevated hover:text-accent transition-colors"
         >
-          <span>Source repository</span>
-          <span aria-hidden="true">↗</span>
+          <svg class="size-4 fill-current" aria-hidden="true">
+            <use href="/social.svg#github"></use>
+          </svg>
+          <span>GitHub</span>
         </a>
       )}
     </div>
@@ -131,7 +131,7 @@ const travelMeta =
 
   {heroMedia && (
     <figure class="pt-2">
-      <div class="overflow-hidden rounded-none border border-border bg-surface">
+      <div class="overflow-hidden rounded-lg bg-surface">
         <img
           src={heroMedia.src}
           alt={heroMedia.alt}

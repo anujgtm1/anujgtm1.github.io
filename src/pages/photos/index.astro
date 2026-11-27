@@ -64,16 +64,8 @@ function toRoman(num: number): string {
 
 <PageLayout title={PHOTOS.TITLE} description={PHOTOS.DESCRIPTION}>
   <TopLayout>
-    <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">
-        {photos.length > 0
-          ? `Through the Lens · PL. I – ${toRoman(photos.length)}`
-          : "Through the Lens · Photo Archive"}
-      </p>
+    <div class="pb-4">
       <h1 class="editorial-title text-ink">{PHOTOS.TITLE}</h1>
-      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {PHOTOS.DESCRIPTION}{photos.length > 0 ? " Select any standalone plate to inspect it at full size." : ""}
-      </p>
     </div>
   </TopLayout>
 
@@ -99,7 +91,7 @@ function toRoman(num: number): string {
                       aria-label={`${plateLabel}: ${photo.title} — ${photo.linkedLabel ?? "Open linked entry"}`}
                       class="group block w-full text-start"
                     >
-                      <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                      <span class="block overflow-hidden rounded-lg bg-surface">
                         <img
                           src={photo.image}
                           alt={photo.alt}
@@ -125,7 +117,7 @@ function toRoman(num: number): string {
                       aria-label={`Inspect ${plateLabel}: ${photo.title} in full-size lightbox`}
                       class="group block w-full text-start cursor-zoom-in"
                     >
-                      <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+                      <span class="block overflow-hidden rounded-lg bg-surface">
                         <img
                           src={photo.image}
                           alt={photo.alt}
@@ -138,7 +130,7 @@ function toRoman(num: number): string {
                     </button>
                   )}
 
-                  <figcaption class="space-y-1.5 border-t border-border pt-2.5">
+                  <figcaption class="space-y-1.5 pt-1.5">
                     <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em]">
                       <span class="text-ink font-medium">
                         {plateLabel} · {photo.title}
@@ -180,15 +172,15 @@ function toRoman(num: number): string {
           </div>
         ) : (
           <section
-            aria-labelledby="photos-empty-heading"
-            class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center border-t border-b border-border py-10 sm:py-12"
+            aria-label="Photos"
+            class="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center py-6 sm:py-8"
           >
-            <div class="lg:col-span-7 overflow-hidden rounded-none border border-border bg-surface">
+            <div class="lg:col-span-7 overflow-hidden rounded-lg bg-surface">
               <svg
                 viewBox="0 0 800 460"
                 class="block w-full h-auto select-none"
                 role="img"
-                aria-label="Archival contact sheet grid ready for first photographic plates"
+                aria-label="Contact sheet grid"
               >
                 <defs>
                   <pattern id="photo-empty-grid" width="32" height="32" patternUnits="userSpaceOnUse">
@@ -222,58 +214,13 @@ function toRoman(num: number): string {
                   <path d="M 64 176 L 64 190 L 78 190" />
                   <path d="M 238 190 L 252 190 L 252 176" />
                 </g>
-
-                {/* Frame numbers */}
-                <g
-                  fill="var(--ink-muted)"
-                  font-family="JetBrains Mono, monospace"
-                  font-size="10"
-                  letter-spacing="1.4"
-                >
-                  <text x="52" y="44">01A</text>
-                  <text x="294" y="44">02A</text>
-                  <text x="536" y="44">03A</text>
-                  <text x="52" y="228">04A</text>
-                  <text x="294" y="228">05A</text>
-                  <text x="536" y="228">06A</text>
-                </g>
-
-                <text
-                  x="400"
-                  y="428"
-                  text-anchor="middle"
-                  fill="var(--ink-muted)"
-                  font-family="JetBrains Mono, monospace"
-                  font-size="10.5"
-                  letter-spacing="1.8"
-                >
-                  CONTACT SHEET · 35MM ARCHIVAL SLEEVE
-                </text>
               </svg>
             </div>
 
-            <div class="lg:col-span-5 space-y-4">
-              <p class="editorial-kicker text-accent">Photo Archive</p>
-              <h2 id="photos-empty-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-                Photo Archive · Ready for First Plates
-              </h2>
-              <p class="text-sm sm:text-base text-ink-muted leading-relaxed">
-                Travel stills, workshop plates, and everyday 35mm frames will appear here as photographs are published to the archive.
+            <div class="lg:col-span-5">
+              <p class="font-serif text-2xl font-medium text-ink-muted">
+                Nothing here yet.
               </p>
-              <div class="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 font-mono text-xs uppercase tracking-[0.12em]">
-                <a
-                  href="/travel"
-                  class="text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
-                >
-                  Travel Atlas →
-                </a>
-                <a
-                  href="/projects"
-                  class="text-ink-muted underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
-                >
-                  Workshop dossiers →
-                </a>
-              </div>
             </div>
           </section>
         )
@@ -286,10 +233,10 @@ function toRoman(num: number): string {
     id="swiss-photo-lightbox"
     closedby="any"
     aria-labelledby="swiss-lightbox-title"
-    class="swiss-lightbox rounded-none border border-border bg-surface-elevated"
+    class="swiss-lightbox rounded-lg bg-surface-elevated"
   >
     <div class="flex flex-col overflow-y-auto">
-      <div class="border-b border-border bg-surface flex items-center justify-center overflow-hidden">
+      <div class="bg-surface flex items-center justify-center overflow-hidden">
         <img
           id="swiss-lightbox-img"
           alt=""
@@ -316,9 +263,13 @@ function toRoman(num: number): string {
           <button
             type="submit"
             autofocus
-            class="inline-flex items-center justify-center rounded-none border border-border bg-surface px-3.5 py-2 font-mono text-[11px] uppercase tracking-[0.14em] text-ink hover:border-accent hover:text-accent transition-colors"
+            aria-label="Close"
+            title="Close"
+            class="inline-flex min-h-9 min-w-9 items-center justify-center rounded-md bg-surface p-2 text-ink-muted hover:text-ink transition-colors"
           >
-            Close
+            <svg class="size-4 stroke-current" aria-hidden="true">
+              <use href="/ui.svg#x"></use>
+            </svg>
           </button>
         </form>
       </div>

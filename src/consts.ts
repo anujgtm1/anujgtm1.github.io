@@ -9,19 +9,17 @@ export const SITE: Site = {
 
 export const BLOG: Page = {
   TITLE: "Blog",
-  DESCRIPTION: "Short notes on books, software, and places worth remembering.",
+  DESCRIPTION: "Short notes on books, software, and places.",
 }
 
 export const PHOTOS: Page = {
   TITLE: "Photos",
-  DESCRIPTION:
-    "Contact plates and quiet frames from travels, the workshop bench, and everyday walks.",
+  DESCRIPTION: "Photographs from travels and everyday walks.",
 }
 
 export const BOOKS: Page = {
   TITLE: "Bookshelf",
-  DESCRIPTION:
-    "A living shelf of books on my desk, favorites, and quick marginalia — funny, interesting, or occasionally grim.",
+  DESCRIPTION: "Books on my desk, favorites, and short notes.",
 }
 
 export const TRAVEL: Page = {
@@ -31,13 +29,12 @@ export const TRAVEL: Page = {
 
 export const PROJECTS: Page = {
   TITLE: "Projects",
-  DESCRIPTION: "Selected engineering dossiers, research systems, and personal tools.",
+  DESCRIPTION: "Personal tools, research systems, and side projects.",
 }
 
 export const ABOUT: Page = {
   TITLE: "About",
-  DESCRIPTION:
-    "Background, engineering chapters, what is currently on my desk, and how to get in touch.",
+  DESCRIPTION: "Background, what I'm working on, and how to get in touch.",
 }
 
 export const WORK: Page = {
@@ -52,7 +49,7 @@ export const NOW: Page = {
 
 export const SEARCH: Page = {
   TITLE: "Search",
-  DESCRIPTION: "Search essays, projects, books, and travel logs across the journal.",
+  DESCRIPTION: "Search across blog posts, projects, books, and travel.",
 }
 
 export const LINKS: Links = [

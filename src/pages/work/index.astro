@@ -27,24 +27,16 @@ function formatWorkDate(input: Date | string): string {
 
 <PageLayout title={WORK.TITLE} description={WORK.DESCRIPTION}>
   <TopLayout size="md">
-    <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">Curriculum Vitae · Timeline</p>
+    <div class="pb-4">
       <h1 class="editorial-title text-ink">{WORK.TITLE}</h1>
-      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {WORK.DESCRIPTION}
-      </p>
     </div>
   </TopLayout>
 
   <BottomLayout size="md">
-    <ol class="relative border-l border-border pl-6 sm:pl-8 space-y-10">
+    <ol class="space-y-10">
       {
         work.map((entry) => (
-          <li class="relative">
-            <span
-              aria-hidden="true"
-              class="absolute -left-[1.95rem] sm:-left-[2.45rem] top-1.5 size-3 rounded-full border-2 border-bg bg-accent"
-            />
+          <li>
             <div class="space-y-2">
               <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs font-mono uppercase tracking-wider text-ink-muted">
                 <span>

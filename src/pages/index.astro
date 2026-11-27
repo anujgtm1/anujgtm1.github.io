@@ -2,7 +2,7 @@
 import { getCollection } from "astro:content"
 import PageLayout from "@layouts/PageLayout.astro"
 import Container from "@components/Container.astro"
-import { SITE, SOCIALS } from "@consts"
+import { SITE } from "@consts"
 import { SPINE_PALETTES, deriveYearRead, sortBooks } from "@lib/bookshelf"
 import { VISITED_COUNTRY_IDS } from "@data/visitedCountries"
 import { WORLD_COUNTRIES, WORLD_NE_VIEWBOX } from "@data/worldCountries"
@@ -148,13 +148,12 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
 
 <PageLayout title={SITE.TITLE} description={SITE.DESCRIPTION}>
   <!-- Section 1: Split Swiss Hero -->
-  <section class="border-b border-border">
+  <section>
     <Container size="lg">
-      <div class="grid grid-cols-1 lg:grid-cols-12 lg:divide-x divide-border">
-        <!-- Left Column (6/12): Title + Bio + Recent Across the Journal -->
+      <div class="grid grid-cols-1 lg:grid-cols-12">
+        <!-- Left Column (6/12): Title + Bio + Recent -->
         <div class="lg:col-span-6 py-10 lg:py-12 lg:pr-10 flex flex-col justify-between gap-10">
           <div class="space-y-5">
-            <p class="editorial-kicker">INDEX · VOL. 2026</p>
             <h1 class="editorial-display text-ink">
               A quiet archive of software, books, and journeys.
             </h1>
@@ -164,37 +163,21 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
           </div>
 
           <section aria-labelledby="swiss-recent-heading">
-            <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 pb-2.5">
-              <h2
-                id="swiss-recent-heading"
-                class="font-mono text-[10px] uppercase tracking-[0.16em] text-ink-muted"
-              >
-                Recent Across the Journal
-              </h2>
-              <div class="flex items-baseline gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-ink-muted">
-                <a
-                  href="/blog"
-                  class="whitespace-nowrap shrink-0 underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-                >
-                  Blog →
-                </a>
-                <a
-                  href="/search"
-                  class="whitespace-nowrap shrink-0 underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-                >
-                  Archive →
-                </a>
-              </div>
-            </div>
+            <h2
+              id="swiss-recent-heading"
+              class="editorial-kicker pb-2.5"
+            >
+              Recent
+            </h2>
 
             {
               recentEntries.length > 0 ? (
-                <ul class="border-t border-border divide-y divide-border">
+                <ul>
                   {recentEntries.map((item) => (
                     <li>
                       <a
                         href={item.href}
-                        class="group flex items-center justify-between gap-4 py-3.5 hover:bg-surface/45 -mx-2 px-2 transition-colors"
+                        class="group flex items-center justify-between gap-4 py-3.5 rounded-md hover:bg-surface/45 -mx-2 px-2 transition-colors"
                       >
                         <div class="min-w-0 flex-1 space-y-1">
                           <div class="flex flex-wrap items-center gap-x-2 gap-y-0.5 font-mono text-[10px] uppercase tracking-[0.14em]">
@@ -211,7 +194,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                         </div>
 
                         {item.thumbnailSrc ? (
-                          <div class="w-16 sm:w-20 aspect-[4/3] shrink-0 overflow-hidden rounded-none border border-border bg-surface">
+                          <div class="w-16 sm:w-20 aspect-[4/3] shrink-0 overflow-hidden rounded-sm bg-surface">
                             <img
                               src={item.thumbnailSrc}
                               alt={item.thumbnailAlt ?? item.title}
@@ -234,9 +217,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                   ))}
                 </ul>
               ) : (
-                <div class="border-t border-border py-6 text-sm text-ink-muted">
-                  First dispatches on the desk — essays, books, and field logs will appear here as they are published.
-                </div>
+                <p class="py-6 text-sm text-ink-muted">Nothing here yet.</p>
               )
             }
           </section>
@@ -246,8 +227,12 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
         <div class="lg:col-span-6 py-10 lg:py-12 lg:pl-10 flex flex-col gap-0">
           <!-- Layer 1 (Top): Photo Gallery Portal -->
           <figure>
-            <a href="/photos" class="group block w-full text-start">
-              <span class="block overflow-hidden rounded-none border border-border bg-surface group-hover:border-accent/60 transition-colors">
+            <a
+              href="/photos"
+              aria-label={featuredPhoto ? `${featuredPhoto.title} — All photos` : "All photos"}
+              class="group block w-full text-start"
+            >
+              <span class="block overflow-hidden rounded-lg bg-surface">
                 {
                   featuredPhoto ? (
                     <img
@@ -262,7 +247,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                       viewBox="0 0 800 500"
                       class="block aspect-[16/10] w-full select-none"
                       role="img"
-                      aria-label="35mm archival viewfinder contact plate — ready for first frames"
+                      aria-label="35mm viewfinder"
                     >
                       <defs>
                         <pattern id="swiss-viewfinder-grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -333,7 +318,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                       </g>
 
                       {/* Central Rangefinder Focus Reticle */}
-                      <g transform="translate(400, 232)">
+                      <g transform="translate(400, 250)">
                         <circle
                           cx="0"
                           cy="0"
@@ -359,67 +344,36 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                         <line x1="-10" y1="0" x2="10" y2="0" stroke="var(--accent)" stroke-width="1.2" />
                         <line x1="0" y1="-10" x2="0" y2="10" stroke="var(--accent)" stroke-width="1.2" />
                       </g>
-
-                      {/* Viewfinder metadata readout */}
-                      <text
-                        x="94"
-                        y="102"
-                        fill="var(--ink-muted)"
-                        font-family="JetBrains Mono, monospace"
-                        font-size="10.5"
-                        letter-spacing="1.6"
-                      >
-                        FRAME 00 · 35MM
-                      </text>
-                      <text
-                        x="706"
-                        y="102"
-                        text-anchor="end"
-                        fill="var(--atlas)"
-                        font-family="JetBrains Mono, monospace"
-                        font-size="10.5"
-                        letter-spacing="1.6"
-                      >
-                        ISO 400 · f/5.6
-                      </text>
-
-                      <text
-                        x="400"
-                        y="390"
-                        text-anchor="middle"
-                        fill="var(--ink-muted)"
-                        font-family="JetBrains Mono, monospace"
-                        font-size="11"
-                        letter-spacing="2"
-                      >
-                        35MM PLATE ARCHIVE · READY FOR FIRST FRAMES
-                      </text>
                     </svg>
                   )
                 }
               </span>
-              <figcaption class="mt-2.5 flex flex-wrap items-baseline justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em]">
+              <figcaption class="mt-2.5 flex items-center justify-between gap-2 font-mono text-[11px] uppercase tracking-[0.12em]">
                 <span class="text-ink-muted">
-                  {featuredPhoto ? `PL. I · ${featuredPhoto.title}` : "PL. I · THROUGH THE LENS"}
+                  {featuredPhoto ? featuredPhoto.title : "Photos"}
                 </span>
-                <span class="text-accent group-hover:underline underline-offset-4">
-                  Open photo gallery →
-                </span>
+                <svg class="size-3.5 stroke-accent transition-transform group-hover:translate-x-0.5" aria-hidden="true">
+                  <use href="/ui.svg#arrow-right"></use>
+                </svg>
               </figcaption>
             </a>
           </figure>
 
           <!-- Layer 2 (Bottom): Tactile Bookshelf -->
-          <div class="mt-8 pt-8 border-t border-border flex flex-col gap-4" aria-labelledby="hero-bookshelf-heading">
-            <div class="flex items-baseline justify-between gap-4">
+          <div class="mt-9 pt-6 flex flex-col gap-4" aria-labelledby="hero-bookshelf-heading">
+            <div class="flex items-center justify-between gap-4">
               <h2 id="hero-bookshelf-heading" class="editorial-kicker text-accent">
-                BOOKSHELF
+                Bookshelf
               </h2>
               <a
                 href="/books"
-                class="whitespace-nowrap shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+                aria-label="All books"
+                title="All books"
+                class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-ink-muted hover:text-accent transition-colors"
               >
-                {books.length > 0 ? `All ${books.length} books →` : "All books →"}
+                <svg class="size-4 stroke-current" aria-hidden="true">
+                  <use href="/ui.svg#arrow-right"></use>
+                </svg>
               </a>
             </div>
 
@@ -469,27 +423,23 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                     </div>
 
                     <div aria-hidden="true" class="space-y-0">
-                      <div class="h-2.5 w-full border-t border-accent/45 border-x border-border bg-surface-elevated shadow-[0_8px_16px_-10px_rgba(19,18,16,0.45)]" />
-                      <div class="h-1 w-[97%] mx-auto bg-border/80" />
+                      <div class="h-2.5 w-full border-t border-accent/40 bg-surface-elevated shadow-[0_8px_16px_-10px_rgba(19,18,16,0.45)]" />
+                      <div class="h-1 w-[97%] mx-auto bg-border/60" />
                     </div>
-                  </div>
-
-                  <div class="flex flex-wrap items-baseline justify-between gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted">
-                    <span>{books.length} VOLUMES SHELVED · QUICK MARGINALIA</span>
-                    <span>CLOTH &amp; NOTES</span>
                   </div>
                 </>
               ) : (
                 <a
                   href="/books"
+                  aria-label="Bookshelf"
                   class="group block space-y-4 focus-visible:outline-2"
                 >
-                  <div class="border border-border bg-surface/55 px-4 pt-5 pb-3 group-hover:border-accent/60 transition-colors">
+                  <div class="rounded-lg bg-surface/55 px-4 pt-5 pb-3 transition-colors group-hover:bg-surface/80">
                     <svg
                       viewBox="0 0 560 112"
                       class="block w-full h-auto select-none"
                       role="img"
-                      aria-label="Minimalist archival bookshelf with brass bookends awaiting volumes"
+                      aria-label="Bookshelf"
                     >
                       {/* Subtle vertical index ticks */}
                       <g stroke="var(--border)" stroke-width="0.75" opacity="0.65">
@@ -533,19 +483,6 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                         stroke-dasharray="3 2"
                       />
 
-                      {/* Quiet center shelf label */}
-                      <text
-                        x="280"
-                        y="59"
-                        text-anchor="middle"
-                        fill="var(--ink-muted)"
-                        font-family="JetBrains Mono, monospace"
-                        font-size="10.5"
-                        letter-spacing="1.8"
-                      >
-                        SHELF 01 · READY FOR VOLUMES
-                      </text>
-
                       {/* Horizontal shelf ledge */}
                       <rect
                         x="12"
@@ -575,15 +512,6 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                       />
                     </svg>
                   </div>
-
-                  <div class="flex flex-wrap items-baseline justify-between gap-2 text-xs text-ink-muted">
-                    <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-ink group-hover:text-accent transition-colors">
-                      Stocking the Shelf
-                    </span>
-                    <span class="text-xs text-ink-muted">
-                      Reading covers &amp; quick marginalia coming soon.
-                    </span>
-                  </div>
                 </a>
               )
             }
@@ -594,7 +522,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
   </section>
 
   <!-- Section 2: Full-Width Travel Atlas Band -->
-  <section class="border-b border-border bg-surface/35" aria-labelledby="home-atlas-heading">
+  <section class="bg-surface/35" aria-labelledby="home-atlas-heading">
     <Container size="lg">
       <div class="py-12 lg:py-14 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
         <!-- Left (8/12): Static Natural Earth 110m World Map (0 KB JS) -->
@@ -602,7 +530,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
           <a
             href="/travel"
             aria-label="Explore the full interactive Travel Atlas"
-            class="group block relative aspect-[1000/520] w-full overflow-hidden rounded-none border border-border bg-surface hover:border-atlas transition-colors"
+            class="group block relative aspect-[1000/520] w-full overflow-hidden rounded-lg"
           >
             <svg
               viewBox={`0 0 ${WORLD_NE_VIEWBOX.width} ${WORLD_NE_VIEWBOX.height}`}
@@ -613,8 +541,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
               <path
                 d={worldGraticule.outlinePath}
                 fill="var(--surface)"
-                stroke="var(--border)"
-                stroke-width="1"
+                stroke="none"
               />
 
               <g fill="none" stroke="var(--border)" stroke-width="0.6" opacity="0.55">
@@ -681,35 +608,23 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                 </g>
               ))}
             </svg>
-
-            <span class="pointer-events-none absolute bottom-3 left-3 rounded-none border border-border bg-bg/90 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-ink-muted backdrop-blur-sm">
-              {trips.length > 0
-                ? `${trips.length} STAMPED DESTINATIONS · ${parkSummary.visitedParks}/${parkSummary.totalParks} U.S. PARKS`
-                : `NATURAL EARTH I · ${parkSummary.lower48StatesVisited}/${parkSummary.lower48StatesTotal} LOWER STATES · ${parkSummary.visitedParks}/${parkSummary.totalParks} PARKS`}
-            </span>
           </a>
         </div>
 
         <!-- Right (4/12): Atlas Index & Coordinates -->
         <div class="lg:col-span-4 space-y-5">
-          <div class="space-y-2">
-            <p class="editorial-kicker text-atlas">TRAVEL ATLAS</p>
-            <h2 id="home-atlas-heading" class="font-serif text-3xl sm:text-[2rem] font-medium text-ink leading-tight">
-              Places &amp; Field Coordinates
-            </h2>
-            <p class="text-sm text-ink-muted leading-relaxed">
-              Passport stamps, quiet walking notes, and coordinates from places worth returning to.
-            </p>
-          </div>
+          <h2 id="home-atlas-heading" class="font-serif text-3xl sm:text-[2rem] font-medium text-ink leading-tight">
+            Travel Atlas
+          </h2>
 
           {
             mapPins.length > 0 ? (
-              <ul class="border-t border-border divide-y divide-border">
+              <ul class="space-y-0.5">
                 {mapPins.slice(0, 4).map((pin) => (
                   <li>
                     <a
                       href={pin.href}
-                      class="group flex items-baseline justify-between gap-3 py-2.5 text-sm hover:text-accent transition-colors"
+                      class="group flex items-baseline justify-between gap-3 py-2 text-sm hover:text-accent transition-colors"
                     >
                       <span class="flex items-baseline gap-2.5 min-w-0">
                         <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
@@ -727,8 +642,8 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                 ))}
               </ul>
             ) : (
-              <ul class="border-t border-b border-border divide-y divide-border">
-                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+              <ul class="space-y-0.5">
+                <li class="flex items-baseline justify-between gap-3 py-2 text-sm">
                   <span class="flex items-baseline gap-2.5 min-w-0">
                     <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
                       USA
@@ -741,7 +656,7 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                     {`${parkSummary.lower48StatesVisited} / ${parkSummary.lower48StatesTotal}`}
                   </span>
                 </li>
-                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
+                <li class="flex items-baseline justify-between gap-3 py-2 text-sm">
                   <span class="flex items-baseline gap-2.5 min-w-0">
                     <span class="font-mono text-[11px] font-semibold tracking-wider text-accent shrink-0">
                       NPS
@@ -754,19 +669,6 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                     {`${parkSummary.visitedParks} / ${parkSummary.totalParks}`}
                   </span>
                 </li>
-                <li class="flex items-baseline justify-between gap-3 py-2.5 text-sm">
-                  <span class="flex items-baseline gap-2.5 min-w-0">
-                    <span class="font-mono text-[11px] font-semibold tracking-wider text-atlas shrink-0">
-                      WLD
-                    </span>
-                    <span class="font-serif text-base text-ink truncate">
-                      International Logs
-                    </span>
-                  </span>
-                  <span class="font-mono text-[11px] uppercase tracking-[0.08em] text-ink-muted shrink-0">
-                    Ready for Stamps
-                  </span>
-                </li>
               </ul>
             )
           }
@@ -774,10 +676,13 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
           <div class="pt-1">
             <a
               href="/travel"
-              class="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
+              aria-label="Open Travel Atlas"
+              title="Travel Atlas"
+              class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-ink-muted hover:text-accent transition-colors"
             >
-              <span>Explore Travel Atlas</span>
-              <span aria-hidden="true">→</span>
+              <svg class="size-4 stroke-current" aria-hidden="true">
+                <use href="/ui.svg#arrow-right"></use>
+              </svg>
             </a>
           </div>
         </div>
@@ -786,33 +691,27 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
   </section>
 
   <!-- Section 3: Compact 3-Column Workshop / Selected Projects Strip -->
-  <section class="border-b border-border py-12" aria-labelledby="workshop-heading">
+  <section class="py-14" aria-labelledby="workshop-heading">
     <Container size="lg">
-      <div class="flex flex-wrap items-baseline justify-between gap-4 pb-6">
-        <div class="space-y-1">
-          <p class="editorial-kicker">WORKSHOP · SELECTED PROJECTS</p>
-          <h2 id="workshop-heading" class="sr-only">Selected Engineering Projects</h2>
-        </div>
+      <div class="flex items-center justify-between gap-4 pb-6">
+        <h2 id="workshop-heading" class="editorial-kicker">Projects</h2>
         <a
           href="/projects"
-          class="whitespace-nowrap shrink-0 font-mono text-xs uppercase tracking-[0.12em] text-ink-muted underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
+          aria-label="All projects"
+          title="All projects"
+          class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-ink-muted hover:text-accent transition-colors"
         >
-          View all dossiers →
+          <svg class="size-4 stroke-current" aria-hidden="true">
+            <use href="/ui.svg#arrow-right"></use>
+          </svg>
         </a>
       </div>
 
-      <ol class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-border border-t border-border">
+      <ol class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-10">
         {
-          projects.slice(0, 3).map((project, idx) => (
-            <li class="py-6 md:py-7 md:px-7 md:first:pl-0 md:last:pr-0 flex flex-col justify-between gap-4">
+          projects.slice(0, 3).map((project) => (
+            <li class="py-2 flex flex-col justify-between gap-4">
               <div class="space-y-2.5">
-                <div class="flex items-baseline justify-between gap-3 font-mono text-[11px] uppercase tracking-[0.12em]">
-                  <span class="text-ink-muted tabular-nums">
-                    {String(idx + 1).padStart(2, "0")}
-                  </span>
-                  <span class="text-atlas">{project.data.status}</span>
-                </div>
-
                 <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink leading-snug">
                   <a
                     href={`/projects/${project.slug}/`}
@@ -827,79 +726,42 @@ const mapPins = trips.slice(0, 6).map((trip) => ({
                 </p>
               </div>
 
-              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 pt-2 font-mono text-[11px] uppercase tracking-[0.12em]">
-                <a
-                  href={`/projects/${project.slug}/`}
-                  class="text-ink underline decoration-border underline-offset-4 hover:text-accent hover:decoration-accent transition-colors"
-                >
-                  Dossier →
-                </a>
-                {project.data.demoUrl && (
-                  <a
-                    href={project.data.demoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-atlas hover:text-accent transition-colors"
-                  >
-                    Live ↗
-                  </a>
-                )}
-                {project.data.repoUrl && (
-                  <a
-                    href={project.data.repoUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="text-ink-muted hover:text-accent transition-colors"
-                  >
-                    GitHub ↗
-                  </a>
-                )}
-              </div>
+              {(project.data.demoUrl || project.data.repoUrl) && (
+                <div class="flex flex-wrap items-center gap-2 pt-2">
+                  {project.data.demoUrl && (
+                    <a
+                      href={project.data.demoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Open ${project.data.title} live site`}
+                      title="Live site"
+                      class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-atlas hover:text-accent transition-colors"
+                    >
+                      <svg class="size-4 fill-current" aria-hidden="true">
+                        <use href="/ui.svg#globe"></use>
+                      </svg>
+                    </a>
+                  )}
+                  {project.data.repoUrl && (
+                    <a
+                      href={project.data.repoUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`${project.data.title} on GitHub`}
+                      title="GitHub"
+                      class="inline-flex min-h-8 min-w-8 items-center justify-center rounded-md text-ink-muted hover:text-accent transition-colors"
+                    >
+                      <svg class="size-4 fill-current" aria-hidden="true">
+                        <use href="/social.svg#github"></use>
+                      </svg>
+                    </a>
+                  )}
+                </div>
+              )}
             </li>
           ))
         }
       </ol>
-    </Container>
-  </section>
-
-  <!-- Section 4: Swiss Colophon & Correspondence Band -->
-  <section class="py-12" aria-labelledby="colophon-heading">
-    <Container size="lg">
-      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-baseline">
-        <div class="md:col-span-6 space-y-1.5">
-          <h2 id="colophon-heading" class="editorial-kicker">Colophon &amp; Correspondence</h2>
-          <p class="text-sm text-ink-muted leading-relaxed">
-            Set in Newsreader, Plus Jakarta Sans, and JetBrains Mono. Always glad to trade book recommendations, travel notes, or systems ideas.
-          </p>
-        </div>
-
-        <div class="md:col-span-6 flex flex-wrap md:justify-end items-center gap-x-6 gap-y-2 text-sm">
-          {
-            SOCIALS.map((social) => (
-              <a
-                href={social.HREF}
-                target={social.HREF.startsWith("mailto:") ? undefined : "_blank"}
-                rel={social.HREF.startsWith("mailto:") ? undefined : "noopener noreferrer"}
-                class="font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
-              >
-                {social.NAME}
-              </a>
-            ))
-          }
-          <a
-            href="/rss.xml"
-            class="font-medium text-ink underline decoration-border underline-offset-[6px] hover:text-accent hover:decoration-accent transition-colors"
-          >
-            RSS
-          </a>
-          <a
-            href="/about"
-            class="font-medium text-accent underline decoration-accent/40 underline-offset-[6px] hover:decoration-accent transition-colors"
-          >
-            About me →
-          </a>
-        </div>
-      </div>
     </Container>
   </section>
 </PageLayout>
