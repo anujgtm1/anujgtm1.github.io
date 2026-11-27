@@ -284,7 +284,7 @@ export default function UnifiedTravelAtlas(props: Props) {
   const hoveredUsState = createMemo(() => {
     const abbr = hoveredUsStateAbbr()
     if (!abbr) return null
-    if (abbr === "VI") return { name: "U.S. Virgin Islands", visited: true, code: "VI" }
+    if (abbr === "VI") return { name: "U.S. Virgin Islands", visited: false, code: "VI" }
     if (abbr === "AS") return { name: "American Samoa", visited: false, code: "AS" }
     const found = US_STATES.find((s) => s.abbr === abbr)
     return found ? { name: found.name, visited: found.visited, code: found.abbr } : null
@@ -345,7 +345,7 @@ export default function UnifiedTravelAtlas(props: Props) {
 
   function selectUsState(abbr: string) {
     if (abbr === "VI") {
-      setSelectedUsPlace({ code: "VI", name: "U.S. Virgin Islands", visited: true })
+      setSelectedUsPlace({ code: "VI", name: "U.S. Virgin Islands", visited: false })
       return
     }
     if (abbr === "AS") {
@@ -356,6 +356,12 @@ export default function UnifiedTravelAtlas(props: Props) {
     if (st) {
       setSelectedUsPlace({ code: st.abbr, name: st.name, visited: st.visited })
     }
+  }
+
+  function insetCountLabel(abbr: string, label: string): string {
+    const parks = parksByStateCode().get(abbr) ?? []
+    const visited = parks.filter((p) => p.visited).length
+    return `${label} · ${visited}/${parks.length}`
   }
 
   function enterUsScope(initialMode?: ViewMode) {
@@ -977,9 +983,9 @@ export default function UnifiedTravelAtlas(props: Props) {
                       width={TERRITORY_INSETS.virginIslands.width}
                       height={TERRITORY_INSETS.virginIslands.height}
                       rx="6"
+                      stroke-dasharray="3 3"
                       class="cursor-pointer"
-                      fill="var(--atlas-soft)"
-                      fill-opacity={selectedUsPlace()?.code === "VI" ? 0.85 : 0.38}
+                      fill={selectedUsPlace()?.code === "VI" ? "var(--surface-elevated)" : "transparent"}
                       stroke={selectedUsPlace()?.code === "VI" ? "var(--accent)" : "var(--border)"}
                       stroke-width={selectedUsPlace()?.code === "VI" ? 1.6 : 1}
                       onClick={() => selectUsState("VI")}
@@ -1011,23 +1017,23 @@ export default function UnifiedTravelAtlas(props: Props) {
                     letter-spacing="0.08em"
                     class="pointer-events-none"
                   >
-                    <text x="36" y="440">ALASKA · 0/8</text>
-                    <text x="240" y="508">HAWAIʻI · 0/2</text>
+                    <text x="36" y="440">{insetCountLabel("AK", "ALASKA")}</text>
+                    <text x="240" y="508">{insetCountLabel("HI", "HAWAIʻI")}</text>
                     <text x={TERRITORY_INSETS.virginIslands.x + 8} y={TERRITORY_INSETS.virginIslands.y + 15}>
-                      USVI · 1/1
+                      {insetCountLabel("VI", "USVI")}
                     </text>
                     <text x={TERRITORY_INSETS.americanSamoa.x + 8} y={TERRITORY_INSETS.americanSamoa.y + 15}>
-                      SAMOA · 0/1
+                      {insetCountLabel("AS", "SAMOA")}
                     </text>
                   </g>
 
                   {/* Stylized island silhouettes inside USVI & American Samoa insets */}
                   <path
                     d={`M${TERRITORY_INSETS.virginIslands.cx - 14},${TERRITORY_INSETS.virginIslands.cy + 2} Q${TERRITORY_INSETS.virginIslands.cx},${TERRITORY_INSETS.virginIslands.cy - 6} ${TERRITORY_INSETS.virginIslands.cx + 15},${TERRITORY_INSETS.virginIslands.cy + 1} Q${TERRITORY_INSETS.virginIslands.cx + 2},${TERRITORY_INSETS.virginIslands.cy + 7} ${TERRITORY_INSETS.virginIslands.cx - 14},${TERRITORY_INSETS.virginIslands.cy + 2}Z`}
-                    fill="var(--atlas-soft)"
-                    stroke="var(--atlas)"
-                    stroke-width="0.9"
-                    stroke-opacity="0.6"
+                    fill="var(--surface-elevated)"
+                    stroke="var(--border)"
+                    stroke-width="1"
+                    stroke-dasharray="2 2"
                     class="pointer-events-none"
                   />
                   <path

@@ -31,7 +31,7 @@ import {
   projectParkToHumboldt,
 } from "../../src/lib/parks.ts"
 
-test("national parks dataset has all 64 parks with Anuj's exact 51/64 visited ledger", () => {
+test("national parks dataset has all 64 parks with Anuj's exact 50/64 visited ledger", () => {
   assert.equal(NATIONAL_PARKS.length, 64)
 
   const codes = new Set(NATIONAL_PARKS.map((p) => p.code))
@@ -39,8 +39,8 @@ test("national parks dataset has all 64 parks with Anuj's exact 51/64 visited le
 
   const summary = computeParkSurveySummary(NATIONAL_PARKS, US_STATES)
   assert.equal(summary.totalParks, 64)
-  assert.equal(summary.visitedParks, 51)
-  assert.equal(summary.remainingParks, 13)
+  assert.equal(summary.visitedParks, 50)
+  assert.equal(summary.remainingParks, 14)
   assert.equal(summary.lower48ParksTotal, 52)
   assert.equal(summary.lower48ParksVisited, 50)
   assert.equal(summary.lower48StatesTotal, 48)
@@ -64,6 +64,7 @@ test("national parks dataset has all 64 parks with Anuj's exact 51/64 visited le
     "KOVA",
     "LACL",
     "NPSA",
+    "VIIS",
     "WRST",
   ])
 })
@@ -128,8 +129,8 @@ test("filterAndSortParks filters by visit status and query and orders determinis
   const projected = getProjectedParks()
 
   assert.equal(filterAndSortParks(projected, "all", "", "alpha").length, 64)
-  assert.equal(filterAndSortParks(projected, "visited", "", "alpha").length, 51)
-  assert.equal(filterAndSortParks(projected, "unvisited", "", "alpha").length, 13)
+  assert.equal(filterAndSortParks(projected, "visited", "", "alpha").length, 50)
+  assert.equal(filterAndSortParks(projected, "unvisited", "", "alpha").length, 14)
 
   const utah = filterAndSortParks(projected, "all", "UT", "alpha")
   assert.equal(utah.length, 5)
@@ -146,8 +147,8 @@ test("filterAndSortParks filters by visit status and query and orders determinis
 
   const visitedFirst = filterAndSortParks(projected, "all", "", "visited")
   assert.equal(visitedFirst[0]?.visited, true)
-  assert.equal(visitedFirst[50]?.visited, true)
-  assert.equal(visitedFirst[51]?.visited, false)
+  assert.equal(visitedFirst[49]?.visited, true)
+  assert.equal(visitedFirst[50]?.visited, false)
 })
 
 test("Natural Earth I world countries, graticule, and projected park coordinates stay within bounds", () => {

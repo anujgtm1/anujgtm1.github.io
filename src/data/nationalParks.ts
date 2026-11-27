@@ -2,8 +2,8 @@ import type { NationalPark } from "../types/parks.ts"
 
 /**
  * Complete catalog of all 64 U.S. National Parks with real geographic coordinates,
- * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (51/64 visited;
- * 50/52 in the Lower 48 + Virgin Islands).
+ * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (50/64 visited;
+ * 50/52 in the Lower 48, 0/12 outside the Lower 48).
  */
 export const NATIONAL_PARKS: readonly NationalPark[] = [
   {
@@ -970,7 +970,7 @@ export const NATIONAL_PARKS: readonly NationalPark[] = [
     lowPointFt: 0,
     acres: 15053,
     established: 1956,
-    visited: true,
+    visited: false,
     pigmentLight: "#1F6D72",
     pigmentDark: "#69BFC4",
     landscapeNote: "Trunk Bay coral gardens, Taíno petroglyphs, and St. John hillside trails.",
