@@ -1,9 +1,9 @@
 import type { NationalPark } from "../types/parks.ts"
 
 /**
- * Complete catalog of all 63 U.S. National Parks with real geographic coordinates,
- * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (50/63 visited;
- * 49/51 in the Lower 48 + Virgin Islands).
+ * Complete catalog of all 64 U.S. National Parks with real geographic coordinates,
+ * elevation spans, acreage, founding year, biome, archival mineral pigments, and Anuj Gautam's visited status (51/64 visited;
+ * 50/52 in the Lower 48 + Virgin Islands).
  */
 export const NATIONAL_PARKS: readonly NationalPark[] = [
   {
@@ -209,6 +209,23 @@ export const NATIONAL_PARKS: readonly NationalPark[] = [
     pigmentLight: "#2D6472",
     pigmentDark: "#74B4C4",
     landscapeNote: "Five isolated Pacific islands, kelp forests, and endemic island foxes.",
+  },
+  {
+    code: "CHIR",
+    name: "Chiricahua",
+    states: ["AZ"],
+    region: "Southwest",
+    biome: "Arid & Canyon",
+    inset: "lower48",
+    coordinates: { lat: 32.01, lng: -109.33 },
+    highPointFt: 7310,
+    lowPointFt: 5124,
+    acres: 12025,
+    established: 2026,
+    visited: true,
+    pigmentLight: "#9D573B",
+    pigmentDark: "#DA8F6E",
+    landscapeNote: "Wonderland of Rocks: rhyolite hoodoos and balanced spires in a Madrean sky island.",
   },
   {
     code: "CONG",

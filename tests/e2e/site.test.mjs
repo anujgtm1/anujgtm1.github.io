@@ -141,11 +141,11 @@ test("homepage renders Swiss Notebook split hero, recent journal, viewfinder/boo
   assert.ok(body.includes("TRAVEL ATLAS"))
   assert.ok(body.includes("Places &amp; Field Coordinates"))
   assert.ok(body.includes('viewBox="0 0 1000 520"'), "Homepage should render the 1000x520 Natural Earth map")
-  assert.ok(body.includes("NATURAL EARTH I · 48/48 LOWER STATES · 50/63 PARKS"))
+  assert.ok(body.includes("NATURAL EARTH I · 48/48 LOWER STATES · 51/64 PARKS"))
   assert.ok(body.includes("Lower 48 States"))
   assert.ok(body.includes("48 / 48"))
   assert.ok(body.includes("National Parks"))
-  assert.ok(body.includes("50 / 63"))
+  assert.ok(body.includes("51 / 64"))
   assert.ok(body.includes("Ready for Stamps"))
   assert.ok(!body.includes("swiss-home-atlas-ocean"), "Homepage should no longer render the rough equirectangular ocean pattern")
   assert.ok(!body.includes("EQUIRECTANGULAR PROJECTION"), "Homepage should no longer label the old rough projection")
@@ -194,7 +194,7 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   assert.ok(body.includes("Poster Mode"))
   assert.ok(body.includes('closedby="any"'))
   assert.ok(!body.includes("Archival World Projection"), "Should not render duplicate old World map")
-  assert.ok(!body.includes("50/63 U.S. Parks"), "Should not show 50/63 U.S. Parks banner while World is active")
+  assert.ok(!body.includes("51/64 U.S. Parks"), "Should not show 51/64 U.S. Parks banner while World is active")
   assert.ok(body.includes("Places &amp; Visual Notes"))
   assert.ok(body.includes("TRAVEL LOG"))
   assert.ok(body.includes("PHOTO GALLERY"))
@@ -225,6 +225,7 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
     "CANY",
     "CARE",
     "CAVE",
+    "CHIR",
     "CHIS",
     "CONG",
     "CRLA",

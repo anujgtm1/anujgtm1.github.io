@@ -740,7 +740,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                               onClick={() => enterUsScope("poster")}
                               class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider font-medium text-ink hover:border-accent hover:text-accent transition-colors"
                             >
-                              <span>View 63-Park Poster</span>
+                              <span>{`View ${summary.totalParks}-Park Poster`}</span>
                             </button>
                           </div>
                         </Show>
@@ -748,7 +748,7 @@ export default function UnifiedTravelAtlas(props: Props) {
 
                       <VintageStampSeal
                         code={isUsa ? "USA" : country.name.slice(0, 3).toUpperCase()}
-                        subtitle={isUsa ? "50 / 63" : isVisited ? "VISITED" : "UNLOGGED"}
+                        subtitle={isUsa ? `${summary.visitedParks} / ${summary.totalParks}` : isVisited ? "VISITED" : "UNLOGGED"}
                         muted={!isVisited}
                       />
                     </div>
@@ -851,7 +851,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                         Open U.S. Poster →
                       </p>
                     </div>
-                    <VintageStampSeal code="USA" subtitle="50 / 63" />
+                    <VintageStampSeal code="USA" subtitle={`${summary.visitedParks} / ${summary.totalParks}`} />
                   </button>
                 </li>
 
@@ -900,7 +900,7 @@ export default function UnifiedTravelAtlas(props: Props) {
               </ul>
             </div>
             <figcaption class="pt-3 text-center font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-              Select the United States stamp to explore all 63 National Parks, or open any trip stamp
+              Select the United States stamp to explore all {summary.totalParks} National Parks, or open any trip stamp
             </figcaption>
           </figure>
         </Show>
@@ -963,7 +963,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   aria-labelledby="us-parks-map-title"
                 >
                   <title id="us-parks-map-title">
-                    Albers map of the United States showing all 48 visited Lower States, 50 visited National Parks, and 13 unvisited National Parks
+                    {`Albers map of the United States showing all ${summary.lower48StatesVisited} visited Lower States, ${summary.visitedParks} visited National Parks, and ${summary.remainingParks} unvisited National Parks`}
                   </title>
 
                   {/* Cartographic inset frames for AK, HI, USVI, and American Samoa */}
@@ -1331,7 +1331,7 @@ export default function UnifiedTravelAtlas(props: Props) {
           </div>
         </Show>
 
-        {/* U.S. POSTER MODE (ALL 63 PARK EMBLEMS IN ORDER) */}
+        {/* U.S. POSTER MODE (ALL PARK EMBLEMS IN ORDER) */}
         <Show when={viewMode() === "poster"}>
           <figure class="rounded-2xl border-2 border-border bg-surface-elevated p-3 sm:p-5 shadow-sm">
             <div class="rounded-xl border border-border/80 bg-surface/55 p-4 sm:p-7 space-y-6">
@@ -1340,7 +1340,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   United States National Park Service · Collector’s Edition
                 </p>
                 <h3 class="font-serif text-2xl sm:text-4xl font-medium tracking-tight text-ink">
-                  The Sixty-Three National Parks
+                  {`The ${summary.totalParks} National Parks`}
                 </h3>
                 <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 pt-1 text-xs font-mono text-ink-muted">
                   <span>

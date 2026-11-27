@@ -2,7 +2,7 @@ import type { ParkArtworkSpec } from "../../types/parks.ts"
 
 /**
  * Batch 2 bespoke WPA-screenprint National Park poster artworks:
- * 11 Southwest Canyons & Arid Icons.
+ * 12 Southwest Canyons & Arid Icons.
  *
  * Artboard: viewBox="0 0 180 240" (3:4 portrait), clipped inner print area
  * x=[14..166], y=[14..226], horizontal center x=90. Edge-touching fills
@@ -1497,6 +1497,158 @@ export const SOUTHWEST_PARK_ARTWORKS: readonly ParkArtworkSpec[] = [
         strokeWidth: 1.1,
         strokeLinecap: "round",
         opacity: 0.5,
+      },
+    ],
+  },
+
+  // =========================================================================
+  // 12. CHIR — Chiricahua National Park (AZ)
+  // =========================================================================
+  {
+    code: "CHIR",
+    subject: "Big Balanced Rock and Wonderland of Rocks rhyolite hoodoo spires in the Madrean sky island",
+    accentLight: "#D96A32",
+    accentDark: "#F29C63",
+    tertiaryLight: "#2E5443",
+    tertiaryDark: "#689B7C",
+    skyMood: "dawn",
+    nodes: [
+      // Plane 1: Dawn sun, glowing halos & high desert ribbon clouds
+      { kind: "circle", cx: 130, cy: 52, r: 32, fill: "accent-soft", opacity: 0.32 },
+      { kind: "circle", cx: 130, cy: 52, r: 20, fill: "accent-soft", opacity: 0.48 },
+      { kind: "circle", cx: 130, cy: 52, r: 11.5, fill: "accent", opacity: 0.92 },
+      { kind: "circle", cx: 130, cy: 52, r: 6, fill: "paper", opacity: 0.85 },
+      { kind: "path", d: "M16 28 Q44 23 76 28 Q52 32 16 28 Z", fill: "paper", opacity: 0.58 },
+      { kind: "path", d: "M82 38 Q106 34 128 38 Q108 41 82 38 Z", fill: "paper", opacity: 0.46 },
+
+      // Plane 2: Distant Dragoon & Sulphur Springs mountain ridges
+      {
+        kind: "path",
+        d: "M11 134 L28 122 L46 128 L66 116 L86 124 L108 114 L128 122 L150 112 L169 124 L169 164 L11 164 Z",
+        fill: "far",
+      },
+      {
+        kind: "path",
+        d: "M11 142 L34 134 L62 140 L94 132 L126 138 L154 130 L169 138 L169 168 L11 168 Z",
+        fill: "far",
+        opacity: 0.72,
+      },
+
+      // Plane 3: Midground Wonderland of Rocks rhyolite hoodoo clusters left & right
+      {
+        kind: "path",
+        d: "M11 178 L16 122 L20 114 L26 120 L28 138 L34 106 L39 98 L44 106 L46 134 L52 118 L57 124 L59 178 Z",
+        fill: "mid",
+      },
+      {
+        kind: "path",
+        d: "M39 98 L44 106 L46 134 L48 176 L38 176 Z",
+        fill: "accent",
+        opacity: 0.46,
+      },
+      {
+        kind: "path",
+        d: "M122 178 L126 118 L131 110 L136 118 L138 140 L144 102 L150 94 L156 104 L158 134 L164 116 L169 122 L169 178 Z",
+        fill: "mid",
+      },
+      {
+        kind: "path",
+        d: "M150 94 L156 104 L158 134 L160 176 L149 176 Z",
+        fill: "accent",
+        opacity: 0.52,
+      },
+
+      // Plane 4: Hero Landmark — Big Balanced Rock centered around x=90
+      // Narrow eroded vertical rhyolite pedestal with sunlit eastern edge
+      {
+        kind: "path",
+        d: "M78 188 L81 154 L84 128 L96 128 L99 154 L103 188 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M90 128 L96 128 L99 154 L103 188 L92 188 L91 154 Z",
+        fill: "ink",
+      },
+      // Massive cantilevered rounded-top rhyolite boulder perched precariously atop the pedestal
+      {
+        kind: "path",
+        d: "M58 106 C56 82 68 58 88 54 C108 50 124 64 124 88 C124 108 114 122 100 128 L80 128 C68 124 60 116 58 106 Z",
+        fill: "ink",
+      },
+      // Warm dawn eastern lit face of Big Balanced Rock
+      {
+        kind: "path",
+        d: "M90 54 C109 51 124 65 124 88 C124 108 114 122 100 128 L91 128 C96 104 96 76 90 54 Z",
+        fill: "accent",
+        opacity: 0.72,
+      },
+      // Deep western shadow sculpting the overhang and under-boulder undercut
+      {
+        kind: "path",
+        d: "M58 106 C56 82 68 58 86 55 C76 74 74 102 82 128 L80 128 C68 124 60 116 58 106 Z",
+        fill: "deep",
+        opacity: 0.76,
+      },
+      // Crest rim highlight along sunlit upper-right boulder crown
+      {
+        kind: "path",
+        d: "M84 55 C104 51 118 62 122 82",
+        stroke: "paper",
+        strokeWidth: 1.7,
+        strokeLinecap: "round",
+        opacity: 0.82,
+      },
+      // Horizontal volcanic tuff bedding lines across Big Balanced Rock & pedestal
+      { kind: "path", d: "M64 78 Q92 74 120 79", stroke: "paper", strokeWidth: 1.4, opacity: 0.65 },
+      { kind: "path", d: "M60 94 Q90 90 122 95", stroke: "deep", strokeWidth: 1.5, opacity: 0.56 },
+      { kind: "path", d: "M64 110 Q90 107 116 111", stroke: "accent-soft", strokeWidth: 1.4, opacity: 0.68 },
+      { kind: "line", x1: 82, y1: 144, x2: 98, y2: 144, stroke: "accent-soft", strokeWidth: 1.2, opacity: 0.58 },
+
+      // Plane 5: Flanking foreground rhyolite spires + Madrean sky-island pine-oak forest slope
+      {
+        kind: "path",
+        d: "M16 198 L20 144 L26 132 L33 142 L36 198 Z",
+        fill: "deep",
+      },
+      {
+        kind: "path",
+        d: "M144 198 L148 138 L155 126 L162 138 L166 198 Z",
+        fill: "deep",
+      },
+      // Madrean sky-island forested slope across foreground
+      {
+        kind: "path",
+        d: "M11 182 Q52 172 90 184 Q130 174 169 182 L169 229 L11 229 Z",
+        fill: "tertiary",
+      },
+      {
+        kind: "path",
+        d: "M11 198 Q56 188 98 200 Q138 190 169 198 L169 229 L11 229 Z",
+        fill: "deep",
+      },
+      // Crisp stylized Madrean conifer silhouettes flanking the balanced rock canyon floor
+      {
+        kind: "polygon",
+        points: "28,166 20,186 24,186 17,204 23,204 15,222 41,222 33,204 39,204 32,186 36,186",
+        fill: "deep",
+      },
+      {
+        kind: "polygon",
+        points: "54,174 48,192 52,192 46,208 62,208 56,192 60,192",
+        fill: "tertiary-soft",
+        opacity: 0.82,
+      },
+      {
+        kind: "polygon",
+        points: "150,164 142,184 146,184 139,202 145,202 137,222 163,222 155,202 161,202 154,184 158,184",
+        fill: "deep",
+      },
+      {
+        kind: "polygon",
+        points: "126,176 120,192 124,192 118,208 134,208 128,192 132,192",
+        fill: "tertiary-soft",
+        opacity: 0.82,
       },
     ],
   },

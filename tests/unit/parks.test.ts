@@ -31,18 +31,18 @@ import {
   projectParkToHumboldt,
 } from "../../src/lib/parks.ts"
 
-test("national parks dataset has all 63 parks with Anuj's exact 50/63 visited ledger", () => {
-  assert.equal(NATIONAL_PARKS.length, 63)
+test("national parks dataset has all 64 parks with Anuj's exact 51/64 visited ledger", () => {
+  assert.equal(NATIONAL_PARKS.length, 64)
 
   const codes = new Set(NATIONAL_PARKS.map((p) => p.code))
-  assert.equal(codes.size, 63, "Every park must have a unique NPS alpha code")
+  assert.equal(codes.size, 64, "Every park must have a unique NPS alpha code")
 
   const summary = computeParkSurveySummary(NATIONAL_PARKS, US_STATES)
-  assert.equal(summary.totalParks, 63)
-  assert.equal(summary.visitedParks, 50)
+  assert.equal(summary.totalParks, 64)
+  assert.equal(summary.visitedParks, 51)
   assert.equal(summary.remainingParks, 13)
-  assert.equal(summary.lower48ParksTotal, 51)
-  assert.equal(summary.lower48ParksVisited, 49)
+  assert.equal(summary.lower48ParksTotal, 52)
+  assert.equal(summary.lower48ParksVisited, 50)
   assert.equal(summary.lower48StatesTotal, 48)
   assert.equal(summary.lower48StatesVisited, 48)
   assert.equal(summary.totalStates, 50)
@@ -120,15 +120,15 @@ test("contour ring generator and visited route produce deterministic geometry", 
   assert.deepEqual(ringsA, ringsB)
 
   const route = computeVisitedLower48Route(projected)
-  assert.equal(route.length, 49)
-  assert.equal(new Set(route.map((p) => p.code)).size, 49)
+  assert.equal(route.length, 50)
+  assert.equal(new Set(route.map((p) => p.code)).size, 50)
 })
 
 test("filterAndSortParks filters by visit status and query and orders deterministically", () => {
   const projected = getProjectedParks()
 
-  assert.equal(filterAndSortParks(projected, "all", "", "alpha").length, 63)
-  assert.equal(filterAndSortParks(projected, "visited", "", "alpha").length, 50)
+  assert.equal(filterAndSortParks(projected, "all", "", "alpha").length, 64)
+  assert.equal(filterAndSortParks(projected, "visited", "", "alpha").length, 51)
   assert.equal(filterAndSortParks(projected, "unvisited", "", "alpha").length, 13)
 
   const utah = filterAndSortParks(projected, "all", "UT", "alpha")
@@ -136,14 +136,18 @@ test("filterAndSortParks filters by visit status and query and orders determinis
   assert.equal(utah[0]?.code, "ARCH")
   assert.equal(utah[4]?.code, "ZION")
 
+  const arizona = filterAndSortParks(projected, "all", "AZ", "alpha")
+  assert.equal(arizona.length, 4)
+  assert.ok(arizona.some((p) => p.code === "CHIR"))
+
   const byYear = filterAndSortParks(projected, "all", "", "established")
   assert.equal(byYear[0]?.code, "YELL")
-  assert.equal(byYear[byYear.length - 1]?.code, "NERI")
+  assert.equal(byYear[byYear.length - 1]?.code, "CHIR")
 
   const visitedFirst = filterAndSortParks(projected, "all", "", "visited")
   assert.equal(visitedFirst[0]?.visited, true)
-  assert.equal(visitedFirst[49]?.visited, true)
-  assert.equal(visitedFirst[50]?.visited, false)
+  assert.equal(visitedFirst[50]?.visited, true)
+  assert.equal(visitedFirst[51]?.visited, false)
 })
 
 test("Natural Earth I world countries, graticule, and projected park coordinates stay within bounds", () => {
@@ -169,7 +173,7 @@ test("Natural Earth I world countries, graticule, and projected park coordinates
   assert.equal(visitedOnly[0]?.id, USA_ISO_ID)
 })
 
-test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique layered geometry and valid palettes", () => {
+test("Bespoke WPA park artworks cover all 64/64 U.S. National Parks with unique layered geometry and valid palettes", () => {
   const expectedCodes = NATIONAL_PARKS.map((p) => p.code).sort()
   const parkCodeSet = new Set(expectedCodes)
   const validInks = new Set<ParkArtworkInk>([
@@ -190,12 +194,12 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
   const hexColorRe = /^#[0-9A-Fa-f]{6}$/
 
   assert.equal(PILOT_PARK_ARTWORKS.length, 8)
-  assert.equal(SOUTHWEST_PARK_ARTWORKS.length, 11)
+  assert.equal(SOUTHWEST_PARK_ARTWORKS.length, 12)
   assert.equal(DESERTS_KARST_PARK_ARTWORKS.length, 10)
   assert.equal(ALPINE_FORESTS_PARK_ARTWORKS.length, 11)
   assert.equal(ALASKA_VOLCANIC_PARK_ARTWORKS.length, 11)
   assert.equal(COASTS_EAST_PARK_ARTWORKS.length, 12)
-  assert.equal(ALL_PARK_ARTWORKS.length, 63)
+  assert.equal(ALL_PARK_ARTWORKS.length, 64)
 
   const actualCodes = Object.keys(PARK_ARTWORKS).sort()
   assert.deepEqual(actualCodes, expectedCodes)
@@ -241,5 +245,5 @@ test("Bespoke WPA park artworks cover all 63/63 U.S. National Parks with unique 
     geometrySignatures.add(signature)
   }
 
-  assert.equal(geometrySignatures.size, 63)
+  assert.equal(geometrySignatures.size, 64)
 })
