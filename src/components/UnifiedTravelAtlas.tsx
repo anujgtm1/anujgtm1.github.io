@@ -275,8 +275,8 @@ export default function UnifiedTravelAtlas(props: Props) {
   const graticule = buildNaturalEarthGraticule()
   const visitedCountrySet = new Set<string>(VISITED_COUNTRY_IDS)
 
-  const [scope, setScope] = createSignal<AtlasScope>("world")
-  const [viewMode, setViewMode] = createSignal<ViewMode>("map")
+  const [scope, setScope] = createSignal<AtlasScope>("us")
+  const [viewMode, setViewMode] = createSignal<ViewMode>("poster")
 
   // World scope state
   const [worldSelection, setWorldSelection] = createSignal<WorldSelection>(
