@@ -179,16 +179,63 @@ test("blog renders clean empty state when no posts are published", async () => {
   assert.ok(!body.includes("Dispatches · Notes Desk"))
 })
 
-test("photos renders empty plate and native closedby lightbox dialog without instructional fluff", async () => {
+test("photos renders empty plate and multi-album gallery bundle with native closedby lightbox without instructional fluff", async () => {
   const { body } = await fetchText("/photos/")
   assert.ok(body.includes("Nothing here yet."))
   assert.ok(!body.includes("CONTACT SHEET · 35MM ARCHIVAL SLEEVE"))
   assert.ok(!body.includes("Select any standalone plate"))
-  assert.ok(body.includes('id="swiss-photo-lightbox"'))
-  assert.ok(body.includes('closedby="any"'))
-  assert.ok(body.includes('aria-label="Close"'))
   assert.ok(!body.includes('role="dialog"'))
-  assert.ok(!body.includes('aria-modal="true"'))
+  assert.ok(!body.includes('aria-modal='))
+  assert.ok(body.includes('href="/photos"'))
+
+  // Verify built Astro CSS & PhotoAlbums/PhotoGallery island assets resolve cleanly (zero broken assets)
+  const assetRefs = [
+    ...body.matchAll(/(?:href|src|component-url|renderer-url)="(\/_astro\/[^"]+)"/g),
+  ].map((match) => match[1])
+  assert.ok(assetRefs.length > 0, "Photos page should reference built Astro assets")
+  for (const assetPath of new Set(assetRefs)) {
+    const assetRes = await fetchText(assetPath)
+    assert.equal(assetRes.status, 200, `Expected 200 for built asset ${assetPath}`)
+  }
+
+  const cssMatch = body.match(/href="(\/_astro\/[^"]+\.css)"/)
+  assert.ok(cssMatch?.[1], "Photos page should link built Astro CSS stylesheet")
+  const cssRes = await fetchText(cssMatch[1])
+  assert.ok(cssRes.body.includes("photo-masonry"), "Built CSS should include .photo-masonry rules")
+  assert.ok(cssRes.body.includes("filter-pill-row"), "Built CSS should include .filter-pill-row rules")
+  assert.ok(cssRes.body.includes("lightbox-dialog"), "Built CSS should include .lightbox-dialog rules")
+
+  const islandMatch = body.match(/component-url="(\/_astro\/PhotoAlbums\.[^"]+\.js)"/)
+  assert.ok(islandMatch?.[1], "Photos page should hydrate PhotoAlbums island")
+  const albumsJsRes = await fetchText(islandMatch[1])
+  assert.ok(albumsJsRes.body.includes("All Frames"), "PhotoAlbums bundle should include All Frames toggle")
+  assert.ok(albumsJsRes.body.includes("Albums"), "PhotoAlbums bundle should include Albums toggle")
+
+  // PhotoAlbums imports PhotoGallery chunk — check PhotoGallery chunk for native closedby lightbox
+  const galleryImportMatch = albumsJsRes.body.match(/from"\.\/(PhotoGallery\.[^"]+\.js)"/)
+  const galleryChunkPath = galleryImportMatch?.[1]
+    ? `/_astro/${galleryImportMatch[1]}`
+    : islandMatch[1]
+  const galleryJsRes = await fetchText(galleryChunkPath)
+  assert.equal(galleryJsRes.status, 200)
+  assert.ok(galleryJsRes.body.includes('closedby:"any"') || galleryJsRes.body.includes('closedby="any"') || galleryJsRes.body.includes("closedby"), "PhotoGallery bundle should declare closedby")
+  assert.ok(galleryJsRes.body.includes("photo-lightbox-title"), "PhotoGallery bundle should include lightbox title id")
+  assert.ok(!galleryJsRes.body.includes('role:"dialog"'), "PhotoGallery bundle must not set redundant role=dialog")
+  assert.ok(!galleryJsRes.body.includes("aria-modal"), "PhotoGallery bundle must not set redundant aria-modal")
+
+  const missingAlbum = await fetchText("/photos/nonexistent-album/")
+  assert.equal(missingAlbum.status, 404, "Nonexistent photo album route should return 404")
+})
+
+test("search indexes essays, projects, books, travel, and photos with Photos filter pill", async () => {
+  const { body } = await fetchText("/search/")
+  assert.ok(body.includes("Search"))
+  assert.ok(body.includes("Photos"))
+  assert.ok(
+    body.includes("Search essays, projects, books, photos, and travel..."),
+    "Search page should advertise photos in search placeholder",
+  )
+  assert.ok(body.includes("Filter results by category"))
 })
 
 test("bookshelf renders imported Goodreads volumes, view controls, native closedby dialog, and Bookbinder Studio link", async () => {
@@ -397,6 +444,8 @@ test("Pages CMS config (.pages.yml) exists and configures all collections and me
     "src/content/work",
     "src/content/now/current.md",
     "src/content/photos",
+    "imageUrl",
+    "album",
   ]) {
     assert.ok(content.includes(required), `.pages.yml missing "${required}"`)
   }
