@@ -168,7 +168,7 @@ export default function ParkEmblem(props: Props) {
       viewBox={isInset() ? "14 14 152 212" : "0 0 180 240"}
       class={`park-emblem block h-full w-full ${skyClass()} ${
         isStamp() ? "park-emblem--stamp" : ""
-      } ${props.park.visited ? "" : "park-emblem--unvisited"} ${props.class ?? ""}`}
+      } ${props.class ?? ""}`}
       role={props.decorative ? undefined : "img"}
       aria-hidden={props.decorative ? "true" : undefined}
       aria-label={props.decorative ? undefined : `${props.park.name} National Park poster`}
@@ -221,7 +221,6 @@ export default function ParkEmblem(props: Props) {
               fill="var(--emblem-frame)"
               stroke={isStamp() ? "none" : "var(--emblem-border)"}
               stroke-width={isStamp() ? undefined : "1.5"}
-              stroke-dasharray={isStamp() || props.park.visited ? undefined : "5 3"}
             />
 
             {/* Subtle outer letterpress groove */}
@@ -255,7 +254,6 @@ export default function ParkEmblem(props: Props) {
           fill="none"
           stroke="var(--emblem-border)"
           stroke-width="1"
-          stroke-dasharray={(isStamp() || isInset()) && !props.park.visited ? "4 3" : undefined}
           opacity="0.78"
         />
       </g>

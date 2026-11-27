@@ -13,13 +13,10 @@ import { formatCoordinates } from "@lib/atlas"
 import {
   TERRITORY_INSETS,
   computeParkSurveySummary,
-  filterAndSortParks,
   formatAcres,
   formatElevationFt,
   getProjectedParks,
   hashSeed,
-  type ParkSortOrder,
-  type ParkVisitFilter,
 } from "@lib/parks"
 import {
   USA_ISO_ID,
@@ -50,19 +47,6 @@ type UsPlaceSelection = {
   readonly name: string
   readonly visited: boolean
 }
-
-const VISIT_FILTERS: readonly { readonly value: ParkVisitFilter; readonly label: string }[] = [
-  { value: "all", label: "All" },
-  { value: "visited", label: "Visited" },
-  { value: "unvisited", label: "Unvisited" },
-] as const
-
-const SORT_OPTIONS: readonly { readonly value: ParkSortOrder; readonly label: string }[] = [
-  { value: "alpha", label: "Alphabetical (A–Z)" },
-  { value: "established", label: "Year Founded" },
-  { value: "state", label: "By State" },
-  { value: "visited", label: "Visited First" },
-] as const
 
 const FEATURED_PARK_STATES: readonly string[] = ["CA", "AK", "UT", "CO", "AZ", "FL", "WA"]
 
@@ -242,9 +226,7 @@ function ParkStampTile(props: {
       <button
         type="button"
         onClick={() => props.onSelect(props.park)}
-        class={`park-poster-tile park-stamp-card group relative w-full h-full flex flex-col items-center text-center px-4 pt-3.5 pb-3.5 sm:px-5 sm:pt-4 sm:pb-4 ${
-          props.park.visited ? "" : "park-stamp-card--unvisited"
-        }`}
+        class="park-poster-tile park-stamp-card group relative w-full h-full flex flex-col items-center text-center px-4 pt-3.5 pb-3.5 sm:px-5 sm:pt-4 sm:pb-4"
       >
         <span aria-hidden="true" class="park-stamp-paper" />
 
@@ -254,9 +236,7 @@ function ParkStampTile(props: {
 
         {/* Postage header strip inside stamp paper */}
         <div class="relative z-10 mb-1.5 flex w-full items-baseline justify-between font-mono text-[8.5px] uppercase tracking-[0.2em]">
-          <span class={props.park.visited ? "text-ink opacity-75 font-semibold" : "text-ink-muted opacity-65"}>
-            USA
-          </span>
+          <span class="text-ink opacity-75 font-semibold">USA</span>
           <span class="text-ink-muted opacity-70">{props.park.code}</span>
         </div>
 
@@ -278,13 +258,7 @@ function ParkStampTile(props: {
 
         {/* Park name & state inside stamp paper (no dates) */}
         <div class="relative z-10 mt-2.5 flex flex-1 flex-col justify-center gap-1 w-full">
-          <p
-            class={`font-serif text-[13px] sm:text-sm font-medium leading-tight line-clamp-2 ${
-              props.park.visited
-                ? "text-ink group-hover:text-accent transition-colors"
-                : "text-ink-muted"
-            }`}
-          >
+          <p class="font-serif text-[13px] sm:text-sm font-medium leading-tight line-clamp-2 text-ink group-hover:text-accent transition-colors">
             {props.park.name}
           </p>
           <p class="font-mono text-[9.5px] uppercase tracking-[0.18em] text-ink-muted">
@@ -297,7 +271,7 @@ function ParkStampTile(props: {
 }
 
 export default function UnifiedTravelAtlas(props: Props) {
-  const allParks = getProjectedParks()
+  const allParks = [...getProjectedParks()].sort((a, b) => a.name.localeCompare(b.name))
   const summary = computeParkSurveySummary(allParks, US_STATES)
   const graticule = buildNaturalEarthGraticule()
   const visitedCountrySet = new Set<string>(VISITED_COUNTRY_IDS)
@@ -313,9 +287,6 @@ export default function UnifiedTravelAtlas(props: Props) {
   const [hoveredTripSlug, setHoveredTripSlug] = createSignal<string | null>(null)
 
   // U.S. scope state
-  const [visitFilter, setVisitFilter] = createSignal<ParkVisitFilter>("all")
-  const [sortOrder, setSortOrder] = createSignal<ParkSortOrder>("alpha")
-  const [query, setQuery] = createSignal("")
   const [selectedUsPlace, setSelectedUsPlace] = createSignal<UsPlaceSelection | null>(null)
   const [hoveredUsStateAbbr, setHoveredUsStateAbbr] = createSignal<string | null>(null)
   const [hoveredParkCode, setHoveredParkCode] = createSignal<string | null>(null)
@@ -325,11 +296,6 @@ export default function UnifiedTravelAtlas(props: Props) {
   let dialogRef: HTMLDialogElement | undefined
 
   const realStates = US_STATES.filter((s) => s.abbr !== "DC")
-
-  const visibleParks = createMemo(() =>
-    filterAndSortParks(allParks, visitFilter(), query(), sortOrder()),
-  )
-  const visibleParkCodes = createMemo(() => new Set(visibleParks().map((p) => p.code)))
 
   const parksByStateCode = createMemo(() => {
     const map = new Map<string, ProjectedPark[]>()
@@ -347,14 +313,6 @@ export default function UnifiedTravelAtlas(props: Props) {
   })
 
   const selectedStateParks = createMemo<readonly ProjectedPark[]>(() => {
-    const place = selectedUsPlace()
-    if (!place) return []
-    const parks = parksByStateCode().get(place.code) ?? []
-    const visible = visibleParkCodes()
-    return parks.filter((p) => visible.has(p.code))
-  })
-
-  const selectedStateAllParks = createMemo<readonly ProjectedPark[]>(() => {
     const place = selectedUsPlace()
     if (!place) return []
     return parksByStateCode().get(place.code) ?? []
@@ -384,12 +342,6 @@ export default function UnifiedTravelAtlas(props: Props) {
     return slug ? props.trips.find((t) => t.slug === slug) : undefined
   })
 
-  const visitCounts = createMemo<Record<ParkVisitFilter, number>>(() => ({
-    all: summary.totalParks,
-    visited: summary.visitedParks,
-    unvisited: summary.remainingParks,
-  }))
-
   const visitedCountries = createMemo(() =>
     WORLD_COUNTRIES.filter((c) => visitedCountrySet.has(c.id)),
   )
@@ -418,10 +370,9 @@ export default function UnifiedTravelAtlas(props: Props) {
   function stepModalPark(delta: number) {
     const current = modalTarget()
     if (!current || current.kind !== "park") return
-    const pool = visibleParks().length > 0 ? visibleParks() : allParks
-    const idx = pool.findIndex((p) => p.code === current.park.code)
-    const nextIdx = idx === -1 ? 0 : (idx + delta + pool.length) % pool.length
-    const next = pool[nextIdx]
+    const idx = allParks.findIndex((p) => p.code === current.park.code)
+    const nextIdx = idx === -1 ? 0 : (idx + delta + allParks.length) % allParks.length
+    const next = allParks[nextIdx]
     if (next) {
       setModalTarget({ kind: "park", park: next })
     }
@@ -597,71 +548,6 @@ export default function UnifiedTravelAtlas(props: Props) {
             </div>
           </div>
         </div>
-
-        {/* U.S. Filter & Search Strip (only shown in U.S. scope) */}
-        <Show when={scope() === "us"}>
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
-            <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter U.S. parks by visit status">
-              <For each={VISIT_FILTERS}>
-                {(opt) => {
-                  const isActive = () => visitFilter() === opt.value
-                  return (
-                    <button
-                      type="button"
-                      aria-pressed={isActive()}
-                      onClick={() => setVisitFilter(opt.value)}
-                      class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
-                        isActive()
-                          ? "bg-accent text-bg font-semibold"
-                          : "bg-surface text-ink-muted hover:text-ink"
-                      }`}
-                    >
-                      <span>{opt.label}</span>
-                      <span class="opacity-80">({visitCounts()[opt.value]})</span>
-                    </button>
-                  )
-                }}
-              </For>
-            </div>
-
-            <div class="flex flex-wrap items-center gap-2.5">
-              <div class="relative flex-1 sm:flex-none">
-                <label for="parks-search" class="sr-only">
-                  Search national parks or states
-                </label>
-                <input
-                  id="parks-search"
-                  type="search"
-                  value={query()}
-                  onInput={(e) => setQuery(e.currentTarget.value)}
-                  placeholder="Filter park or state…"
-                  class="w-full sm:w-56 rounded-md bg-surface/80 px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-muted/75 focus:outline-none focus:ring-2 focus:ring-accent"
-                />
-              </div>
-
-              <Show when={viewMode() === "poster"}>
-                <div class="flex items-center gap-2">
-                  <label for="parks-sort" class="sr-only">
-                    Sort order
-                  </label>
-                  <select
-                    id="parks-sort"
-                    value={sortOrder()}
-                    onChange={(e) => {
-                      const matched = SORT_OPTIONS.find((o) => o.value === e.currentTarget.value)
-                      if (matched) setSortOrder(matched.value)
-                    }}
-                    class="rounded-md bg-surface/80 px-2.5 py-1.5 text-xs font-mono text-ink focus:outline-none focus:ring-2 focus:ring-accent"
-                  >
-                    <For each={SORT_OPTIONS}>
-                      {(opt) => <option value={opt.value}>{opt.label}</option>}
-                    </For>
-                  </select>
-                </div>
-              </Show>
-            </div>
-          </div>
-        </Show>
       </div>
 
       {/* ================================================================ */}
@@ -1187,7 +1073,6 @@ export default function UnifiedTravelAtlas(props: Props) {
                   {(park) => {
                     const leftPct = `${(park.mapPoint.x / US_ALBERS_VIEWBOX.width) * 100}%`
                     const topPct = `${(park.mapPoint.y / US_ALBERS_VIEWBOX.height) * 100}%`
-                    const isVisible = () => visibleParkCodes().has(park.code)
                     const isInSelectedState = () => {
                       const st = selectedUsPlace()
                       return st ? park.states.includes(st.code) : false
@@ -1210,7 +1095,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                         onMouseLeave={() => setHoveredParkCode(null)}
                         class={`park-map-pin group absolute -translate-x-1/2 -translate-y-1/2 flex items-center justify-center rounded-full focus-visible:outline-2 ${
                           isHovered() ? "z-30" : isInSelectedState() ? "z-20" : "z-10"
-                        } ${isVisible() ? "opacity-100" : "opacity-20"}`}
+                        }`}
                         style={{
                           left: leftPct,
                           top: topPct,
@@ -1271,9 +1156,9 @@ export default function UnifiedTravelAtlas(props: Props) {
                 }
               >
                 {(place) => {
-                  const totalInState = () => selectedStateAllParks().length
+                  const totalInState = () => selectedStateParks().length
                   const visitedInState = () =>
-                    selectedStateAllParks().filter((p) => p.visited).length
+                    selectedStateParks().filter((p) => p.visited).length
                   return (
                     <div class="space-y-5">
                       <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -1312,9 +1197,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                         when={selectedStateParks().length > 0}
                         fallback={
                           <p class="text-sm text-ink-muted">
-                            {totalInState() > 0
-                              ? "No parks in this state match your filter."
-                              : `No designated U.S. National Parks in ${place().name}.`}
+                            {`No designated U.S. National Parks in ${place().name}.`}
                           </p>
                         }
                       >
@@ -1344,40 +1227,21 @@ export default function UnifiedTravelAtlas(props: Props) {
 
         {/* U.S. POSTER MODE (ALL PARK EMBLEMS AS PERFORATED STAMPS) */}
         <Show when={viewMode() === "poster"}>
-          <Show
-            when={visibleParks().length > 0}
-            fallback={
-              <div class="py-12 text-center space-y-2">
-                <p class="font-serif text-xl text-ink">No parks match that filter.</p>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setVisitFilter("all")
-                    setQuery("")
-                  }}
-                  class="text-xs font-mono uppercase tracking-wider text-accent underline underline-offset-4"
-                >
-                  Reset filters
-                </button>
-              </div>
-            }
+          <ul
+            role="list"
+            class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6"
           >
-            <ul
-              role="list"
-              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5 sm:gap-6"
-            >
-              <For each={visibleParks()}>
-                {(park) => (
-                  <ParkStampTile
-                    park={park}
-                    idPrefix="poster"
-                    hasNotes={hasPersonalNotes(park)}
-                    onSelect={openParkModal}
-                  />
-                )}
-              </For>
-            </ul>
-          </Show>
+            <For each={allParks}>
+              {(park) => (
+                <ParkStampTile
+                  park={park}
+                  idPrefix="poster"
+                  hasNotes={hasPersonalNotes(park)}
+                  onSelect={openParkModal}
+                />
+              )}
+            </For>
+          </ul>
         </Show>
       </Show>
 

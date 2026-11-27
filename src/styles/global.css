@@ -764,20 +764,6 @@ dialog.swiss-lightbox:modal {
   mask-composite: intersect;
 }
 
-.park-stamp-card--unvisited .park-stamp-paper {
-  opacity: 0.78;
-}
-
-.park-emblem--unvisited {
-  --emblem-border: var(--border);
-  filter: grayscale(1);
-  opacity: 0.58;
-}
-
-.park-emblem--unvisited.park-emblem--stamp {
-  filter: grayscale(1) drop-shadow(0 2px 5px var(--emblem-stamp-shadow));
-}
-
 @media (prefers-color-scheme: dark) {
   .park-emblem--stamp,
   .park-stamp-card {
@@ -820,8 +806,7 @@ dialog.swiss-lightbox:modal {
   }
 
   .park-emblem--stamp,
-  .park-stamp-card,
-  .park-emblem--unvisited.park-emblem--stamp {
+  .park-stamp-card {
     filter: none;
   }
 
@@ -829,11 +814,6 @@ dialog.swiss-lightbox:modal {
     -webkit-mask: none;
     mask: none;
     border: 1px solid CanvasText;
-  }
-
-  .park-emblem--unvisited {
-    filter: none;
-    opacity: 0.78;
   }
 }
 
@@ -879,10 +859,5 @@ dialog.swiss-lightbox:modal {
   .park-stamp-item:nth-child(even) .park-stamp-card:hover,
   .park-stamp-item:nth-child(even) .park-stamp-card:focus-visible {
     transform: translateY(-4px) rotate(1.1deg);
-  }
-
-  .park-poster-tile:hover .park-emblem--unvisited.park-emblem--stamp,
-  .park-poster-tile:focus-visible .park-emblem--unvisited.park-emblem--stamp {
-    filter: grayscale(1) drop-shadow(0 6px 12px var(--emblem-stamp-shadow-hover));
   }
 }
