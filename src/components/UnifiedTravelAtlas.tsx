@@ -235,9 +235,8 @@ function ParkStampTile(props: {
         </Show>
 
         {/* Postage header strip inside stamp paper */}
-        <div class="relative z-10 mb-1.5 flex w-full items-baseline justify-between font-mono text-[8.5px] uppercase tracking-[0.2em]">
+        <div class="relative z-10 mb-1.5 flex w-full items-baseline justify-start font-mono text-[8.5px] uppercase tracking-[0.2em]">
           <span class="text-ink opacity-75 font-semibold">USA</span>
-          <span class="text-ink-muted opacity-70">{props.park.code}</span>
         </div>
 
         {/* Framed WPA artwork inset */}
@@ -1465,7 +1464,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                               {park.visited ? "Visited" : "Not yet visited"}
                             </span>
                             <span class="font-mono text-xs text-ink-muted">
-                              {`${park.code} · Est. ${park.established}`}
+                              {`Est. ${park.established}`}
                             </span>
                             <Show when={park.journal?.visitedDate}>
                               {(date) => (
