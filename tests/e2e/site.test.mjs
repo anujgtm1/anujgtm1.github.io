@@ -184,21 +184,20 @@ test("bookshelf renders imported Goodreads volumes, view controls, native closed
   assert.ok(body.includes("https://anujgtm.com/Bookbinder/"))
 })
 
-test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and Travel Planner companion link", async () => {
+test("travel atlas renders lean, borderless World / U.S. atlas with perforated stamp poster frames and Travel Planner link", async () => {
   const { body } = await fetchText("/travel/")
-  assert.ok(body.includes("Field Atlas · Ready for Stamps"))
-  assert.ok(body.includes("World Atlas"))
+  assert.ok(body.includes("Travel Atlas"))
   assert.ok(body.includes(">World<"))
   assert.ok(body.includes(">U.S.<"))
-  assert.ok(body.includes("Map Mode"))
-  assert.ok(body.includes("Poster Mode"))
+  assert.ok(body.includes("Map"))
+  assert.ok(body.includes("Poster"))
   assert.ok(body.includes('closedby="any"'))
   assert.ok(!body.includes("Archival World Projection"), "Should not render duplicate old World map")
   assert.ok(!body.includes("51/64 U.S. Parks"), "Should not show 51/64 U.S. Parks banner while World is active")
-  assert.ok(body.includes("Places &amp; Visual Notes"))
-  assert.ok(body.includes("TRAVEL LOG"))
-  assert.ok(body.includes("PHOTO GALLERY"))
-  assert.ok(body.includes("No stamps logged yet"))
+  assert.ok(!body.includes("No stamps logged yet"), "Should omit empty ledger filler copy")
+  assert.ok(!body.includes("Field Atlas · Ready for Stamps"), "Should omit redundant hero kicker")
+  assert.ok(!body.includes("Collector’s Edition"), "Should omit poster collector kicker")
+  assert.ok(!body.includes("Select any park emblem"), "Should omit poster instruction figcaption")
   assert.ok(body.includes("https://travel.anujgtm.com"))
 
   // Verify upgraded 3:4 WPA poster stylesheet and client island bundle are emitted cleanly
@@ -206,6 +205,7 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   assert.ok(cssMatch?.[1], "Travel page should link built Astro CSS stylesheet")
   const cssRes = await fetchText(cssMatch[1])
   assert.equal(cssRes.status, 200)
+  assert.ok(cssRes.body.includes("park-emblem--stamp"), "Built CSS should include stamp poster frame styling")
   assert.ok(cssRes.body.includes("park-emblem--sky-night"), "Built CSS should include sky-mood classes")
   assert.ok(cssRes.body.includes("color-mix(in oklab"), "Built CSS should use oklab 6-ink color mixing")
 
@@ -214,6 +214,7 @@ test("travel atlas renders unified World / U.S. atlas, visual notes ledger, and 
   const islandRes = await fetchText(islandMatch[1])
   assert.equal(islandRes.status, 200)
   assert.ok(islandRes.body.includes("0 0 180 240"), "UnifiedTravelAtlas bundle should emit 3:4 WPA poster viewBox")
+  assert.ok(islandRes.body.includes("stamp"), "UnifiedTravelAtlas bundle should emit stamp poster variant")
   for (const bespokeCode of [
     "ACAD",
     "ARCH",

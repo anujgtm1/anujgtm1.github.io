@@ -75,47 +75,35 @@ const thumbnails = buildTravelThumbnails(
 
 <PageLayout title={TRAVEL.TITLE} description={TRAVEL.DESCRIPTION}>
   <TopLayout>
-    <div class="space-y-3 border-b border-border pb-8">
-      <p class="editorial-kicker">
-        {trips.length > 0 ? `Field Atlas · ${trips.length} Passport Stamps` : "Field Atlas · Ready for Stamps"}
-      </p>
+    <div class="pb-2">
       <h1 class="editorial-title text-ink">{TRAVEL.TITLE}</h1>
-      <p class="max-w-2xl text-base sm:text-lg text-ink-muted leading-relaxed">
-        {TRAVEL.DESCRIPTION}{trips.length > 0 ? " Select any pin on the projection or browse the dispatches and photo frames below." : ""}
-      </p>
     </div>
   </TopLayout>
 
   <BottomLayout>
-    <div class="space-y-12 pb-8">
+    <div class="space-y-10 pb-8">
       <UnifiedTravelAtlas client:load trips={trips} thumbnails={thumbnails} />
 
       <aside
         aria-label="Companion project"
-        class="rounded-none border border-border bg-surface/50 p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"
+        class="flex flex-wrap items-center justify-between gap-4 pt-2"
       >
-        <div class="space-y-1">
-          <p class="editorial-kicker">Companion Trip Tool</p>
-          <p class="font-serif text-lg text-ink">
-            Planning a group route of your own?
-          </p>
-          <p class="text-sm text-ink-muted">
-            Built my own map-first workspace for multi-stop routes, shared bookings, and travel expenses.
-          </p>
-        </div>
-        <div class="flex flex-wrap items-center gap-3 shrink-0 font-mono text-xs uppercase tracking-[0.12em]">
+        <span class="font-mono text-xs uppercase tracking-[0.12em] text-ink-muted">
+          Route planner
+        </span>
+        <div class="flex flex-wrap items-center gap-4 font-mono text-xs uppercase tracking-[0.12em]">
           <a
             href="https://travel.anujgtm.com"
             target="_blank"
             rel="noopener noreferrer"
-            class="inline-flex items-center gap-1.5 rounded-none bg-ink px-4 py-2 text-bg hover:bg-accent transition-colors"
+            class="inline-flex items-center gap-1.5 text-ink hover:text-accent transition-colors"
           >
             <span>travel.anujgtm.com</span>
             <span aria-hidden="true">↗</span>
           </a>
           <a
             href="/projects/travel-planner/"
-            class="inline-flex items-center rounded-none border border-border bg-surface-elevated px-3.5 py-2 text-ink-muted hover:border-accent hover:text-ink transition-colors"
+            class="inline-flex items-center text-ink-muted hover:text-accent transition-colors"
           >
             Dossier →
           </a>

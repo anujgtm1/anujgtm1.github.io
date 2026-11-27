@@ -63,7 +63,7 @@ const SORT_OPTIONS: readonly { readonly value: ParkSortOrder; readonly label: st
   { value: "visited", label: "Visited First" },
 ] as const
 
-const FEATURED_PARK_STATES: readonly string[] = ["CA", "AK", "UT", "CO", "FL", "WA", "AZ"]
+const FEATURED_PARK_STATES: readonly string[] = ["CA", "AK", "UT", "CO", "AZ", "FL", "WA"]
 
 function VintageStampSeal(props: {
   readonly code: string
@@ -319,39 +319,27 @@ export default function UnifiedTravelAtlas(props: Props) {
   })
 
   return (
-    <div class="space-y-6">
+    <div class="space-y-8">
       {/* Unified Header & Scope / Mode Controls */}
-      <div class="rounded-xl border border-border bg-surface-elevated p-5 sm:p-6 space-y-4">
+      <div class="space-y-4">
         <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-          <div class="space-y-1.5">
-            <Show
-              when={scope() === "us"}
-              fallback={
-                <>
-                  <p class="editorial-kicker text-atlas">
-                    {props.trips.length > 0
-                      ? `World Archive · ${props.trips.length} Passport Stamps`
-                      : "World Archive · Natural Earth Projection"}
-                  </p>
-                  <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-                    World Atlas
-                  </h2>
-                </>
-              }
-            >
-              <p class="editorial-kicker text-atlas">
-                {`United States · ${summary.lower48StatesVisited}/${summary.lower48StatesTotal} Lower States Complete`}
-              </p>
+          <Show
+            when={scope() === "us"}
+            fallback={
               <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-                {`${summary.visitedParks} of ${summary.totalParks} National Parks`}
+                World
               </h2>
-            </Show>
-          </div>
+            }
+          >
+            <h2 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+              {`${summary.visitedParks} / ${summary.totalParks} National Parks`}
+            </h2>
+          </Show>
 
           {/* Scope Switcher (World / U.S.) + View Switcher (Map / Poster) */}
           <div class="flex flex-wrap items-center gap-2.5">
             <div
-              class="inline-flex rounded-lg border border-border bg-surface p-1 gap-1"
+              class="inline-flex rounded-lg bg-surface p-1 gap-1"
               role="group"
               aria-label="Atlas scope"
             >
@@ -361,7 +349,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                 onClick={() => setScope("world")}
                 class={`rounded-md px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
                   scope() === "world"
-                    ? "bg-ink text-bg font-semibold shadow-sm"
+                    ? "bg-ink text-bg font-semibold"
                     : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -373,7 +361,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                 onClick={() => setScope("us")}
                 class={`rounded-md px-3.5 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
                   scope() === "us"
-                    ? "bg-ink text-bg font-semibold shadow-sm"
+                    ? "bg-ink text-bg font-semibold"
                     : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -382,7 +370,7 @@ export default function UnifiedTravelAtlas(props: Props) {
             </div>
 
             <div
-              class="inline-flex rounded-lg border border-border bg-surface p-1 gap-1"
+              class="inline-flex rounded-lg bg-surface p-1 gap-1"
               role="group"
               aria-label="Atlas view mode"
             >
@@ -392,7 +380,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                 onClick={() => setViewMode("map")}
                 class={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
                   viewMode() === "map"
-                    ? "bg-accent text-bg font-semibold shadow-sm"
+                    ? "bg-accent text-bg font-semibold"
                     : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -400,7 +388,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   <path d="M1.5 3.5 5.5 2 10.5 4 14.5 2.5v10l-4 1.5-5-2-4 1.5z" />
                   <path d="M5.5 2v10M10.5 4v10" />
                 </svg>
-                <span>Map Mode</span>
+                <span>Map</span>
               </button>
               <button
                 type="button"
@@ -408,7 +396,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                 onClick={() => setViewMode("poster")}
                 class={`inline-flex items-center gap-1.5 rounded-md px-3 py-1.5 text-xs font-mono uppercase tracking-wider transition-colors ${
                   viewMode() === "poster"
-                    ? "bg-accent text-bg font-semibold shadow-sm"
+                    ? "bg-accent text-bg font-semibold"
                     : "text-ink-muted hover:text-ink"
                 }`}
               >
@@ -418,7 +406,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                   <rect x="2" y="9" width="5" height="5" rx="1" />
                   <rect x="9" y="9" width="5" height="5" rx="1" />
                 </svg>
-                <span>Poster Mode</span>
+                <span>Poster</span>
               </button>
             </div>
           </div>
@@ -426,7 +414,7 @@ export default function UnifiedTravelAtlas(props: Props) {
 
         {/* U.S. Filter & Search Strip (only shown in U.S. scope) */}
         <Show when={scope() === "us"}>
-          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 border-t border-border pt-4">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-3 pt-1">
             <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Filter U.S. parks by visit status">
               <For each={VISIT_FILTERS}>
                 {(opt) => {
@@ -436,10 +424,10 @@ export default function UnifiedTravelAtlas(props: Props) {
                       type="button"
                       aria-pressed={isActive()}
                       onClick={() => setVisitFilter(opt.value)}
-                      class={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
+                      class={`inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-mono uppercase tracking-wider transition-colors ${
                         isActive()
-                          ? "border-accent bg-accent text-bg font-semibold"
-                          : "border-border bg-surface text-ink-muted hover:border-accent hover:text-ink"
+                          ? "bg-accent text-bg font-semibold"
+                          : "bg-surface text-ink-muted hover:text-ink"
                       }`}
                     >
                       <span>{opt.label}</span>
@@ -461,14 +449,14 @@ export default function UnifiedTravelAtlas(props: Props) {
                   value={query()}
                   onInput={(e) => setQuery(e.currentTarget.value)}
                   placeholder="Filter park or state…"
-                  class="w-full sm:w-52 rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-muted/75 focus:border-accent focus:outline-none"
+                  class="w-full sm:w-52 rounded-md bg-surface/80 px-3 py-1.5 text-xs font-mono text-ink placeholder:text-ink-muted/75 focus:outline-none focus:ring-2 focus:ring-accent"
                 />
               </div>
 
               <Show when={viewMode() === "poster"}>
                 <div class="flex items-center gap-2">
-                  <label for="parks-sort" class="text-[11px] font-mono uppercase tracking-wider text-ink-muted">
-                    Order
+                  <label for="parks-sort" class="sr-only">
+                    Sort order
                   </label>
                   <select
                     id="parks-sort"
@@ -477,7 +465,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                       const matched = SORT_OPTIONS.find((o) => o.value === e.currentTarget.value)
                       if (matched) setSortOrder(matched.value)
                     }}
-                    class="rounded-md border border-border bg-surface px-2.5 py-1.5 text-xs font-mono text-ink focus:border-accent focus:outline-none"
+                    class="rounded-md bg-surface/80 px-2.5 py-1.5 text-xs font-mono text-ink focus:outline-none focus:ring-2 focus:ring-accent"
                   >
                     <For each={SORT_OPTIONS}>
                       {(opt) => <option value={opt.value}>{opt.label}</option>}
@@ -496,42 +484,24 @@ export default function UnifiedTravelAtlas(props: Props) {
       <Show when={scope() === "world"}>
         {/* WORLD MAP MODE (FULL WIDTH) */}
         <Show when={viewMode() === "map"}>
-          <div class="space-y-5">
-            <figure class="rounded-xl border border-border bg-surface-elevated p-4 sm:p-5 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-ink-muted">
-                <div class="flex flex-wrap items-center gap-3">
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2.5 rounded-sm bg-atlas-soft border border-atlas/60" aria-hidden="true" />
-                    <span>Visited ({visitedCountries().length})</span>
-                  </span>
-                  <Show when={props.trips.length > 0}>
-                    <span class="inline-flex items-center gap-1.5">
-                      <span class="inline-block size-2.5 rounded-full bg-accent" aria-hidden="true" />
-                      <span>Stamped Logs ({props.trips.length})</span>
-                    </span>
-                  </Show>
-                </div>
-
-                <span class="uppercase tracking-wider text-[11px]">
-                  <Show
-                    when={hoveredTrip()}
-                    fallback={
-                      <Show
-                        when={hoveredCountry()}
-                        fallback="Click any country to inspect"
-                      >
-                        {(c) =>
-                          `${c().name} · ${visitedCountrySet.has(c().id) ? "Visited" : "Not logged"}`
-                        }
-                      </Show>
-                    }
-                  >
-                    {(t) => `${t().city}, ${t().country} (${t().stampCode})`}
-                  </Show>
-                </span>
+          <div class="space-y-6">
+            <figure class="space-y-2">
+              <div class="min-h-[1.25rem] flex items-center justify-end text-[11px] font-mono uppercase tracking-wider text-ink-muted">
+                <Show
+                  when={hoveredTrip()}
+                  fallback={
+                    <Show when={hoveredCountry()}>
+                      {(c) =>
+                        `${c().name} · ${visitedCountrySet.has(c().id) ? "Visited" : "Unvisited"}`
+                      }
+                    </Show>
+                  }
+                >
+                  {(t) => `${t().city}, ${t().country} (${t().stampCode})`}
+                </Show>
               </div>
 
-              <div class="relative w-full aspect-[1000/520] overflow-hidden rounded-lg border border-border bg-surface">
+              <div class="relative w-full aspect-[1000/520] overflow-hidden">
                 <svg
                   viewBox={`0 0 ${WORLD_NE_VIEWBOX.width} ${WORLD_NE_VIEWBOX.height}`}
                   class="block h-full w-full"
@@ -547,7 +517,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                     d={graticule.outlinePath}
                     fill="var(--surface)"
                     stroke="var(--border)"
-                    stroke-width="1"
+                    stroke-width="0.85"
                   />
                   <g fill="none" stroke="var(--border)" stroke-width="0.6" opacity="0.55">
                     <For each={graticule.parallels}>
@@ -634,17 +604,17 @@ export default function UnifiedTravelAtlas(props: Props) {
                         style={{ left: leftPct, top: topPct }}
                       >
                         <span
-                          class={`block rounded-full border-2 transition-transform ${
+                          class={`block rounded-full transition-transform ${
                             isSelected()
-                              ? "size-4 border-bg bg-accent ring-4 ring-accent/30"
-                              : "size-3 border-bg bg-atlas group-hover:bg-accent group-hover:scale-125"
+                              ? "size-4 bg-accent ring-4 ring-accent/30"
+                              : "size-3 bg-atlas group-hover:bg-accent group-hover:scale-125"
                           }`}
                         />
                         <span
-                          class={`pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded px-1.5 py-0.5 font-mono text-[10px] font-medium shadow-sm ${
+                          class={`pointer-events-none absolute left-1/2 top-full mt-1 -translate-x-1/2 whitespace-nowrap rounded px-1.5 py-0.5 font-mono text-[10px] font-medium ${
                             isSelected()
                               ? "bg-ink text-bg"
-                              : "bg-surface-elevated/95 text-ink border border-border"
+                              : "bg-surface-elevated/95 text-ink"
                           }`}
                         >
                           {trip.stampCode}
@@ -654,255 +624,190 @@ export default function UnifiedTravelAtlas(props: Props) {
                   }}
                 </For>
               </div>
-
-              <figcaption class="text-xs text-ink-muted">
-                Click any country on the map to view its stamp &amp; travel notes — click the United States for state and national park details.
-              </figcaption>
             </figure>
 
-            {/* Full-Width Horizontal Stamp Inspector Strip Below World Map */}
-            <aside
-              aria-label="Selected destination stamp"
-              class="rounded-xl border border-border bg-surface-elevated p-5 sm:p-6"
-            >
-              <Show when={worldSelection().kind === "none"}>
-                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                  <div class="space-y-1.5 max-w-2xl">
-                    <p class="text-xs font-mono uppercase tracking-widest text-atlas">
-                      Passport Inspector
-                    </p>
-                    <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink">
-                      Select a country or stamp on the map
-                    </h3>
-                    <p class="text-sm text-ink-muted leading-relaxed">
-                      Click any shaded country on the map above to view notes and stamps. International trip logs added to the journal appear automatically as pins.
-                    </p>
-                  </div>
-                  <VintageStampSeal code="---" subtitle="ATLAS" muted={true} />
-                </div>
-              </Show>
-
-              <Show when={worldSelection().kind === "country"}>
-                {(() => {
-                  const sel = worldSelection()
-                  if (sel.kind !== "country") return null
-                  const country = sel.country
-                  const isUsa = country.id === USA_ISO_ID
-                  const isVisited = visitedCountrySet.has(country.id)
-                  return (
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-                      <div class="space-y-2.5 max-w-2xl">
-                        <div class="flex flex-wrap items-center gap-2">
-                          <span
-                            class={`rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider font-semibold ${
-                              isVisited
-                                ? "bg-atlas-soft text-atlas"
-                                : "border border-dashed border-border bg-surface text-ink-muted"
-                            }`}
-                          >
-                            {isVisited ? "Visited" : "Not logged yet"}
-                          </span>
-                          <Show when={isUsa}>
-                            <span class="font-mono text-xs text-ink-muted">
-                              {`${summary.lower48StatesVisited}/${summary.lower48StatesTotal} Lower States · ${summary.visitedParks}/${summary.totalParks} National Parks`}
+            {/* Borderless Destination Detail Strip Below World Map (only when selected) */}
+            <Show when={worldSelection().kind !== "none"}>
+              <aside aria-label="Selected destination stamp" class="pt-1">
+                <Show when={worldSelection().kind === "country"}>
+                  {(() => {
+                    const sel = worldSelection()
+                    if (sel.kind !== "country") return null
+                    const country = sel.country
+                    const isUsa = country.id === USA_ISO_ID
+                    const isVisited = visitedCountrySet.has(country.id)
+                    return (
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+                        <div class="space-y-2.5 max-w-2xl">
+                          <div class="flex flex-wrap items-center gap-2">
+                            <span
+                              class={`rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider font-semibold ${
+                                isVisited
+                                  ? "bg-atlas-soft text-atlas"
+                                  : "bg-surface text-ink-muted"
+                              }`}
+                            >
+                              {isVisited ? "Visited" : "Unvisited"}
                             </span>
+                            <Show when={isUsa}>
+                              <span class="font-mono text-xs text-ink-muted">
+                                {`${summary.lower48StatesVisited}/${summary.lower48StatesTotal} States · ${summary.visitedParks}/${summary.totalParks} Parks`}
+                              </span>
+                            </Show>
+                          </div>
+
+                          <h3 class="font-serif text-2xl font-medium text-ink">
+                            {country.name}
+                          </h3>
+
+                          <Show when={isUsa}>
+                            <div class="flex flex-wrap items-center gap-2.5 pt-1">
+                              <button
+                                type="button"
+                                onClick={() => enterUsScope("map")}
+                                class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-xs font-mono uppercase tracking-wider font-medium text-bg hover:bg-accent transition-colors"
+                              >
+                                <span>Open U.S. Map</span>
+                                <span aria-hidden="true">→</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => enterUsScope("poster")}
+                                class="inline-flex items-center gap-1.5 rounded-md bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider font-medium text-ink hover:text-accent transition-colors"
+                              >
+                                <span>{`View ${summary.totalParks}-Park Poster`}</span>
+                              </button>
+                            </div>
                           </Show>
                         </div>
 
-                        <h3 class="font-serif text-2xl font-medium text-ink">
-                          {country.name}
-                        </h3>
+                        <VintageStampSeal
+                          code={isUsa ? "USA" : country.name.slice(0, 3).toUpperCase()}
+                          subtitle={isUsa ? `${summary.visitedParks} / ${summary.totalParks}` : isVisited ? "VISITED" : "UNLOGGED"}
+                          muted={!isVisited}
+                        />
+                      </div>
+                    )
+                  })()}
+                </Show>
 
-                        <Show
-                          when={isUsa}
-                          fallback={
-                            <p class="text-sm text-ink-muted leading-relaxed">
-                              {isVisited
-                                ? "Marked as visited — field notes and photos for this country haven’t been logged yet."
-                                : "No stamps logged for this country yet."}
+                <Show when={worldSelection().kind === "trip"}>
+                  {(() => {
+                    const sel = worldSelection()
+                    if (sel.kind !== "trip") return null
+                    const trip = sel.trip
+                    return (
+                      <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
+                        <div class="space-y-3 flex-1 min-w-0">
+                          <div class="space-y-1">
+                            <p class="text-xs font-mono uppercase tracking-widest text-atlas">
+                              {trip.region} · {formatCoordinates(trip.coordinates)}
                             </p>
-                          }
-                        >
-                          <p class="text-sm text-ink-muted leading-relaxed">
-                            All 48 contiguous states visited and {summary.visitedParks} of {summary.totalParks} U.S. National Parks explored — click below to browse every state and park emblem.
-                          </p>
+                            <h3 class="font-serif text-2xl font-medium text-ink">
+                              {trip.city}, {trip.country}
+                            </h3>
+                            <p class="text-sm text-ink-muted leading-relaxed">{trip.summary}</p>
+                          </div>
+
+                          <Show when={trip.highlights.length > 0}>
+                            <ul class="flex flex-wrap gap-2 text-xs text-ink">
+                              <For each={trip.highlights}>
+                                {(h) => (
+                                  <li class="rounded-full bg-surface px-2.5 py-0.5">
+                                    {h}
+                                  </li>
+                                )}
+                              </For>
+                            </ul>
+                          </Show>
+
                           <div class="flex flex-wrap items-center gap-2.5 pt-1">
-                            <button
-                              type="button"
-                              onClick={() => enterUsScope("map")}
+                            <a
+                              href={`/travel/${trip.slug}/`}
                               class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-xs font-mono uppercase tracking-wider font-medium text-bg hover:bg-accent transition-colors"
                             >
-                              <span>Open U.S. Map</span>
+                              <span>Read notes</span>
                               <span aria-hidden="true">→</span>
-                            </button>
+                            </a>
                             <button
                               type="button"
-                              onClick={() => enterUsScope("poster")}
-                              class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider font-medium text-ink hover:border-accent hover:text-accent transition-colors"
+                              onClick={() => openTripModal(trip)}
+                              class="inline-flex items-center gap-1.5 rounded-md bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink hover:text-accent transition-colors"
                             >
-                              <span>{`View ${summary.totalParks}-Park Poster`}</span>
+                              <span>Quick view ↗</span>
                             </button>
                           </div>
-                        </Show>
-                      </div>
-
-                      <VintageStampSeal
-                        code={isUsa ? "USA" : country.name.slice(0, 3).toUpperCase()}
-                        subtitle={isUsa ? `${summary.visitedParks} / ${summary.totalParks}` : isVisited ? "VISITED" : "UNLOGGED"}
-                        muted={!isVisited}
-                      />
-                    </div>
-                  )
-                })()}
-              </Show>
-
-              <Show when={worldSelection().kind === "trip"}>
-                {(() => {
-                  const sel = worldSelection()
-                  if (sel.kind !== "trip") return null
-                  const trip = sel.trip
-                  return (
-                    <div class="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                      <div class="space-y-3 flex-1 min-w-0">
-                        <div class="space-y-1">
-                          <p class="text-xs font-mono uppercase tracking-widest text-atlas">
-                            {trip.region} · {formatCoordinates(trip.coordinates)}
-                          </p>
-                          <h3 class="font-serif text-2xl font-medium text-ink">
-                            {trip.city}, {trip.country}
-                          </h3>
-                          <p class="text-sm text-ink-muted leading-relaxed">{trip.summary}</p>
                         </div>
 
-                        <Show when={trip.highlights.length > 0}>
-                          <ul class="flex flex-wrap gap-2 text-xs text-ink">
-                            <For each={trip.highlights}>
-                              {(h) => (
-                                <li class="rounded-full border border-border bg-surface px-2.5 py-0.5">
-                                  {h}
-                                </li>
-                              )}
-                            </For>
-                          </ul>
-                        </Show>
-
-                        <div class="flex flex-wrap items-center gap-2.5 pt-1">
-                          <a
-                            href={`/travel/${trip.slug}/`}
-                            class="inline-flex items-center gap-1.5 rounded-md bg-ink px-4 py-2 text-xs font-mono uppercase tracking-wider font-medium text-bg hover:bg-accent transition-colors"
-                          >
-                            <span>Read field notes</span>
-                            <span aria-hidden="true">→</span>
-                          </a>
-                          <button
-                            type="button"
-                            onClick={() => openTripModal(trip)}
-                            class="inline-flex items-center gap-1.5 rounded-md border border-border bg-surface px-3.5 py-2 text-xs font-mono uppercase tracking-wider text-ink hover:border-accent hover:text-accent transition-colors"
-                          >
-                            <span>Quick view ↗</span>
-                          </button>
-                        </div>
+                        <VintageStampSeal code={trip.stampCode} subtitle={trip.date} />
                       </div>
-
-                      <VintageStampSeal code={trip.stampCode} subtitle={trip.date} />
-                    </div>
-                  )
-                })()}
-              </Show>
-            </aside>
+                    )
+                  })()}
+                </Show>
+              </aside>
+            </Show>
           </div>
         </Show>
 
         {/* WORLD POSTER MODE */}
         <Show when={viewMode() === "poster"}>
-          <figure class="rounded-2xl border-2 border-border bg-surface-elevated p-3 sm:p-5 shadow-sm">
-            <div class="rounded-xl border border-border/80 bg-surface/55 p-5 sm:p-7 space-y-6">
-              <header class="text-center space-y-2 border-b border-border pb-5">
-                <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-atlas">
-                  Passport &amp; Country Archive
-                </p>
-                <h3 class="font-serif text-2xl sm:text-4xl font-medium tracking-tight text-ink">
-                  World Travel Stamps
-                </h3>
-                <p class="text-xs font-mono text-ink-muted">
-                  {`${visitedCountries().length} ${visitedCountries().length === 1 ? "Country" : "Countries"} Marked · ${props.trips.length} Field Logs`}
-                </p>
-              </header>
+          <div class="space-y-5">
+            <p class="text-xs font-mono text-ink-muted">
+              {`${visitedCountries().length} ${visitedCountries().length === 1 ? "Country" : "Countries"} · ${props.trips.length} Logs`}
+            </p>
 
-              <ul role="list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                {/* United States Stamp Card */}
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => enterUsScope("poster")}
-                    class="park-poster-tile group w-full h-full text-start rounded-xl border border-border bg-surface-elevated p-5 flex items-center justify-between gap-4 hover:border-accent"
-                  >
-                    <div class="space-y-1.5 min-w-0">
-                      <p class="font-mono text-[10px] uppercase tracking-widest text-atlas">
-                        North America
-                      </p>
-                      <h4 class="font-serif text-xl font-medium text-ink group-hover:text-accent transition-colors">
-                        United States
-                      </h4>
-                      <p class="font-mono text-xs text-ink-muted">
-                        {`${summary.lower48StatesVisited}/${summary.lower48StatesTotal} Lower States · ${summary.visitedParks}/${summary.totalParks} Parks`}
-                      </p>
-                      <p class="pt-1 font-mono text-[11px] uppercase tracking-wider text-accent">
-                        Open U.S. Poster →
-                      </p>
-                    </div>
-                    <VintageStampSeal code="USA" subtitle={`${summary.visitedParks} / ${summary.totalParks}`} />
-                  </button>
-                </li>
+            <ul role="list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {/* United States Stamp Card */}
+              <li>
+                <button
+                  type="button"
+                  onClick={() => enterUsScope("poster")}
+                  class="park-poster-tile group w-full h-full text-start rounded-xl bg-surface/45 hover:bg-surface/75 p-5 flex items-center justify-between gap-4 transition-colors"
+                >
+                  <div class="space-y-1.5 min-w-0">
+                    <p class="font-mono text-[10px] uppercase tracking-widest text-atlas">
+                      North America
+                    </p>
+                    <h3 class="font-serif text-xl font-medium text-ink group-hover:text-accent transition-colors">
+                      United States
+                    </h3>
+                    <p class="font-mono text-xs text-ink-muted">
+                      {`${summary.lower48StatesVisited}/${summary.lower48StatesTotal} States · ${summary.visitedParks}/${summary.totalParks} Parks`}
+                    </p>
+                    <p class="pt-1 font-mono text-[11px] uppercase tracking-wider text-accent">
+                      Open U.S. Poster →
+                    </p>
+                  </div>
+                  <VintageStampSeal code="USA" subtitle={`${summary.visitedParks} / ${summary.totalParks}`} />
+                </button>
+              </li>
 
-                {/* Logged International Trips */}
-                <For each={props.trips}>
-                  {(trip) => (
-                    <li>
-                      <button
-                        type="button"
-                        onClick={() => openTripModal(trip)}
-                        class="park-poster-tile group w-full h-full text-start rounded-xl border border-border bg-surface-elevated p-5 flex items-center justify-between gap-4 hover:border-accent"
-                      >
-                        <div class="space-y-1.5 min-w-0">
-                          <p class="font-mono text-[10px] uppercase tracking-widest text-atlas">
-                            {trip.region}
-                          </p>
-                          <h4 class="font-serif text-xl font-medium text-ink group-hover:text-accent transition-colors">
-                            {trip.city}
-                          </h4>
-                          <p class="font-mono text-xs text-ink-muted">{trip.country}</p>
-                          <p class="text-xs text-ink-muted line-clamp-2 pt-0.5">{trip.summary}</p>
-                        </div>
-                        <VintageStampSeal code={trip.stampCode} subtitle={trip.date} />
-                      </button>
-                    </li>
-                  )}
-                </For>
-
-                {/* Graceful empty slot when no international trips are logged yet */}
-                <Show when={props.trips.length === 0}>
-                  <li class="rounded-xl border border-dashed border-border bg-surface/65 p-5 flex items-center justify-between gap-4">
-                    <div class="space-y-1.5">
-                      <p class="font-mono text-[10px] uppercase tracking-widest text-ink-muted">
-                        International Stamps
-                      </p>
-                      <h4 class="font-serif text-lg font-medium text-ink">
-                        Ready for more stamps
-                      </h4>
-                      <p class="text-xs text-ink-muted leading-relaxed">
-                        Add countries or international trip logs to fill out the world poster.
-                      </p>
-                    </div>
-                    <VintageStampSeal code="---" subtitle="SOON" muted={true} />
+              {/* Logged International Trips */}
+              <For each={props.trips}>
+                {(trip) => (
+                  <li>
+                    <button
+                      type="button"
+                      onClick={() => openTripModal(trip)}
+                      class="park-poster-tile group w-full h-full text-start rounded-xl bg-surface/45 hover:bg-surface/75 p-5 flex items-center justify-between gap-4 transition-colors"
+                    >
+                      <div class="space-y-1.5 min-w-0">
+                        <p class="font-mono text-[10px] uppercase tracking-widest text-atlas">
+                          {trip.region}
+                        </p>
+                        <h3 class="font-serif text-xl font-medium text-ink group-hover:text-accent transition-colors">
+                          {trip.city}
+                        </h3>
+                        <p class="font-mono text-xs text-ink-muted">{trip.country}</p>
+                        <p class="text-xs text-ink-muted line-clamp-2 pt-0.5">{trip.summary}</p>
+                      </div>
+                      <VintageStampSeal code={trip.stampCode} subtitle={trip.date} />
+                    </button>
                   </li>
-                </Show>
-              </ul>
-            </div>
-            <figcaption class="pt-3 text-center font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-              Select the United States stamp to explore all {summary.totalParks} National Parks, or open any trip stamp
-            </figcaption>
-          </figure>
+                )}
+              </For>
+            </ul>
+          </div>
         </Show>
       </Show>
 
@@ -912,50 +817,30 @@ export default function UnifiedTravelAtlas(props: Props) {
       <Show when={scope() === "us"}>
         {/* U.S. MAP MODE (FULL WIDTH + CLICK STATE TO SHOW PARK THUMBNAILS) */}
         <Show when={viewMode() === "map"}>
-          <div class="space-y-5">
-            <figure class="rounded-xl border border-border bg-surface-elevated p-4 sm:p-5 space-y-3">
-              <div class="flex flex-wrap items-center justify-between gap-2 text-xs font-mono text-ink-muted">
-                <div class="flex flex-wrap items-center gap-3">
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2.5 rounded-sm bg-atlas-soft border border-atlas/60" aria-hidden="true" />
-                    <span>48/48 Lower States</span>
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2.5 rounded-full bg-accent" aria-hidden="true" />
-                    <span>Visited ({summary.visitedParks})</span>
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2.5 rounded-full border border-dashed border-ink-muted bg-surface" aria-hidden="true" />
-                    <span>Unvisited ({summary.remainingParks})</span>
-                  </span>
-                </div>
-
-                <span class="uppercase tracking-wider text-[11px]">
-                  <Show
-                    when={hoveredPark()}
-                    fallback={
-                      <Show
-                        when={hoveredUsState()}
-                        fallback="Click any state to see its parks · click any pin to open"
-                      >
-                        {(st) => {
-                          const parks = parksByStateCode().get(st().code) ?? []
-                          const vCount = parks.filter((p) => p.visited).length
-                          return `${st().name} · ${st().visited ? "Visited" : "Unvisited"}${
-                            parks.length > 0 ? ` (${vCount}/${parks.length} parks)` : ""
-                          }`
-                        }}
-                      </Show>
-                    }
-                  >
-                    {(park) =>
-                      `${park().name} (${park().states.join("/")}) · ${park().visited ? "Visited" : "Unvisited"}`
-                    }
-                  </Show>
-                </span>
+          <div class="space-y-6">
+            <figure class="space-y-2">
+              <div class="min-h-[1.25rem] flex items-center justify-end text-[11px] font-mono uppercase tracking-wider text-ink-muted">
+                <Show
+                  when={hoveredPark()}
+                  fallback={
+                    <Show when={hoveredUsState()}>
+                      {(st) => {
+                        const parks = parksByStateCode().get(st().code) ?? []
+                        const vCount = parks.filter((p) => p.visited).length
+                        return `${st().name} · ${st().visited ? "Visited" : "Unvisited"}${
+                          parks.length > 0 ? ` (${vCount}/${parks.length})` : ""
+                        }`
+                      }}
+                    </Show>
+                  }
+                >
+                  {(park) =>
+                    `${park().name} (${park().states.join("/")}) · ${park().visited ? "Visited" : "Unvisited"}`
+                  }
+                </Show>
               </div>
 
-              <div class="relative w-full aspect-[975/610] overflow-hidden rounded-lg border border-border bg-surface">
+              <div class="relative w-full aspect-[975/610] overflow-hidden">
                 <svg
                   viewBox={`0 0 ${US_ALBERS_VIEWBOX.width} ${US_ALBERS_VIEWBOX.height}`}
                   class="block h-full w-full"
@@ -1164,7 +1049,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                           }
                         />
                         <Show when={isHovered()}>
-                          <span class="pointer-events-none absolute left-1/2 bottom-full mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium text-bg shadow-sm">
+                          <span class="pointer-events-none absolute left-1/2 bottom-full mb-1 -translate-x-1/2 whitespace-nowrap rounded bg-ink px-1.5 py-0.5 font-mono text-[10px] font-medium text-bg">
                             {park.name}
                           </span>
                         </Show>
@@ -1173,49 +1058,29 @@ export default function UnifiedTravelAtlas(props: Props) {
                   }}
                 </For>
               </div>
-
-              <figcaption class="text-xs text-ink-muted">
-                Click any state to browse its National Park thumbnails below, or click any pin directly to open its field card.
-              </figcaption>
             </figure>
 
-            {/* Full-Width State Parks Tray Below U.S. Map */}
-            <aside
-              aria-label="Selected state and national parks"
-              class="rounded-xl border border-border bg-surface-elevated p-5 sm:p-6"
-            >
+            {/* Borderless State Parks Tray Below U.S. Map */}
+            <aside aria-label="Selected state and national parks" class="pt-1">
               <Show
                 when={selectedUsPlace()}
                 fallback={
-                  <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div class="space-y-1.5">
-                      <p class="text-xs font-mono uppercase tracking-widest text-atlas">
-                        State Explorer
-                      </p>
-                      <h3 class="font-serif text-xl sm:text-2xl font-medium text-ink">
-                        Click a state on the map to see its parks
-                      </h3>
-                      <p class="text-sm text-ink-muted">
-                        Or jump straight to a multi-park state below:
-                      </p>
-                    </div>
-                    <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Quick select states with multiple national parks">
-                      <For each={FEATURED_PARK_STATES}>
-                        {(abbr) => {
-                          const st = US_STATES.find((s) => s.abbr === abbr)
-                          const count = parksByStateCode().get(abbr)?.length ?? 0
-                          return (
-                            <button
-                              type="button"
-                              onClick={() => selectUsState(abbr)}
-                              class="rounded-full border border-border bg-surface px-3 py-1.5 text-xs font-mono text-ink hover:border-accent hover:text-accent transition-colors"
-                            >
-                              {st ? `${st.name} (${count})` : abbr}
-                            </button>
-                          )
-                        }}
-                      </For>
-                    </div>
+                  <div class="flex flex-wrap items-center gap-2" role="group" aria-label="Quick select states with multiple national parks">
+                    <For each={FEATURED_PARK_STATES}>
+                      {(abbr) => {
+                        const st = US_STATES.find((s) => s.abbr === abbr)
+                        const count = parksByStateCode().get(abbr)?.length ?? 0
+                        return (
+                          <button
+                            type="button"
+                            onClick={() => selectUsState(abbr)}
+                            class="rounded-full bg-surface px-3 py-1.5 text-xs font-mono text-ink hover:text-accent transition-colors"
+                          >
+                            {st ? `${st.name} (${count})` : abbr}
+                          </button>
+                        )
+                      }}
+                    </For>
                   </div>
                 }
               >
@@ -1225,24 +1090,15 @@ export default function UnifiedTravelAtlas(props: Props) {
                     selectedStateAllParks().filter((p) => p.visited).length
                   return (
                     <div class="space-y-5">
-                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-border pb-4">
-                        <div class="space-y-1.5">
+                      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div class="space-y-1">
                           <div class="flex flex-wrap items-center gap-2">
-                            <span
-                              class={`rounded-full px-2.5 py-0.5 font-mono text-[10px] uppercase tracking-wider font-semibold ${
-                                place().visited
-                                  ? "bg-atlas-soft text-atlas"
-                                  : "border border-dashed border-border bg-surface text-ink-muted"
-                              }`}
-                            >
-                              {place().visited ? "State Visited" : "Not yet visited"}
-                            </span>
                             <span class="font-mono text-xs text-ink-muted">
                               {totalInState() > 0
-                                ? `${visitedInState()} / ${totalInState()} National ${
-                                    totalInState() === 1 ? "Park" : "Parks"
-                                  } visited`
-                                : "No U.S. National Parks in this state"}
+                                ? `${visitedInState()} / ${totalInState()}`
+                                : place().visited
+                                  ? "Visited"
+                                  : "Unvisited"}
                             </span>
                           </div>
                           <h3 class="font-serif text-2xl sm:text-3xl font-medium text-ink">
@@ -1271,16 +1127,14 @@ export default function UnifiedTravelAtlas(props: Props) {
                         fallback={
                           <p class="text-sm text-ink-muted">
                             {totalInState() > 0
-                              ? "No parks in this state match your current filter."
-                              : place().visited
-                                ? `Visited ${place().name} as part of all 48 Lower States — there are no designated U.S. National Parks located inside ${place().name}.`
-                                : `No designated U.S. National Parks located inside ${place().name}.`}
+                              ? "No parks in this state match your filter."
+                              : `No designated U.S. National Parks in ${place().name}.`}
                           </p>
                         }
                       >
                         <ul
                           role="list"
-                          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"
+                          class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 sm:gap-6"
                         >
                           <For each={selectedStateParks()}>
                             {(park) => (
@@ -1288,17 +1142,18 @@ export default function UnifiedTravelAtlas(props: Props) {
                                 <button
                                   type="button"
                                   onClick={() => openParkModal(park)}
-                                  class={`park-poster-tile group w-full h-full flex flex-col items-center text-center rounded-xl border p-3 transition-colors ${
-                                    park.visited
-                                      ? "border-border bg-surface hover:border-accent"
-                                      : "border-dashed border-border/80 bg-surface/50 hover:border-ink-muted"
-                                  }`}
+                                  class="park-poster-tile group w-full h-full flex flex-col items-center text-center p-1"
                                 >
-                                  <div class="relative w-full aspect-[3/4] max-w-[132px]">
-                                    <ParkEmblem park={park} idPrefix="state-tray" decorative={true} />
+                                  <div class="relative w-full aspect-[3/4] max-w-[144px]">
+                                    <ParkEmblem
+                                      park={park}
+                                      idPrefix="state-tray"
+                                      variant="stamp"
+                                      decorative={true}
+                                    />
                                     <Show when={hasPersonalNotes(park)}>
                                       <span
-                                        class="absolute top-1.5 right-1.5 size-2 rounded-full bg-accent ring-2 ring-surface"
+                                        class="absolute top-2 right-2 size-2 rounded-full bg-accent ring-2 ring-bg"
                                         aria-hidden="true"
                                       />
                                     </Show>
@@ -1314,7 +1169,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                                       {park.name}
                                     </p>
                                     <p class="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
-                                      {park.visited ? `Est. ${park.established}` : "Unvisited"}
+                                      {`${park.states.join("/")} · ${park.established}`}
                                     </p>
                                   </div>
                                 </button>
@@ -1331,158 +1186,99 @@ export default function UnifiedTravelAtlas(props: Props) {
           </div>
         </Show>
 
-        {/* U.S. POSTER MODE (ALL PARK EMBLEMS IN ORDER) */}
+        {/* U.S. POSTER MODE (ALL PARK EMBLEMS AS PERFORATED STAMPS) */}
         <Show when={viewMode() === "poster"}>
-          <figure class="rounded-2xl border-2 border-border bg-surface-elevated p-3 sm:p-5 shadow-sm">
-            <div class="rounded-xl border border-border/80 bg-surface/55 p-4 sm:p-7 space-y-6">
-              <header class="text-center space-y-2 border-b border-border pb-5">
-                <p class="font-mono text-[11px] uppercase tracking-[0.22em] text-atlas">
-                  United States National Park Service · Collector’s Edition
-                </p>
-                <h3 class="font-serif text-2xl sm:text-4xl font-medium tracking-tight text-ink">
-                  {`The ${summary.totalParks} National Parks`}
-                </h3>
-                <div class="flex flex-wrap items-center justify-center gap-x-5 gap-y-1.5 pt-1 text-xs font-mono text-ink-muted">
-                  <span>
-                    <strong class="text-ink font-semibold">{`${summary.visitedParks}/${summary.totalParks}`}</strong> Visited
-                  </span>
-                  <span aria-hidden="true">·</span>
-                  <span>
-                    <strong class="text-ink font-semibold">{`${summary.lower48StatesVisited}/${summary.lower48StatesTotal}`}</strong> Lower States
-                  </span>
-                  <span aria-hidden="true">·</span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2 rounded-full bg-accent" aria-hidden="true" />
-                    <span>Color = Visited</span>
-                  </span>
-                  <span class="inline-flex items-center gap-1.5">
-                    <span class="inline-block size-2 rounded-full bg-ink-muted/40" aria-hidden="true" />
-                    <span>{`Grayed = Remaining (${summary.remainingParks})`}</span>
-                  </span>
-                </div>
-              </header>
-
-              <Show
-                when={visibleParks().length > 0}
-                fallback={
-                  <div class="py-12 text-center space-y-2">
-                    <p class="font-serif text-xl text-ink">No parks match that filter.</p>
+          <Show
+            when={visibleParks().length > 0}
+            fallback={
+              <div class="py-12 text-center space-y-2">
+                <p class="font-serif text-xl text-ink">No parks match that filter.</p>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setVisitFilter("all")
+                    setQuery("")
+                  }}
+                  class="text-xs font-mono uppercase tracking-wider text-accent underline underline-offset-4"
+                >
+                  Reset filters
+                </button>
+              </div>
+            }
+          >
+            <ul
+              role="list"
+              class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-5 sm:gap-6"
+            >
+              <For each={visibleParks()}>
+                {(park) => (
+                  <li>
                     <button
                       type="button"
-                      onClick={() => {
-                        setVisitFilter("all")
-                        setQuery("")
-                      }}
-                      class="text-xs font-mono uppercase tracking-wider text-accent underline underline-offset-4"
+                      onClick={() => openParkModal(park)}
+                      class="park-poster-tile group w-full h-full flex flex-col items-center text-center p-1"
                     >
-                      Reset filters
-                    </button>
-                  </div>
-                }
-              >
-                <ul
-                  role="list"
-                  class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-5"
-                >
-                  <For each={visibleParks()}>
-                    {(park) => (
-                      <li>
-                        <button
-                          type="button"
-                          onClick={() => openParkModal(park)}
-                          class={`park-poster-tile group w-full h-full flex flex-col items-center text-center rounded-xl border p-2.5 sm:p-3 transition-colors ${
+                      <div class="relative w-full aspect-[3/4]">
+                        <ParkEmblem
+                          park={park}
+                          idPrefix="poster"
+                          variant="stamp"
+                          decorative={true}
+                        />
+                        <Show when={hasPersonalNotes(park)}>
+                          <span
+                            class="absolute top-2 right-2 size-2 rounded-full bg-accent ring-2 ring-bg"
+                            aria-hidden="true"
+                          />
+                        </Show>
+                      </div>
+
+                      <div class="mt-2.5 space-y-0.5 w-full">
+                        <p
+                          class={`font-serif text-sm font-medium leading-snug line-clamp-2 ${
                             park.visited
-                              ? "border-border bg-surface-elevated hover:border-accent"
-                              : "border-dashed border-border/80 bg-surface/60 hover:border-ink-muted"
+                              ? "text-ink group-hover:text-accent transition-colors"
+                              : "text-ink-muted"
                           }`}
                         >
-                          <div class="relative w-full aspect-[3/4]">
-                            <ParkEmblem park={park} idPrefix="poster" decorative={true} />
-                            <Show when={hasPersonalNotes(park)}>
-                              <span
-                                class="absolute top-1.5 right-1.5 size-2 rounded-full bg-accent ring-2 ring-surface-elevated"
-                                aria-hidden="true"
-                              />
-                            </Show>
-                          </div>
-
-                          <div class="mt-2.5 space-y-0.5 w-full">
-                            <p
-                              class={`font-serif text-sm font-medium leading-snug line-clamp-2 ${
-                                park.visited
-                                  ? "text-ink group-hover:text-accent transition-colors"
-                                  : "text-ink-muted"
-                              }`}
-                            >
-                              {park.name}
-                            </p>
-                            <p class="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
-                              {`${park.states.join("/")} · ${park.established}`}
-                            </p>
-                          </div>
-                        </button>
-                      </li>
-                    )}
-                  </For>
-                </ul>
-              </Show>
-            </div>
-            <figcaption class="pt-3 text-center font-mono text-[11px] uppercase tracking-wider text-ink-muted">
-              Select any park emblem to open its photos, quotes, and field notes
-            </figcaption>
-          </figure>
+                          {park.name}
+                        </p>
+                        <p class="font-mono text-[10px] uppercase tracking-wider text-ink-muted">
+                          {`${park.states.join("/")} · ${park.established}`}
+                        </p>
+                      </div>
+                    </button>
+                  </li>
+                )}
+              </For>
+            </ul>
+          </Show>
         </Show>
       </Show>
 
       {/* ================================================================ */}
-      {/* PLACES & VISUAL NOTES (SWISS NOTEBOOK PHOTO + TRAVEL LEDGER)     */}
+      {/* PLACES & VISUAL NOTES (ONLY RENDERED WHEN ENTRIES EXIST)         */}
       {/* ================================================================ */}
-      <section class="border-t border-border pt-10 space-y-6" aria-labelledby="travel-dispatches-heading">
-        <div class="flex flex-col sm:flex-row sm:items-baseline justify-between gap-3">
-          <div class="space-y-1">
-            <p class="editorial-kicker">Dispatches &amp; Frames</p>
-            <h2 id="travel-dispatches-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
-              Places &amp; Visual Notes
-            </h2>
-          </div>
+      <Show when={(props.thumbnails ?? []).length > 0}>
+        <section class="pt-6 space-y-6" aria-labelledby="travel-dispatches-heading">
+          <h2 id="travel-dispatches-heading" class="font-serif text-2xl sm:text-3xl font-medium text-ink">
+            Places &amp; Visual Notes
+          </h2>
 
-          <div class="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.12em]">
-            <span class="inline-flex items-center gap-1.5 border border-atlas/25 bg-atlas-soft px-2 py-0.5 text-atlas">
-              TRAVEL LOG →
-            </span>
-            <span class="inline-flex items-center gap-1.5 border border-accent/25 bg-accent-soft px-2 py-0.5 text-accent">
-              PHOTO GALLERY ↗
-            </span>
-          </div>
-        </div>
-
-        <Show
-          when={(props.thumbnails ?? []).length > 0}
-          fallback={
-            <div class="border-t border-b border-border py-10 grid grid-cols-1 md:grid-cols-12 gap-4 md:gap-8 items-baseline">
-              <p class="md:col-span-4 font-mono text-xs uppercase tracking-[0.12em] text-atlas">
-                Field Ledger · Empty
-              </p>
-              <p class="md:col-span-8 text-sm sm:text-base text-ink-muted leading-relaxed">
-                No stamps logged yet — add a travel entry or travel photograph to populate the field ledger.
-              </p>
-            </div>
-          }
-        >
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             <For each={props.thumbnails ?? []}>
               {(item) => {
                 const isGallery = item.destination === "gallery"
                 const tripSlug = isGallery ? "" : item.id.replace(/^travel-/, "")
                 return (
-                  <article class="flex flex-col justify-between border border-border bg-surface-elevated hover:border-accent/70 transition-colors">
+                  <article class="flex flex-col justify-between bg-surface/45 hover:bg-surface/75 rounded-lg overflow-hidden transition-colors">
                     <a href={item.href} class="group flex flex-1 flex-col">
                       <Show
                         when={item.imageSrc}
                         fallback={
-                          <div class="aspect-[4/3] border-b border-border bg-surface p-5 flex flex-col justify-between">
+                          <div class="aspect-[4/3] bg-surface p-5 flex flex-col justify-between">
                             <div class="flex items-center justify-between gap-2">
-                              <span class="rounded-none border border-atlas/25 bg-atlas-soft px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-atlas">
+                              <span class="font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-atlas">
                                 TRAVEL LOG →
                               </span>
                               <span class="font-mono text-[11px] text-ink-muted">
@@ -1506,7 +1302,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                         }
                       >
                         {(src) => (
-                          <div class="overflow-hidden border-b border-border bg-surface">
+                          <div class="overflow-hidden bg-surface">
                             <img
                               src={src()}
                               alt={item.imageAlt ?? item.title}
@@ -1521,10 +1317,8 @@ export default function UnifiedTravelAtlas(props: Props) {
                       <div class="flex flex-1 flex-col gap-2.5 p-4">
                         <div class="flex flex-wrap items-center justify-between gap-2">
                           <span
-                            class={`rounded-none border px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-[0.12em] ${
-                              isGallery
-                                ? "border-accent/25 bg-accent-soft text-accent"
-                                : "border-atlas/25 bg-atlas-soft text-atlas"
+                            class={`font-mono text-[10px] font-medium uppercase tracking-[0.12em] ${
+                              isGallery ? "text-accent" : "text-atlas"
                             }`}
                           >
                             {isGallery ? "PHOTO GALLERY ↗" : "TRAVEL LOG →"}
@@ -1553,7 +1347,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                     </a>
 
                     <Show when={!isGallery && tripSlug.length > 0}>
-                      <div class="flex items-center justify-between gap-3 border-t border-border px-4 py-2.5 font-mono text-[11px]">
+                      <div class="flex items-center justify-between gap-3 px-4 py-2.5 font-mono text-[11px]">
                         <button
                           type="button"
                           onClick={() => {
@@ -1581,8 +1375,8 @@ export default function UnifiedTravelAtlas(props: Props) {
               }}
             </For>
           </div>
-        </Show>
-      </section>
+        </section>
+      </Show>
 
       {/* ================================================================ */}
       {/* SHARED NATIVE <dialog closedby="any"> FIELD CARD MODAL           */}
@@ -1770,7 +1564,7 @@ export default function UnifiedTravelAtlas(props: Props) {
                         </Show>
                       </div>
 
-                      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-lg border border-border bg-surface p-4 text-xs font-mono">
+                      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-3 rounded-lg bg-surface p-4 text-xs font-mono">
                         <div>
                           <dt class="text-[10px] uppercase tracking-wider text-ink-muted">High Point</dt>
                           <dd class="mt-0.5 text-ink font-medium">{formatElevationFt(park.highPointFt)}</dd>
@@ -1788,14 +1582,6 @@ export default function UnifiedTravelAtlas(props: Props) {
                           <dd class="mt-0.5 text-ink font-medium">{formatCoordinates(park.coordinates)}</dd>
                         </div>
                       </dl>
-
-                      <Show when={!hasPersonalNotes(park)}>
-                        <p class="rounded-lg border border-dashed border-border bg-surface/60 px-4 py-3 text-xs font-mono text-ink-muted">
-                          {park.visited
-                            ? "Photos, favorite spots, and quotes for this park haven’t been logged yet."
-                            : "Not visited yet — still on the list."}
-                        </p>
-                      </Show>
                     </div>
 
                     <div class="flex items-center justify-between gap-3 border-t border-border bg-surface/60 px-5 py-3.5 sm:px-6">

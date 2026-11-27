@@ -729,10 +729,37 @@ dialog.swiss-lightbox:modal {
   }
 }
 
+.park-emblem--stamp {
+  --emblem-stamp-shadow: rgb(19 18 16 / 0.14);
+  --emblem-stamp-shadow-hover: rgb(19 18 16 / 0.24);
+  filter: drop-shadow(0 2px 6px var(--emblem-stamp-shadow));
+}
+
 .park-emblem--unvisited {
   --emblem-border: var(--border);
   filter: grayscale(1);
   opacity: 0.58;
+}
+
+.park-emblem--unvisited.park-emblem--stamp {
+  filter: grayscale(1) drop-shadow(0 2px 5px var(--emblem-stamp-shadow));
+}
+
+@media (prefers-color-scheme: dark) {
+  .park-emblem--stamp {
+    --emblem-stamp-shadow: rgb(0 0 0 / 0.36);
+    --emblem-stamp-shadow-hover: rgb(0 0 0 / 0.52);
+  }
+}
+
+:root:has(> head > meta[name="color-scheme"][content="dark"]) .park-emblem--stamp {
+  --emblem-stamp-shadow: rgb(0 0 0 / 0.36);
+  --emblem-stamp-shadow-hover: rgb(0 0 0 / 0.52);
+}
+
+:root:has(> head > meta[name="color-scheme"][content="light"]) .park-emblem--stamp {
+  --emblem-stamp-shadow: rgb(19 18 16 / 0.14);
+  --emblem-stamp-shadow-hover: rgb(19 18 16 / 0.24);
 }
 
 @media (forced-colors: active) {
@@ -756,6 +783,11 @@ dialog.swiss-lightbox:modal {
     --emblem-paper: Canvas;
   }
 
+  .park-emblem--stamp,
+  .park-emblem--unvisited.park-emblem--stamp {
+    filter: none;
+  }
+
   .park-emblem--unvisited {
     filter: none;
     opacity: 0.78;
@@ -776,15 +808,25 @@ dialog.swiss-lightbox:modal {
 
 @media (prefers-reduced-motion: no-preference) {
   .park-poster-tile {
-    transition:
-      transform 180ms cubic-bezier(0.22, 1, 0.36, 1),
-      border-color 180ms ease,
-      box-shadow 180ms ease;
+    transition: transform 180ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
   .park-poster-tile:hover,
   .park-poster-tile:focus-visible {
     transform: translateY(-3px);
-    box-shadow: 0 12px 24px -14px rgb(19 18 16 / 0.32);
+  }
+
+  .park-emblem--stamp {
+    transition: filter 180ms ease;
+  }
+
+  .park-poster-tile:hover .park-emblem--stamp,
+  .park-poster-tile:focus-visible .park-emblem--stamp {
+    filter: drop-shadow(0 6px 12px var(--emblem-stamp-shadow-hover));
+  }
+
+  .park-poster-tile:hover .park-emblem--unvisited.park-emblem--stamp,
+  .park-poster-tile:focus-visible .park-emblem--unvisited.park-emblem--stamp {
+    filter: grayscale(1) drop-shadow(0 6px 12px var(--emblem-stamp-shadow-hover));
   }
 }
