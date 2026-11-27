@@ -17,6 +17,7 @@ import {
   formatAcres,
   formatElevationFt,
   getProjectedParks,
+  hashSeed,
   type ParkSortOrder,
   type ParkVisitFilter,
 } from "@lib/parks"
@@ -116,34 +117,115 @@ function VintageStampSeal(props: {
   )
 }
 
-function PostalCancelMark() {
+function PostalCancelMark(props: { readonly code: string; readonly idPrefix: string }) {
+  const seed = (salt: string) => hashSeed(`${props.code}-cancel-${salt}`)
+  const angle = Math.round((-24 + seed("rot") * 38) * 10) / 10
+  const offsetX = Math.round((-3 + seed("dx") * 7) * 10) / 10
+  const offsetY = Math.round((-2 + seed("dy") * 6) * 10) / 10
+  const inkOpacity = Math.round((0.3 + seed("op") * 0.14) * 100) / 100
+  const outerDashOffset = Math.round(seed("od") * 200)
+  const innerDashOffset = Math.round(seed("id") * 160)
+  const wearCx = `${Math.round(18 + seed("wx") * 64)}%`
+  const wearCy = `${Math.round(18 + seed("wy") * 64)}%`
+  const maskId = `${props.idPrefix}-pmask-${props.code}`
+  const wearId = `${props.idPrefix}-pwear-${props.code}`
+
+  const drySpecks = [
+    { cx: 14 + seed("s1x") * 52, cy: 14 + seed("s1y") * 52, r: 1.4 + seed("s1r") * 1.4 },
+    { cx: 14 + seed("s2x") * 52, cy: 14 + seed("s2y") * 52, r: 1.2 + seed("s2r") * 1.3 },
+    { cx: 14 + seed("s3x") * 52, cy: 14 + seed("s3y") * 52, r: 1.1 + seed("s3r") * 1.5 },
+    { cx: 14 + seed("s4x") * 52, cy: 14 + seed("s4y") * 52, r: 1.0 + seed("s4r") * 1.2 },
+    { cx: 14 + seed("s5x") * 52, cy: 14 + seed("s5y") * 52, r: 1.3 + seed("s5r") * 1.4 },
+  ]
+
   return (
     <svg
-      viewBox="0 0 88 44"
-      class="pointer-events-none absolute top-7 right-1.5 z-20 w-16 sm:w-[4.5rem] -rotate-12 text-ink opacity-25 transition-opacity group-hover:opacity-40"
+      viewBox="0 0 80 80"
+      class="pointer-events-none absolute z-20 w-[44%] aspect-square text-ink transition-opacity group-hover:opacity-55"
+      style={{
+        top: `${8 + offsetY}%`,
+        right: `${3 + offsetX}%`,
+        transform: `rotate(${angle}deg)`,
+        opacity: inkOpacity,
+      }}
       aria-hidden="true"
     >
-      <circle cx="21" cy="22" r="16.5" fill="none" stroke="currentColor" stroke-width="1.2" />
-      <circle cx="21" cy="22" r="13.2" fill="none" stroke="currentColor" stroke-width="0.65" stroke-dasharray="2 1.5" />
-      <line x1="10" y1="17.2" x2="32" y2="17.2" stroke="currentColor" stroke-width="0.6" />
-      <line x1="10" y1="26.8" x2="32" y2="26.8" stroke="currentColor" stroke-width="0.6" />
-      <text
-        x="21"
-        y="23.8"
-        text-anchor="middle"
-        fill="currentColor"
-        font-size="4.8"
-        font-weight="700"
-        font-family="JetBrains Mono, monospace"
-        letter-spacing="0.35"
-      >
-        VISITED
-      </text>
-      <g fill="none" stroke="currentColor" stroke-width="1.05" stroke-linecap="round">
-        <path d="M41 12 Q48 9 55 12 T69 12 T83 12" />
-        <path d="M41 19 Q48 16 55 19 T69 19 T83 19" />
-        <path d="M41 26 Q48 23 55 26 T69 26 T83 26" />
-        <path d="M41 33 Q48 30 55 33 T69 33 T83 33" />
+      <defs>
+        {/* Uneven hand-pressure fade on one side of the rubber stamp */}
+        <radialGradient id={wearId} cx={wearCx} cy={wearCy} r="58%">
+          <stop offset="0%" stop-color="#666666" />
+          <stop offset="65%" stop-color="#DCDCDC" />
+          <stop offset="100%" stop-color="#FFFFFF" />
+        </radialGradient>
+        <mask id={maskId}>
+          <rect x="0" y="0" width="80" height="80" fill={`url(#${wearId})`} />
+          <For each={drySpecks}>
+            {(pt) => <circle cx={pt.cx} cy={pt.cy} r={pt.r} fill="black" opacity="0.72" />}
+          </For>
+        </mask>
+      </defs>
+
+      <g mask={`url(#${maskId})`}>
+        {/* Outer rubber ring with subtle dry-ink skips */}
+        <circle
+          cx="40"
+          cy="40"
+          r="35"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2.4"
+          stroke-dasharray="48 3 34 2 62 4 28 2"
+          stroke-dashoffset={outerDashOffset}
+        />
+        {/* Faint micro-offset double-strike chatter */}
+        <circle
+          cx="40.7"
+          cy="39.5"
+          r="35"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="0.9"
+          stroke-dasharray="22 14 30 18"
+          stroke-dashoffset={outerDashOffset + 19}
+          opacity="0.38"
+        />
+        {/* Inner fine ring with worn gaps */}
+        <circle
+          cx="40"
+          cy="40"
+          r="28.5"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.15"
+          stroke-dasharray="38 3 44 4 32 2"
+          stroke-dashoffset={innerDashOffset}
+        />
+
+        {/* Center stamp band rules */}
+        <line x1="13" y1="31" x2="67" y2="31" stroke="currentColor" stroke-width="1.15" stroke-dasharray="24 2 28" />
+        <line x1="13" y1="49" x2="67" y2="49" stroke="currentColor" stroke-width="1.15" stroke-dasharray="30 2.5 22" />
+
+        {/* Subtle crescent dots */}
+        <circle cx="33" cy="21" r="1.2" fill="currentColor" />
+        <circle cx="40" cy="19" r="1.5" fill="currentColor" />
+        <circle cx="47" cy="21" r="1.2" fill="currentColor" />
+        <circle cx="33" cy="59" r="1.2" fill="currentColor" />
+        <circle cx="40" cy="61" r="1.5" fill="currentColor" />
+        <circle cx="47" cy="59" r="1.2" fill="currentColor" />
+
+        {/* Bold VISITED imprint */}
+        <text
+          x="40"
+          y="43.8"
+          text-anchor="middle"
+          fill="currentColor"
+          font-size="11.2"
+          font-weight="800"
+          font-family="JetBrains Mono, monospace"
+          letter-spacing="1.25"
+        >
+          VISITED
+        </text>
       </g>
     </svg>
   )
@@ -167,7 +249,7 @@ function ParkStampTile(props: {
         <span aria-hidden="true" class="park-stamp-paper" />
 
         <Show when={props.park.visited}>
-          <PostalCancelMark />
+          <PostalCancelMark code={props.park.code} idPrefix={props.idPrefix} />
         </Show>
 
         {/* Postage header strip inside stamp paper */}
