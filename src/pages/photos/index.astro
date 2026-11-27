@@ -16,15 +16,20 @@ const photos: readonly PhotoItem[] = sortPhotos(
     .map((entry) => ({
       slug: entry.slug,
       title: entry.data.title,
-      image: entry.data.image,
+      imageUrl: entry.data.imageUrl,
+      thumbnailUrl: entry.data.thumbnailUrl,
       alt: entry.data.alt,
+      caption: entry.data.caption,
       date: formatShortDate(entry.data.date),
+      dateIso: entry.data.date.toISOString(),
       dateMs: entry.data.date.getTime(),
       location: entry.data.location,
-      camera: entry.data.camera,
-      caption: entry.data.caption,
+      album: entry.data.album,
       category: entry.data.category,
+      camera: entry.data.camera,
+      aspectRatio: entry.data.aspectRatio,
       featured: entry.data.featured,
+      tags: entry.data.tags,
       linkedHref: entry.data.linkedHref,
       linkedLabel: entry.data.linkedLabel,
       draft: entry.data.draft,
@@ -93,7 +98,7 @@ function toRoman(num: number): string {
                     >
                       <span class="block overflow-hidden rounded-lg bg-surface">
                         <img
-                          src={photo.image}
+                          src={photo.imageUrl}
                           alt={photo.alt}
                           fetchpriority={isLcp ? "high" : undefined}
                           loading={isBelowFold ? "lazy" : undefined}
@@ -107,7 +112,7 @@ function toRoman(num: number): string {
                       type="button"
                       data-lightbox-trigger
                       data-plate-label={plateLabel}
-                      data-plate-src={photo.image}
+                      data-plate-src={photo.imageUrl}
                       data-plate-alt={photo.alt}
                       data-plate-title={photo.title}
                       data-plate-location={photo.location ?? ""}
@@ -119,7 +124,7 @@ function toRoman(num: number): string {
                     >
                       <span class="block overflow-hidden rounded-lg bg-surface">
                         <img
-                          src={photo.image}
+                          src={photo.imageUrl}
                           alt={photo.alt}
                           fetchpriority={isLcp ? "high" : undefined}
                           loading={isBelowFold ? "lazy" : undefined}

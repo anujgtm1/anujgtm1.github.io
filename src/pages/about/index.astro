@@ -29,15 +29,20 @@ const photos: readonly PhotoItem[] = rawPhotos
   .map((photo) => ({
     slug: photo.slug,
     title: photo.data.title,
-    image: photo.data.image,
+    imageUrl: photo.data.imageUrl,
+    thumbnailUrl: photo.data.thumbnailUrl,
     alt: photo.data.alt,
+    caption: photo.data.caption,
     date: formatShortDate(photo.data.date),
+    dateIso: photo.data.date.toISOString(),
     dateMs: photo.data.date.getTime(),
     location: photo.data.location,
-    camera: photo.data.camera,
-    caption: photo.data.caption,
+    album: photo.data.album,
     category: photo.data.category,
+    camera: photo.data.camera,
+    aspectRatio: photo.data.aspectRatio,
     featured: photo.data.featured,
+    tags: photo.data.tags,
     linkedHref: photo.data.linkedHref,
     linkedLabel: photo.data.linkedLabel,
     draft: photo.data.draft,
@@ -91,7 +96,7 @@ const currentLedger = nowEntry
             {
               portraitPhoto ? (
                 <img
-                  src={portraitPhoto.image}
+                  src={portraitPhoto.imageUrl}
                   alt={portraitPhoto.alt}
                   fetchpriority="high"
                   decoding="async"

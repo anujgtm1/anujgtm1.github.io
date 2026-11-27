@@ -333,25 +333,33 @@ content:
     path: src/content/photos
     filename: "{year}-{month}-{day}-{primary}.md"
     view:
-      fields: [title, category, date, featured, draft]
+      fields: [title, album, category, location, date, featured, draft]
       primary: title
-      sort: [date]
+      sort: [date, title]
       default:
         sort: date
         order: desc
     fields:
       - name: title
-        label: Title
+        label: Photo Title
         type: string
         required: true
-      - name: image
-        label: Photograph
+      - name: imageUrl
+        label: Full-Resolution Image (URL or Upload)
         type: image
         required: true
+      - name: thumbnailUrl
+        label: Grid Preview Image (optional)
+        type: image
+        required: false
       - name: alt
-        label: Alt Text
+        label: Accessible Alt Text
         type: string
         required: true
+      - name: caption
+        label: Caption (optional)
+        type: text
+        required: false
       - name: date
         label: Date Taken
         type: date
@@ -360,13 +368,9 @@ content:
         label: Location (optional)
         type: string
         required: false
-      - name: camera
-        label: Camera / Film Note (optional)
+      - name: album
+        label: Album / Series (optional)
         type: string
-        required: false
-      - name: caption
-        label: Caption (optional)
-        type: text
         required: false
       - name: category
         label: Category
@@ -375,10 +379,26 @@ content:
         default: travel
         options:
           values: [travel, craft, everyday, portrait]
+      - name: camera
+        label: Camera / Lens (optional)
+        type: string
+        required: false
+      - name: aspectRatio
+        label: Aspect Ratio Hint (optional)
+        type: select
+        required: false
+        options:
+          values: [landscape, portrait, square, wide]
       - name: featured
         label: Featured Plate
         type: boolean
         default: false
+      - name: tags
+        label: Tags (optional)
+        type: string
+        list: true
+        required: false
+        default: []
       - name: linkedHref
         label: Linked Entry URL (optional)
         type: string
@@ -392,5 +412,5 @@ content:
         type: boolean
         default: false
       - name: body
-        label: Extended Notes
+        label: Extended Notes (optional)
         type: rich-text
